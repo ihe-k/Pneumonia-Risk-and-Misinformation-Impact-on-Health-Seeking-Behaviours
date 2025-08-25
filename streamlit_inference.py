@@ -297,7 +297,6 @@ def get_hackernews_results(query='pneumonia', size=20):
         st.error(f"Error fetching Hacker News results: {e}")
         return []
 
-
 def clean_text_for_analysis(text):
     """Clean text for better sentiment analysis"""
     if not text:
@@ -319,10 +318,8 @@ def get_data_source_info(source):
         "HealthVer (local CSV)": "Health verification CSVs in local 'data' folder",
         "HealthVer (local JSON)": "Health verification dataset",
         "FullFact (local JSON)": "Fact-checking dataset"
-
     }
     return info.get(source, "Unknown source")
-
 # =======================
 # 4) AGENT-BASED SIMULATION (unchanged)
 # =======================
@@ -624,7 +621,7 @@ if uploaded_file is not None:
 # MISINFORMATION TEXT ANALYSIS (unchanged)
 # =======================
 
-t.subheader("2⃣ Misinformation Text Analysis")
+st.subheader("2⃣ Misinformation Text Analysis")
 
 texts = []
 if dataset_source == "Reddit (Free API)":
@@ -884,6 +881,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
