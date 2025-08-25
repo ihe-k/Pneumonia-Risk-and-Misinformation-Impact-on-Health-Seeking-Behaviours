@@ -1,1 +1,7 @@
 .DS_Store
+env/
+readme_Pneumonia_project.docx
+readme.md
+saved_train_model/
+pneumonia_final/
+
