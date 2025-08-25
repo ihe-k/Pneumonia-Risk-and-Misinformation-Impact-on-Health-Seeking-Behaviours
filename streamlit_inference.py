@@ -194,6 +194,56 @@ def raphael_score_claim(claim_text):
         "confidence": 0.85 if harmful else 0.5
     }
 
+
+def get_wikipedia_results(query='pneumonia', size=20):
+    """Get Wikipedia search results (free, no auth required)"""
+    try:
+        wiki_url = f"https://en.wikipedia.org/w/rest.php/v1/search/page?q={quote_plus(query)}&limit={size}"
+        response = requests.get(wiki_url, timeout=20)
+        if response.status_code == 200:
+            data = response.json()
+            pages = data.get("pages", [])
+            texts = []
+            for page in pages:
+                title = page.get("title") or ""
+                excerpt = page.get("excerpt") or ""
+                # Strip HTML tags in excerpt
+                excerpt_clean = re.sub(r"<[^>]+>", " ", excerpt)
+                text = f"{title} {excerpt_clean}".strip()
+                if text:
+                    texts.append(text)
+            return texts
+        else:
+            st.warning(f"⚠️ Wikipedia search returned status {response.status_code}.")
+            return []
+    except Exception as e:
+        st.error(f"Error fetching Wikipedia results: {e}")
+        return []
+
+def get_hackernews_results(query='pneumonia', size=20):
+    """Get Hacker News search results (free via Algolia API)"""
+    try:
+        hn_url = f"https://hn.algolia.com/api/v1/search?query={quote_plus(query)}&tags=story&hitsPerPage={size}"
+        response = requests.get(hn_url, timeout=20)
+        if response.status_code == 200:
+            data = response.json()
+            hits = data.get("hits", [])
+            texts = []
+            for hit in hits:
+                title = hit.get("title") or ""
+                story_text = hit.get("story_text") or hit.get("_highlightResult", {}).get("title", {}).get("value", "") or ""
+                story_text_clean = re.sub(r"<[^>]+>", " ", str(story_text))
+                text = f"{title} {story_text_clean}".strip()
+                if text:
+                    texts.append(text)
+            return texts
+        else:
+            st.warning(f"⚠️ Hacker News search returned status {response.status_code}.")
+            return []
+    except Exception as e:
+        st.error(f"Error fetching Hacker News results: {e}")
+        return []
+
 def get_reddit_posts(query='pneumonia', size=50):
     """Get Reddit posts using Reddit's search API (free, no auth required)"""
     try:
@@ -248,54 +298,54 @@ def get_tavily_results(query='pneumonia', size=20, api_key=None):
         st.error(f"Error fetching Tavily results: {e}")
         return []
 
-def get_wikipedia_results(query='pneumonia', size=20):
-    """Get Wikipedia search results (free, no auth required)"""
-    try:
-        wiki_url = f"https://en.wikipedia.org/w/rest.php/v1/search/page?q={quote_plus(query)}&limit={size}"
-        response = requests.get(wiki_url, timeout=20)
-        if response.status_code == 200:
-            data = response.json()
-            pages = data.get("pages", [])
-            texts = []
-            for page in pages:
-                title = page.get("title") or ""
-                excerpt = page.get("excerpt") or ""
-                # Strip HTML tags in excerpt
-                excerpt_clean = re.sub(r"<[^>]+>", " ", excerpt)
-                text = f"{title} {excerpt_clean}".strip()
-                if text:
-                    texts.append(text)
-            return texts
-        else:
-            st.warning(f"⚠️ Wikipedia search returned status {response.status_code}.")
-            return []
-    except Exception as e:
-        st.error(f"Error fetching Wikipedia results: {e}")
-        return []
+# def get_wikipedia_results(query='pneumonia', size=20):
+#    """Get Wikipedia search results (free, no auth required)"""
+#    try:
+#        wiki_url = f"https://en.wikipedia.org/w/rest.php/v1/search/page?q={quote_plus(query)}&limit={size}"
+#        response = requests.get(wiki_url, timeout=20)
+#        if response.status_code == 200:
+#            data = response.json()
+#            pages = data.get("pages", [])
+#            texts = []
+#            for page in pages:
+#                title = page.get("title") or ""
+#                excerpt = page.get("excerpt") or ""
+#                # Strip HTML tags in excerpt
+#                excerpt_clean = re.sub(r"<[^>]+>", " ", excerpt)
+#                text = f"{title} {excerpt_clean}".strip()
+#                if text:
+#                    texts.append(text)
+#            return texts
+#        else:
+#            st.warning(f"⚠️ Wikipedia search returned status {response.status_code}.")
+#            return []
+#    except Exception as e:
+#        st.error(f"Error fetching Wikipedia results: {e}")
+#        return []
 
-def get_hackernews_results(query='pneumonia', size=20):
-    """Get Hacker News search results (free via Algolia API)"""
-    try:
-        hn_url = f"https://hn.algolia.com/api/v1/search?query={quote_plus(query)}&tags=story&hitsPerPage={size}"
-        response = requests.get(hn_url, timeout=20)
-        if response.status_code == 200:
-            data = response.json()
-            hits = data.get("hits", [])
-            texts = []
-            for hit in hits:
-                title = hit.get("title") or ""
-                story_text = hit.get("story_text") or hit.get("_highlightResult", {}).get("title", {}).get("value", "") or ""
-                story_text_clean = re.sub(r"<[^>]+>", " ", str(story_text))
-                text = f"{title} {story_text_clean}".strip()
-                if text:
-                    texts.append(text)
-            return texts
-        else:
-            st.warning(f"⚠️ Hacker News search returned status {response.status_code}.")
-            return []
-    except Exception as e:
-        st.error(f"Error fetching Hacker News results: {e}")
-        return []
+# def get_hackernews_results(query='pneumonia', size=20):
+#    """Get Hacker News search results (free via Algolia API)"""
+#    try:
+#        hn_url = f"https://hn.algolia.com/api/v1/search?query={quote_plus(query)}&tags=story&hitsPerPage={size}"
+#        response = requests.get(hn_url, timeout=20)
+#        if response.status_code == 200:
+ #           data = response.json()
+ #           hits = data.get("hits", [])
+ #           texts = []
+ #           for hit in hits:
+ #               title = hit.get("title") or ""
+ #               story_text = hit.get("story_text") or hit.get("_highlightResult", {}).get("title", {}).get("value", "") or ""
+ #               story_text_clean = re.sub(r"<[^>]+>", " ", str(story_text))
+ #               text = f"{title} {story_text_clean}".strip()
+ #               if text:
+ #                   texts.append(text)
+ #           return texts
+ #       else:
+ #           st.warning(f"⚠️ Hacker News search returned status {response.status_code}.")
+#            return []
+ #   except Exception as e:
+ #       st.error(f"Error fetching Hacker News results: {e}")
+ #       return []
 
 def clean_text_for_analysis(text):
     """Clean text for better sentiment analysis"""
@@ -311,13 +361,18 @@ def clean_text_for_analysis(text):
 def get_data_source_info(source):
     """Get information about data sources"""
     info = {
-        "Reddit (Free API)": "Real-time Reddit posts and discussions",
-        "Tavily Web Search": "Comprehensive web search results",
-        "Wikipedia (Free)": "Academic and factual information",
+         "Wikipedia (Free)": "Academic and factual information",
         "Hacker News (Free)": "Tech community discussions and news",
         "HealthVer (local CSV)": "Health verification CSVs in local 'data' folder",
         "HealthVer (local JSON)": "Health verification dataset",
         "FullFact (local JSON)": "Fact-checking dataset"
+        "Reddit (Free API)": "Real-time Reddit posts and discussions",
+        "Tavily Web Search": "Comprehensive web search results",
+       # "Wikipedia (Free)": "Academic and factual information",
+       # "Hacker News (Free)": "Tech community discussions and news",
+       # "HealthVer (local CSV)": "Health verification CSVs in local 'data' folder",
+       # "HealthVer (local JSON)": "Health verification dataset",
+      #  "FullFact (local JSON)": "Fact-checking dataset"
     }
     return info.get(source, "Unknown source")
 
@@ -434,12 +489,12 @@ tavily_api_key = st.sidebar.text_input("Tavily API Key (optional)", type="passwo
 # Data source selection
 dataset_source = st.sidebar.selectbox(
     "Misinformation Source Dataset",
-    ["Reddit (Free API)", "Tavily Web Search", "Wikipedia (Free)", "Hacker News (Free)", "HealthVer (local CSV)", "HealthVer (local JSON)", "FullFact (local JSON)"]
+    ["Wikipedia (Free)", "Hacker News (Free)", "HealthVer (local CSV)", "HealthVer (local JSON)", "FullFact (local JSON)","Reddit (Free API)", "Tavily Web Search"]
 )
 
 # Search configuration
 search_query = st.sidebar.text_input("Search Keyword", value="pneumonia")
-if dataset_source in ["Reddit (Free API)", "Tavily Web Search", "Wikipedia (Free)", "Hacker News (Free)"]:
+if dataset_source in ["Wikipedia (Free)",  "Hacker News (Free)", "Reddit (Free API)","Tavily Web Search"]:
     search_count = st.sidebar.slider("Number of Results", 5, 50, 20)
 
 # Show data source information
@@ -917,5 +972,6 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
