@@ -830,6 +830,8 @@ else:
 # Always show the subheader at the end of the page
 st.subheader("3⃣ Agent-Based Misinformation Simulation")
 
+simulate_button = st.sidebar.button("Run Agent-Based Simulation")
+
 # Show simulation results only when button is clicked
 if simulate_button:
     st.session_state.simulation_run = True
@@ -919,6 +921,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
