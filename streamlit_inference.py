@@ -554,7 +554,7 @@ try:
     )
     
     # Also show accuracy metrics separately for better visibility
-    st.markdown("### 📈 Overall Metrics")
+    st.markdown("### Overall Metrics")
     
     # Create a summary metrics table
     metrics_data = {
@@ -715,6 +715,35 @@ elif dataset_source == "FullFact (local JSON)":
         except Exception as e:
             st.error(f"Failed to read FullFact JSON: {e}")
 
+# Additional analysis: Misinformation rate and sentiment analysis
+    if texts:
+        st.markdown("### Misinformation Analysis")
+        
+        # Clean texts for better analysis first
+        try:
+            cleaned_texts = [clean_text_for_analysis(text) for text in texts]
+            cleaned_texts = [text for text in cleaned_texts if text]  # Remove empty texts
+        except Exception as e:
+            st.error(f"Error during text cleaning: {e}")
+            cleaned_texts = texts  # Fallback to original texts
+        
+        # Data summary
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.metric("📄 Total Texts", len(texts))
+        with col2:
+            avg_length = np.mean([len(text) for text in texts]) if texts else 0
+            st.metric("📏 Avg Text Length", f"{avg_length:.0f} chars")
+        with col3:
+            # Calculate misinformation rate using cleaned texts
+            if cleaned_texts:
+                misinformation_flags = [1 if TextBlob(text).sentiment.polarity < 0 else 0 for text in cleaned_texts]
+                misinfo_rate = sum(misinformation_flags) / len(misinformation_flags) if misinformation_flags else 0
+                st.metric("💬 Misinformation Rate", f"{misinfo_rate:.2f}")
+            else:
+                st.metric("💬 Misinformation Rate", "N/A")
+     
+
 if texts:
     misinformation_results = detect_misinformation(texts[:10])
     st.markdown("### Misinformation Detection")
@@ -743,20 +772,20 @@ if texts:
             cleaned_texts = texts  # Fallback to original texts
         
         # Data summary
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            st.metric("📄 Total Texts", len(texts))
-        with col2:
-            avg_length = np.mean([len(text) for text in texts]) if texts else 0
-            st.metric("📏 Avg Text Length", f"{avg_length:.0f} chars")
-        with col3:
+     #   col1, col2, col3 = st.columns(3)
+     #   with col1:
+     #       st.metric("📄 Total Texts", len(texts))
+     #   with col2:
+      #      avg_length = np.mean([len(text) for text in texts]) if texts else 0
+      #      st.metric("📏 Avg Text Length", f"{avg_length:.0f} chars")
+      #  with col3:
             # Calculate misinformation rate using cleaned texts
-            if cleaned_texts:
-                misinformation_flags = [1 if TextBlob(text).sentiment.polarity < 0 else 0 for text in cleaned_texts]
-                misinfo_rate = sum(misinformation_flags) / len(misinformation_flags) if misinformation_flags else 0
-                st.metric("💬 Misinformation Rate", f"{misinfo_rate:.2f}")
-            else:
-                st.metric("💬 Misinformation Rate", "N/A")
+       #     if cleaned_texts:
+       #         misinformation_flags = [1 if TextBlob(text).sentiment.polarity < 0 else 0 for text in cleaned_texts]
+        #        misinfo_rate = sum(misinformation_flags) / len(misinformation_flags) if misinformation_flags else 0
+        #        st.metric("💬 Misinformation Rate", f"{misinfo_rate:.2f}")
+        #    else:
+        #        st.metric("💬 Misinformation Rate", "N/A")
         
         # Show cleaning results
         if len(cleaned_texts) != len(texts):
@@ -803,8 +832,8 @@ st.subheader("3⃣ Agent-Based Misinformation Simulation")
 if simulate_button:
     st.session_state.simulation_run = True
     
-    model = MisinformationModel(num_agents, num_clinicians, 100, 100, misinfo_exposure)
-    for _ in range(300):
+    model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinfo_exposure)
+    for _ in range(30):
         model.step()
 
     df_sim = model.datacollector.get_agent_vars_dataframe()
@@ -884,8 +913,9 @@ st.markdown(
     - Real Chest X-ray pneumonia classification with pretrained Logistic Regression and XGBoost models
     - Multi-source misinformation detection: Reddit (free API), Tavily web search, Wikipedia, Hacker News, HealthVer, FullFact
     - RAPHAEL-style claim scoring for health claims with sentiment analysis
-    - Agent-based simulation modelling misinformation's impact on care-seeking behaviour, with clinician interaction
+    - Agent-based simulation modelling misinformation's impact on care-seeking behaviour with clinician interaction
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
