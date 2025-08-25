@@ -1,0 +1,7 @@
+1. Go to https://share.streamlit.io/
+2. Create the Account on streamlit
+3. Click on Create APP
+4. then click on connect to github 
+5. after connect to github
+6. fill the Deploy an app fields 
+7. click on deploy
