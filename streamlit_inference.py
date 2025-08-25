@@ -72,7 +72,7 @@ def load_pretrained_models(model_dir):
                     except Exception as e2:
                         st.warning(f"⚠️ Failed to load Logistic Regression from root: {e2}")
                         # Try fallback to v1 directory
-                        v1_log_reg_path = os.path.join(SCRIPT_DIR, "saved_trained_model", "pneumonia_log_reg.pkl")
+                        v1_log_reg_path = os.path.join(SCRIPT_DIR, "saved_trained_model_v1", "pneumonia_log_reg.pkl")
                         if os.path.exists(v1_log_reg_path):
                             try:
                                 log_reg = joblib.load(v1_log_reg_path)
@@ -119,7 +119,7 @@ def load_pretrained_models(model_dir):
                     except Exception as e2:
                         st.warning(f"⚠️ Failed to load XGBoost from root: {e2}")
                         # Try fallback to v1 directory
-                        v1_xgb_path = os.path.join(SCRIPT_DIR, "saved_trained_model", "pneumonia_xgb.pkl")
+                        v1_xgb_path = os.path.join(SCRIPT_DIR, "saved_trained_model_v1", "pneumonia_xgb.pkl")
                         if os.path.exists(v1_xgb_path):
                             try:
                                 xgb = joblib.load(v1_xgb_path)
@@ -882,4 +882,3 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
-
