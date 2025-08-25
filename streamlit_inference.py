@@ -621,6 +621,7 @@ if uploaded_file is not None:
 # MISINFORMATION TEXT ANALYSIS (unchanged)
 # =======================
 
+
 st.subheader("2⃣ Misinformation Text Analysis")
 
 texts = []
@@ -881,6 +882,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
