@@ -321,76 +321,113 @@ def get_data_source_info(source):
     }
     return info.get(source, "Unknown source")
 # =======================
-# 4) AGENT-BASED SIMULATION (unchanged)
+# AGENT-BASED SIMULATION
 # =======================
 
-class Patient(Agent):
-    def __init__(self, unique_id, model, misinformation_score=0.5):
-        super().__init__(unique_id, model)
-        self.symptom_severity = random.choice([0, 1])
-        self.trust_in_clinician = 0.5
-        self.misinformation_exposure = misinformation_score
-        self.care_seeking_behavior = 0.5
+st.subheader("3⃣ Agent-Based Misinformation Simulation")
 
-    def step(self):
-        # Misinformation reduces symptom perception and care seeking
-        if self.misinformation_exposure > 0.7 and random.random() < 0.4:
-            self.symptom_severity = 0
-        # Trust increases symptom recognition
-        elif self.trust_in_clinician > 0.8:
-            self.symptom_severity = 1
+if simulate_button:
+    st.session_state.simulation_run = True
 
-        # Care seeking behavior adjusted by misinformation and trust
-        if self.misinformation_exposure > 0.7:
-            self.care_seeking_behavior = max(0, self.care_seeking_behavior - 0.3)
-        elif self.symptom_severity == 1 and self.trust_in_clinician > 0.5:
-            self.care_seeking_behavior = min(1, self.care_seeking_behavior + 0.5)
+    model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinfo_exposure)
+    for _ in range(30):  # 30 steps of simulation
+        model.step()
 
-class Clinician(Agent):
-    def __init__(self, unique_id, model):
-        super().__init__(unique_id, model)
+    # Collect and reset agent-level data
+    df_sim = model.datacollector.get_agent_vars_dataframe()
+    df_reset = df_sim.reset_index()
 
-    def step(self):
-        # Find patients in the same cell
-        cellmates = self.model.grid.get_cell_list_contents([self.pos])
-        patients_here = [agent for agent in cellmates if isinstance(agent, Patient)]
-        for patient in patients_here:
-            # Increase patient trust if clinician present
-            patient.trust_in_clinician = min(1.0, patient.trust_in_clinician + 0.1)
-            # Potentially decrease misinformation exposure
-            if patient.misinformation_exposure > 0:
-                patient.misinformation_exposure = max(0, patient.misinformation_exposure - 0.05)
+    # Group by simulation step (average values across all agents per step)
+    df_grouped = df_reset.groupby("Step")[[
+        "Symptom Severity", 
+        "Care Seeking Behavior", 
+        "Trust in Clinician", 
+        "Misinformation Exposure"
+    ]].mean().reset_index()
 
-class MisinformationModel(Model):
-    def __init__(self, num_patients, num_clinicians, width, height, misinformation_exposure):
-        self.grid = MultiGrid(width, height, True)
-        self.schedule = RandomActivation(self)
-        self.datacollector = DataCollector(
-            agent_reporters={
-                "Symptom Severity": "symptom_severity",
-                "Care Seeking Behavior": "care_seeking_behavior",
-                "Trust in Clinician": "trust_in_clinician",
-                "Misinformation Exposure": "misinformation_exposure"
-            }
+    st.write("### 📈 Simulation Results & Analysis")
+
+    # SCATTER PLOTS (per-agent, final state)
+    col1, col2 = st.columns(2)
+
+    with col1:
+        fig1, ax1 = plt.subplots(figsize=(8, 6))
+        sns.scatterplot(
+            data=df_reset,
+            x="Symptom Severity",
+            y="Care Seeking Behavior",
+            hue="Trust in Clinician",
+            size="Misinformation Exposure",
+            alpha=0.7,
+            ax=ax1,
+            palette="coolwarm",
+            sizes=(20, 200)
         )
+        ax1.set_title("Impact of Misinformation & Trust on Care-Seeking")
+        ax1.set_xlabel("Symptom Severity")
+        ax1.set_ylabel("Care Seeking Behavior")
+        st.pyplot(fig1)
 
-        # Add patients
-        for i in range(num_patients):
-            patient = Patient(i, self, misinformation_exposure)
-            self.schedule.add(patient)
-            x, y = self.random.randrange(width), self.random.randrange(height)
-            self.grid.place_agent(patient, (x, y))
+    with col2:
+        fig2, ax2 = plt.subplots(figsize=(8, 6))
+        sns.scatterplot(
+            data=df_reset,
+            x="Trust in Clinician",
+            y="Care Seeking Behavior",
+            hue="Misinformation Exposure",
+            alpha=0.7,
+            ax=ax2,
+            palette="viridis"
+        )
+        ax2.set_title("Trust vs Care-Seeking (Final Agent States)")
+        ax2.set_xlabel("Trust in Clinician")
+        ax2.set_ylabel("Care Seeking Behavior")
+        st.pyplot(fig2)
 
-        # Add clinicians
-        for i in range(num_patients, num_patients + num_clinicians):
-            clinician = Clinician(i, self)
-            self.schedule.add(clinician)
-            x, y = self.random.randrange(width), self.random.randrange(height)
-            self.grid.place_agent(clinician, (x, y))
+    # LINE PLOTS OVER TIME (averaged per step)
+    st.markdown("### 📊 Trends Over Time (Step-Wise Averages)")
+    fig3, axs = plt.subplots(1, 3, figsize=(20, 5))
 
-    def step(self):
-        self.datacollector.collect(self)
-        self.schedule.step()
+    # Trust over time
+    axs[0].plot(df_grouped["Step"], df_grouped["Trust in Clinician"], marker='o', color='blue')
+    axs[0].set_title("Average Trust Over Time")
+    axs[0].set_xlabel("Step")
+    axs[0].set_ylabel("Trust in Clinician")
+
+    # Care-seeking over time
+    axs[1].plot(df_grouped["Step"], df_grouped["Care Seeking Behavior"], marker='o', color='green')
+    axs[1].set_title("Average Care Seeking Over Time")
+    axs[1].set_xlabel("Step")
+    axs[1].set_ylabel("Care Seeking Behavior")
+
+    # Scatter: Trust vs Care-Seeking colored by Step
+    sc = axs[2].scatter(
+        df_grouped["Trust in Clinician"],
+        df_grouped["Care Seeking Behavior"],
+        c=df_grouped["Step"],
+        cmap="plasma",
+        s=60
+    )
+    axs[2].set_title("Trust vs Care Seeking (per Step)")
+    axs[2].set_xlabel("Trust in Clinician")
+    axs[2].set_ylabel("Care Seeking Behavior")
+    plt.colorbar(sc, ax=axs[2], label="Step")
+
+    plt.tight_layout()
+    st.pyplot(fig3)
+
+    # SUMMARY TABLE
+    st.markdown("### 📋 Simulation Summary Statistics")
+    summary_stats = df_reset[[
+        "Symptom Severity", 
+        "Care Seeking Behavior", 
+        "Trust in Clinician", 
+        "Misinformation Exposure"
+    ]].describe()
+    st.dataframe(summary_stats.round(3))
+
+else:
+    st.info("👆 Use the sidebar controls above to configure and run the agent-based simulation.")
 
 # =======================
 # 5) STREAMLIT UI
@@ -882,6 +919,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
