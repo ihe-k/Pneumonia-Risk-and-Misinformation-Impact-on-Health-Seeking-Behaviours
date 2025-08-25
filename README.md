@@ -30,7 +30,7 @@ This project integrates AI (machine learning methods such as logistic regression
 
 ### 5. Misinformation Impact Analysis
 * Quantifies how misinformation reduces symptom reporting and care-seeking
-* Visualises behavioral trends over time and differences between exposed and unexposed groups
+* Visualises behavioural trends over time and differences between exposed and unexposed groups
 
 ## Future Interventions
 ### Gift-Giving as Social Incentive and Engine of Social Contagion
@@ -44,11 +44,11 @@ These rewards are designed not just to incentivise individuals but to spark cred
 
 To ensure equity, the intervention may explicitly include support for disabled individuals and non-English speakers who often face systemic barriers to care and digital engagement. Content may be delivered in multiple languages, with translation models and culturally adapted phrasing that are optimised for assistive technologies (e.g., screen readers, simplified visual interfaces and alt text). Incentives may be designed with accessibility in mind, offering both digital and non-digital reward options to include users with limited internet access or varying physical and cognitive abilities.
 
-AI models may help identify users well-positioned to trigger these cascades based on network structure, posting behavior and susceptibility to misinformation. They may also recommend personalised health content aligned with a user’s values, increasing the likelihood of uptake and onward sharing.
+AI models may help identify users well-positioned to trigger these cascades based on network structure, posting behaviour and susceptibility to misinformation. They may also recommend personalised health content aligned with a user’s values, increasing the likelihood of uptake and onward sharing.
 
 A gender-aware strategy may emphasise support for women as powerful nodes in these social networks. Women often play influential roles in how health information flows online and within a household. By targeting rewards and leadership opportunities to women who share verified content, the intervention would seek to amplify their impact, using gift-giving not only to motivate behaviour but to seed trust and accuracy into entire communities.
 
-This approach treats information behavior as contagious and leverages trust, identity and social visibility to promote the viral spread of credible health knowledge across ideological and demographic boundaries.
+This approach treats information behaviour as contagious and leverages trust, identity and social visibility to promote the viral spread of credible health knowledge across ideological and demographic boundaries.
 
 ### Key Metrics to Evaluate Gift-Giving & Social Contagion Effects
 To assess how AI-enabled gift-giving promotes the spread of verified health information and influences care-seeking, metrics may include:
@@ -89,14 +89,12 @@ Download and extract the chest X-ray dataset into the data/ folder
 ## Project Structure
 ```plaintext
 ├── data/
-│   ├── chest_xray/
+├── chest_xray/
 ├── src/
 │   ├── preprocess_images.py
 │   ├── train_models.py
 │   ├── nlp_misinformation.py
 │   ├── agent_based_simulation.py
-├── notebooks/
-├── visualisations/
 ├── README.md
 ├── requirements.txt
 ```
@@ -116,5 +114,3 @@ Misinformation Impact: Up to 11% drop in care-seeking behaviour in high-exposure
 
 ## Contact
 For questions or collaboration requests, please contact me here or open an issue.
-# Pneumonia
-# Pneumonia
