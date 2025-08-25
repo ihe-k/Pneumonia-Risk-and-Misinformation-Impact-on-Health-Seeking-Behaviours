@@ -436,12 +436,12 @@ tavily_api_key = st.sidebar.text_input("Tavily API Key (optional)", type="passwo
 # Data source selection
 dataset_source = st.sidebar.selectbox(
     "Misinformation Source Dataset",
-    ["Wikipedia (Free)", "Hacker News (Free)", "HealthVer (local CSV)", "HealthVer (local JSON)", "FullFact (local JSON)","Reddit (Free API)", "Tavily Web Search"]
+    ["Reddit (Free API)", "Tavily Web Search", "Wikipedia (Free)", "Hacker News (Free)", "HealthVer (local CSV)", "HealthVer (local JSON)", "FullFact (local JSON)"]
 )
 
 # Search configuration
 search_query = st.sidebar.text_input("Search Keyword", value="pneumonia")
-if dataset_source in ["Wikipedia (Free)",  "Hacker News (Free)", "Reddit (Free API)","Tavily Web Search"]:
+if dataset_source in ["Reddit (Free API)", "Tavily Web Search", "Wikipedia (Free)", "Hacker News (Free)"]:
     search_count = st.sidebar.slider("Number of Results", 5, 50, 20)
 
 # Show data source information
@@ -902,6 +902,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
