@@ -199,7 +199,7 @@ def get_wikipedia_results(query='pneumonia', size=20):
     """Get Wikipedia search results (free, no auth required)"""
     try:
         wiki_url = f"https://en.wikipedia.org/w/rest.php/v1/search/page?q={quote_plus(query)}&limit={size}"
-        response = requests.get(wiki_url, timeout=20)
+        response = requests.get(wiki_url, timeout=50)
         if response.status_code == 200:
             data = response.json()
             pages = data.get("pages", [])
@@ -782,23 +782,6 @@ elif dataset_source == "FullFact (local JSON)":
             st.error(f"Error during text cleaning: {e}")
             cleaned_texts = texts  # Fallback to original texts
         
-        # Data summary
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            st.metric("📄 Total Texts", len(texts))
-        with col2:
-            avg_length = np.mean([len(text) for text in texts]) if texts else 0
-            st.metric("📏 Avg Text Length", f"{avg_length:.0f} chars")
-        with col3:
-            # Calculate misinformation rate using cleaned texts
-            if cleaned_texts:
-                misinformation_flags = [1 if TextBlob(text).sentiment.polarity < 0 else 0 for text in cleaned_texts]
-                misinfo_rate = sum(misinformation_flags) / len(misinformation_flags) if misinformation_flags else 0
-                st.metric("💬 Misinformation Rate", f"{misinfo_rate:.2f}")
-            else:
-                st.metric("💬 Misinformation Rate", "N/A")
-     
-
 if texts:
     misinformation_results = detect_misinformation(texts[:10])
     st.markdown("### Misinformation Detection")
@@ -827,20 +810,20 @@ if texts:
             cleaned_texts = texts  # Fallback to original texts
         
         # Data summary
-     #   col1, col2, col3 = st.columns(3)
-     #   with col1:
-     #       st.metric("📄 Total Texts", len(texts))
-     #   with col2:
-      #      avg_length = np.mean([len(text) for text in texts]) if texts else 0
-      #      st.metric("📏 Avg Text Length", f"{avg_length:.0f} chars")
-      #  with col3:
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.metric("📄 Total Texts", len(texts))
+        with col2:
+            avg_length = np.mean([len(text) for text in texts]) if texts else 0
+            st.metric("📏 Avg Text Length", f"{avg_length:.0f} chars")
+        with col3:
             # Calculate misinformation rate using cleaned texts
-       #     if cleaned_texts:
-       #         misinformation_flags = [1 if TextBlob(text).sentiment.polarity < 0 else 0 for text in cleaned_texts]
-        #        misinfo_rate = sum(misinformation_flags) / len(misinformation_flags) if misinformation_flags else 0
-        #        st.metric("💬 Misinformation Rate", f"{misinfo_rate:.2f}")
-        #    else:
-        #        st.metric("💬 Misinformation Rate", "N/A")
+            if cleaned_texts:
+                misinformation_flags = [1 if TextBlob(text).sentiment.polarity < 0 else 0 for text in cleaned_texts]
+                misinfo_rate = sum(misinformation_flags) / len(misinformation_flags) if misinformation_flags else 0
+                st.metric("💬 Misinformation Rate", f"{misinfo_rate:.2f}")
+            else:
+                st.metric("💬 Misinformation Rate", "N/A")
         
         # Show cleaning results
         if len(cleaned_texts) != len(texts):
@@ -972,6 +955,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
