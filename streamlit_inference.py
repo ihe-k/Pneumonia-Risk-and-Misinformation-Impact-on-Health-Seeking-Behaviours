@@ -248,7 +248,7 @@ def get_tavily_results(query='pneumonia', size=20, api_key=None):
         st.error(f"Error fetching Tavily results: {e}")
         return []
 
- def get_wikipedia_results(query='pneumonia', size=20):
+def get_wikipedia_results(query='pneumonia', size=20):
     """Get Wikipedia search results (free, no auth required)"""
     try:
         wiki_url = f"https://en.wikipedia.org/w/rest.php/v1/search/page?q={quote_plus(query)}&limit={size}"
@@ -273,7 +273,7 @@ def get_tavily_results(query='pneumonia', size=20, api_key=None):
         st.error(f"Error fetching Wikipedia results: {e}")
         return []
 
- def get_hackernews_results(query='pneumonia', size=20):
+def get_hackernews_results(query='pneumonia', size=20):
     """Get Hacker News search results (free via Algolia API)"""
     try:
         hn_url = f"https://hn.algolia.com/api/v1/search?query={quote_plus(query)}&tags=story&hitsPerPage={size}"
@@ -900,6 +900,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
