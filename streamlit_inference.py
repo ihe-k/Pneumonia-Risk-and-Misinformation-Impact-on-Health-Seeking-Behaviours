@@ -194,32 +194,6 @@ def raphael_score_claim(claim_text):
         "confidence": 0.85 if harmful else 0.5
     }
 
-
-def get_wikipedia_results(query='pneumonia', size=20):
-    """Get Wikipedia search results (free, no auth required)"""
-    try:
-        wiki_url = f"https://en.wikipedia.org/w/rest.php/v1/search/page?q={quote_plus(query)}&limit={size}"
-        response = requests.get(wiki_url, timeout=50)
-        if response.status_code == 200:
-            data = response.json()
-            pages = data.get("pages", [])
-            texts = []
-            for page in pages:
-                title = page.get("title") or ""
-                excerpt = page.get("excerpt") or ""
-                # Strip HTML tags in excerpt
-                excerpt_clean = re.sub(r"<[^>]+>", " ", excerpt)
-                text = f"{title} {excerpt_clean}".strip()
-                if text:
-                    texts.append(text)
-            return texts
-        else:
-            st.warning(f"⚠️ Wikipedia search returned status {response.status_code}.")
-            return []
-    except Exception as e:
-        st.error(f"Error fetching Wikipedia results: {e}")
-        return []
-
 def get_hackernews_results(query='pneumonia', size=20):
     """Get Hacker News search results (free via Algolia API)"""
     try:
@@ -298,54 +272,54 @@ def get_tavily_results(query='pneumonia', size=20, api_key=None):
         st.error(f"Error fetching Tavily results: {e}")
         return []
 
-# def get_wikipedia_results(query='pneumonia', size=20):
-#    """Get Wikipedia search results (free, no auth required)"""
-#    try:
-#        wiki_url = f"https://en.wikipedia.org/w/rest.php/v1/search/page?q={quote_plus(query)}&limit={size}"
-#        response = requests.get(wiki_url, timeout=20)
-#        if response.status_code == 200:
-#            data = response.json()
-#            pages = data.get("pages", [])
-#            texts = []
-#            for page in pages:
-#                title = page.get("title") or ""
-#                excerpt = page.get("excerpt") or ""
-#                # Strip HTML tags in excerpt
-#                excerpt_clean = re.sub(r"<[^>]+>", " ", excerpt)
-#                text = f"{title} {excerpt_clean}".strip()
-#                if text:
-#                    texts.append(text)
-#            return texts
-#        else:
-#            st.warning(f"⚠️ Wikipedia search returned status {response.status_code}.")
-#            return []
-#    except Exception as e:
-#        st.error(f"Error fetching Wikipedia results: {e}")
-#        return []
+ def get_wikipedia_results(query='pneumonia', size=20):
+    """Get Wikipedia search results (free, no auth required)"""
+    try:
+        wiki_url = f"https://en.wikipedia.org/w/rest.php/v1/search/page?q={quote_plus(query)}&limit={size}"
+        response = requests.get(wiki_url, timeout=20)
+        if response.status_code == 200:
+            data = response.json()
+            pages = data.get("pages", [])
+            texts = []
+            for page in pages:
+                title = page.get("title") or ""
+                excerpt = page.get("excerpt") or ""
+                # Strip HTML tags in excerpt
+                excerpt_clean = re.sub(r"<[^>]+>", " ", excerpt)
+                text = f"{title} {excerpt_clean}".strip()
+                if text:
+                    texts.append(text)
+            return texts
+        else:
+            st.warning(f"⚠️ Wikipedia search returned status {response.status_code}.")
+            return []
+    except Exception as e:
+        st.error(f"Error fetching Wikipedia results: {e}")
+        return []
 
-# def get_hackernews_results(query='pneumonia', size=20):
-#    """Get Hacker News search results (free via Algolia API)"""
-#    try:
-#        hn_url = f"https://hn.algolia.com/api/v1/search?query={quote_plus(query)}&tags=story&hitsPerPage={size}"
-#        response = requests.get(hn_url, timeout=20)
-#        if response.status_code == 200:
- #           data = response.json()
- #           hits = data.get("hits", [])
- #           texts = []
- #           for hit in hits:
- #               title = hit.get("title") or ""
- #               story_text = hit.get("story_text") or hit.get("_highlightResult", {}).get("title", {}).get("value", "") or ""
- #               story_text_clean = re.sub(r"<[^>]+>", " ", str(story_text))
- #               text = f"{title} {story_text_clean}".strip()
- #               if text:
- #                   texts.append(text)
- #           return texts
- #       else:
- #           st.warning(f"⚠️ Hacker News search returned status {response.status_code}.")
-#            return []
- #   except Exception as e:
- #       st.error(f"Error fetching Hacker News results: {e}")
- #       return []
+ def get_hackernews_results(query='pneumonia', size=20):
+    """Get Hacker News search results (free via Algolia API)"""
+    try:
+        hn_url = f"https://hn.algolia.com/api/v1/search?query={quote_plus(query)}&tags=story&hitsPerPage={size}"
+        response = requests.get(hn_url, timeout=20)
+        if response.status_code == 200:
+            data = response.json()
+            hits = data.get("hits", [])
+            texts = []
+            for hit in hits:
+                title = hit.get("title") or ""
+                story_text = hit.get("story_text") or hit.get("_highlightResult", {}).get("title", {}).get("value", "") or ""
+                story_text_clean = re.sub(r"<[^>]+>", " ", str(story_text))
+                text = f"{title} {story_text_clean}".strip()
+                if text:
+                    texts.append(text)
+            return texts
+        else:
+            st.warning(f"⚠️ Hacker News search returned status {response.status_code}.")
+            return []
+    except Exception as e:
+        st.error(f"Error fetching Hacker News results: {e}")
+        return []
 
 def clean_text_for_analysis(text):
     """Clean text for better sentiment analysis"""
@@ -955,6 +929,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
