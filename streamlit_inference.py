@@ -199,7 +199,7 @@ def get_reddit_posts(query='pneumonia', size=50):
     try:
         reddit_url = f"https://www.reddit.com/search.json?q={quote_plus(query)}&limit={size}&sort=new"
         headers = {"User-Agent": "Mozilla/5.0 (StreamlitApp)"}
-        response = requests.get(reddit_url, headers=headers, timeout=50)
+        response = requests.get(reddit_url, headers=headers, timeout=15)
         if response.status_code == 200:
             data = response.json()
             children = data.get("data", {}).get("children", [])
@@ -624,7 +624,7 @@ if uploaded_file is not None:
 # MISINFORMATION TEXT ANALYSIS (unchanged)
 # =======================
 
-st.subheader("2⃣ Misinformation Text Analysis")
+t.subheader("2⃣ Misinformation Text Analysis")
 
 texts = []
 if dataset_source == "Reddit (Free API)":
@@ -710,6 +710,7 @@ elif dataset_source == "FullFact (local JSON)":
             texts = df_fullfact['claim'].tolist() if 'claim' in df_fullfact.columns else []
         except Exception as e:
             st.error(f"Failed to read FullFact JSON: {e}")
+
 if texts:
     misinformation_results = detect_misinformation(texts[:10])
     st.markdown("### Misinformation Detection")
@@ -727,7 +728,7 @@ if texts:
     
     # Additional analysis: Misinformation rate and sentiment analysis
     if texts:
-        st.markdown("### Misinformation Analysis")
+        st.markdown("### 📊 Misinformation Analysis")
         
         # Clean texts for better analysis first
         try:
@@ -764,7 +765,7 @@ if texts:
             sentiment_scores = [TextBlob(text).sentiment.polarity for text in cleaned_texts]
             
             # Sentiment statistics
-            st.markdown("### Sentiment Statistics")
+            st.markdown("### 📈 Sentiment Statistics")
             col1, col2, col3, col4 = st.columns(4)
             with col1:
                 st.metric("😊 Positive", f"{sum(1 for s in sentiment_scores if s > 0)}")
@@ -776,7 +777,7 @@ if texts:
                 st.metric("📊 Mean", f"{np.mean(sentiment_scores):.3f}")
             
             # Show sample texts with their sentiment scores
-            st.markdown("### Sample Texts with Sentiment Scores")
+            st.markdown("### 📝 Sample Texts with Sentiment Scores")
             sample_data = list(zip(cleaned_texts[:5], sentiment_scores[:5]))
             for text, sentiment in sample_data:
                 sentiment_label = "❌ Negative" if sentiment < 0 else "✅ Positive" if sentiment > 0 else "⚪ Neutral"
@@ -786,6 +787,7 @@ if texts:
 
 else:
     st.info("No text data loaded from selected dataset.")
+
 # =======================
 # AGENT-BASED SIMULATION (unchanged)
 # =======================
@@ -882,6 +884,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
