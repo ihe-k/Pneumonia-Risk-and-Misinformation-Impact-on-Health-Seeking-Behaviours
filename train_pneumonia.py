@@ -14,10 +14,6 @@ import joblib
 DATASET_DIR = "chest_xray"   # root folder with train, val, test
 IMG_SIZE = (150, 150)
 BATCH_SIZE = 32
-SAVE_DIR = "saved_trained_model"  # folder to save trained models
-
-# Create save directory if it doesn't exist
-os.makedirs(SAVE_DIR, exist_ok=True)
 
 # ---------------------------
 # DATA LOADING
@@ -82,8 +78,8 @@ y_val_pred = log_reg.predict(X_val_flat)
 print("LogReg Validation Accuracy:", accuracy_score(y_val, y_val_pred))
 print(classification_report(y_val, y_val_pred))
 
-joblib.dump(log_reg, os.path.join(SAVE_DIR, "pneumonia_log_reg.pkl"))
-print(f"✅ Saved Logistic Regression model as {os.path.join(SAVE_DIR, 'pneumonia_log_reg.pkl')}")
+joblib.dump(log_reg, "pneumonia_log_reg.pkl")
+print("✅ Saved Logistic Regression model as pneumonia_log_reg.pkl")
 
 # ---------------------------
 # MODEL 2: XGBoost
@@ -103,8 +99,8 @@ y_val_pred = xgb_clf.predict(X_val_flat)
 print("XGBoost Validation Accuracy:", accuracy_score(y_val, y_val_pred))
 print(classification_report(y_val, y_val_pred))
 
-joblib.dump(xgb_clf, os.path.join(SAVE_DIR, "pneumonia_xgb.pkl"))
-print(f"✅ Saved XGBoost model as {os.path.join(SAVE_DIR, 'pneumonia_xgb.pkl')}")
+joblib.dump(xgb_clf, "pneumonia_xgb.pkl")
+print("✅ Saved XGBoost model as pneumonia_xgb.pkl")
 
 # ---------------------------
 # Final Test Evaluation
