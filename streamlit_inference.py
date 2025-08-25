@@ -194,12 +194,6 @@ def raphael_score_claim(claim_text):
         "confidence": 0.85 if harmful else 0.5
     }
 
-        "checkworthy": True,
-        "harmful": harmful,
-        "needs_citation": True,
-        "confidence": 0.85 if harmful else 0.5
-    }
-
 def get_reddit_posts(query='pneumonia', size=50):
     """Get Reddit posts using Reddit's search API (free, no auth required)"""
     try:
@@ -908,6 +902,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
