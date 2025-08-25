@@ -367,7 +367,7 @@ def get_data_source_info(source):
         "HealthVer (local JSON)": "Health verification dataset",
         "FullFact (local JSON)": "Fact-checking dataset"
         "Reddit (Free API)": "Real-time Reddit posts and discussions",
-        "Tavily Web Search": "Comprehensive web search results",
+        "Tavily Web Search": "Comprehensive web search results"
        # "Wikipedia (Free)": "Academic and factual information",
        # "Hacker News (Free)": "Tech community discussions and news",
        # "HealthVer (local CSV)": "Health verification CSVs in local 'data' folder",
@@ -972,6 +972,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
