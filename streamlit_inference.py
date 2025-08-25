@@ -627,13 +627,7 @@ if uploaded_file is not None:
 st.subheader("2⃣ Misinformation Text Analysis")
 
 texts = []
-if dataset_source == "Wikipedia (Free)":
-    with st.spinner("Searching Wikipedia..."):
-        texts = get_wikipedia_results(search_query, size=search_count)
-    if texts:
-        st.session_state.data_collected = True
-
-elif dataset_source == "Reddit (Free API)":
+if dataset_source == "Reddit (Free API)":
     with st.spinner("Fetching Reddit posts..."):
         texts = get_reddit_posts(search_query, size=search_count)
     if texts:
@@ -649,11 +643,11 @@ elif dataset_source == "Tavily Web Search":
         st.warning("⚠️ Please provide a Tavily API key to enable web search.")
         st.info("💡 Get a free API key from [tavily.com](https://tavily.com)")
 
-# elif dataset_source == "Wikipedia (Free)":
- #   with st.spinner("Searching Wikipedia..."):
- #       texts = get_wikipedia_results(search_query, size=search_count)
-  #  if texts:
-  #      st.session_state.data_collected = True
+elif dataset_source == "Wikipedia (Free)":
+    with st.spinner("Searching Wikipedia..."):
+        texts = get_wikipedia_results(search_query, size=search_count)
+    if texts:
+        st.session_state.data_collected = True
 
 elif dataset_source == "Hacker News (Free)":
     with st.spinner("Searching Hacker News..."):
@@ -716,19 +710,6 @@ elif dataset_source == "FullFact (local JSON)":
             texts = df_fullfact['claim'].tolist() if 'claim' in df_fullfact.columns else []
         except Exception as e:
             st.error(f"Failed to read FullFact JSON: {e}")
-
-# Additional analysis: Misinformation rate and sentiment analysis
-    if texts:
-        st.markdown("### Misinformation Analysis")
-        
-        # Clean texts for better analysis first
-        try:
-            cleaned_texts = [clean_text_for_analysis(text) for text in texts]
-            cleaned_texts = [text for text in cleaned_texts if text]  # Remove empty texts
-        except Exception as e:
-            st.error(f"Error during text cleaning: {e}")
-            cleaned_texts = texts  # Fallback to original texts
-        
 if texts:
     misinformation_results = detect_misinformation(texts[:10])
     st.markdown("### Misinformation Detection")
@@ -805,7 +786,6 @@ if texts:
 
 else:
     st.info("No text data loaded from selected dataset.")
-
 # =======================
 # AGENT-BASED SIMULATION (unchanged)
 # =======================
@@ -902,6 +882,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
