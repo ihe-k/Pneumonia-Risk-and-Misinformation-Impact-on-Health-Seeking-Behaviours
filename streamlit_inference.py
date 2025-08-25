@@ -194,6 +194,12 @@ def raphael_score_claim(claim_text):
         "confidence": 0.85 if harmful else 0.5
     }
 
+        "checkworthy": True,
+        "harmful": harmful,
+        "needs_citation": True,
+        "confidence": 0.85 if harmful else 0.5
+    }
+
 def get_reddit_posts(query='pneumonia', size=50):
     """Get Reddit posts using Reddit's search API (free, no auth required)"""
     try:
@@ -297,6 +303,7 @@ def get_hackernews_results(query='pneumonia', size=20):
         st.error(f"Error fetching Hacker News results: {e}")
         return []
 
+
 def clean_text_for_analysis(text):
     """Clean text for better sentiment analysis"""
     if not text:
@@ -312,12 +319,13 @@ def get_data_source_info(source):
     """Get information about data sources"""
     info = {
         "Reddit (Free API)": "Real-time Reddit posts and discussions",
-        "Tavily Web Search": "Comprehensive web search results"
+        "Tavily Web Search": "Comprehensive web search results",
         "Wikipedia (Free)": "Academic and factual information",
         "Hacker News (Free)": "Tech community discussions and news",
         "HealthVer (local CSV)": "Health verification CSVs in local 'data' folder",
         "HealthVer (local JSON)": "Health verification dataset",
         "FullFact (local JSON)": "Fact-checking dataset"
+
     }
     return info.get(source, "Unknown source")
 
@@ -900,6 +908,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
