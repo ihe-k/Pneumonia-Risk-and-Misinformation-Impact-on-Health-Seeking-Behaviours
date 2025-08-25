@@ -532,7 +532,7 @@ try:
     st.markdown(f"**✅ Test Accuracy:** {test_acc:.3f}")
 
     # Classification Report
-    st.markdown("### 📊 Classification Report (Test Set)")
+    st.markdown("### Classification Report (Test Set)")
     
     # Get the classification report as a string and parse it
     report_str = classification_report(y_test, y_test_pred, target_names=label_map.keys(), output_dict=True)
@@ -616,7 +616,7 @@ if uploaded_file is not None:
         label = "Pneumonia" if pred == 1 else "Normal"
         st.success(f"Prediction: {label}")
     else:
-        st.warning("Please load the pretrained models first to predict on uploaded images.")
+        st.warning("Please load the pretrained models first to predict uploaded image(s).")
 
 # =======================
 # MISINFORMATION TEXT ANALYSIS (unchanged)
@@ -625,7 +625,13 @@ if uploaded_file is not None:
 st.subheader("2⃣ Misinformation Text Analysis")
 
 texts = []
-if dataset_source == "Reddit (Free API)":
+if dataset_source == "Wikipedia (Free)":
+    with st.spinner("Searching Wikipedia..."):
+        texts = get_wikipedia_results(search_query, size=search_count)
+    if texts:
+        st.session_state.data_collected = True
+
+elif dataset_source == "Reddit (Free API)":
     with st.spinner("Fetching Reddit posts..."):
         texts = get_reddit_posts(search_query, size=search_count)
     if texts:
@@ -641,11 +647,11 @@ elif dataset_source == "Tavily Web Search":
         st.warning("⚠️ Please provide a Tavily API key to enable web search.")
         st.info("💡 Get a free API key from [tavily.com](https://tavily.com)")
 
-elif dataset_source == "Wikipedia (Free)":
-    with st.spinner("Searching Wikipedia..."):
-        texts = get_wikipedia_results(search_query, size=search_count)
-    if texts:
-        st.session_state.data_collected = True
+# elif dataset_source == "Wikipedia (Free)":
+ #   with st.spinner("Searching Wikipedia..."):
+ #       texts = get_wikipedia_results(search_query, size=search_count)
+  #  if texts:
+  #      st.session_state.data_collected = True
 
 elif dataset_source == "Hacker News (Free)":
     with st.spinner("Searching Hacker News..."):
@@ -726,7 +732,7 @@ if texts:
     
     # Additional analysis: Misinformation rate and sentiment analysis
     if texts:
-        st.markdown("### 📊 Misinformation Analysis")
+        st.markdown("### Misinformation Analysis")
         
         # Clean texts for better analysis first
         try:
@@ -763,7 +769,7 @@ if texts:
             sentiment_scores = [TextBlob(text).sentiment.polarity for text in cleaned_texts]
             
             # Sentiment statistics
-            st.markdown("### 📈 Sentiment Statistics")
+            st.markdown("### Sentiment Statistics")
             col1, col2, col3, col4 = st.columns(4)
             with col1:
                 st.metric("😊 Positive", f"{sum(1 for s in sentiment_scores if s > 0)}")
@@ -775,7 +781,7 @@ if texts:
                 st.metric("📊 Mean", f"{np.mean(sentiment_scores):.3f}")
             
             # Show sample texts with their sentiment scores
-            st.markdown("### 📝 Sample Texts with Sentiment Scores")
+            st.markdown("### Sample Texts with Sentiment Scores")
             sample_data = list(zip(cleaned_texts[:5], sentiment_scores[:5]))
             for text, sentiment in sample_data:
                 sentiment_label = "❌ Negative" if sentiment < 0 else "✅ Positive" if sentiment > 0 else "⚪ Neutral"
@@ -797,12 +803,12 @@ st.subheader("3⃣ Agent-Based Misinformation Simulation")
 if simulate_button:
     st.session_state.simulation_run = True
     
-    model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinfo_exposure)
-    for _ in range(30):
+    model = MisinformationModel(num_agents, num_clinicians, 100, 100, misinfo_exposure)
+    for _ in range(300):
         model.step()
 
     df_sim = model.datacollector.get_agent_vars_dataframe()
-    st.write("### 📈 Simulation Results & Analysis")
+    st.write("### Simulation Results & Analysis")
 
     # Reset index for easier plotting
     df_reset = df_sim.reset_index()
@@ -832,7 +838,7 @@ if simulate_button:
     
     # 3. 2D Scatter Plot (converted from 3D)
     if len(df_reset) > 10:
-        st.markdown("### 🎯 2D Relationship Analysis")
+        st.markdown("### Relationship Analysis")
         fig3, (ax3a, ax3b) = plt.subplots(1, 2, figsize=(15, 6))
         
         # First 2D plot: Symptom Severity vs Care Seeking Behavior
@@ -859,7 +865,7 @@ if simulate_button:
         st.pyplot(fig3)
     
     # 4. Summary statistics table
-    st.markdown("### 📋 Simulation Summary Statistics")
+    st.markdown("### Simulation Summary Statistics")
     summary_stats = df_reset[["Symptom Severity", "Care Seeking Behavior", 
                              "Trust in Clinician", "Misinformation Exposure"]].describe()
     st.dataframe(summary_stats.round(3))
@@ -882,3 +888,4 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
