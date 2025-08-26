@@ -883,13 +883,14 @@ def display_simulation_results(df):
     plt.ylabel("Frequency")
     st.pyplot(plt)
 
-    st.dataframe(df)  # Display the full DataFrame
-
 if st.button("Run Simulation"):
     df = run_simulation(num_agents)
+   # if df is not None:
     if df is not None:
+    df = df.reset_index(drop=True)
+    st.dataframe(df)   
         display_simulation_results(df)
-
+   
 # pneumonia_v07.py
 
 
@@ -1059,6 +1060,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
