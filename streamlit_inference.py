@@ -757,6 +757,8 @@ elif dataset_source == "FullFact (local JSON)":
         except Exception as e:
             st.error(f"Failed to read FullFact JSON: {e}")
 
+st.subheader("3⃣ Agent-Based Misinformation Simulation")
+
 if texts:
     misinformation_results = detect_misinformation(texts[:10])
     st.markdown("### Misinformation Detection")
@@ -771,6 +773,7 @@ if texts:
             f"Harmful: {score['harmful']} | "
             f"Confidence: {score['confidence']}"
         )
+
     
     # Additional analysis: Misinformation rate and sentiment analysis
     if texts:
@@ -838,7 +841,7 @@ else:
 # AGENT-BASED SIMULATION (unchanged)
 # =======================
 # Always show the subheader at the end of the page
-st.subheader("3⃣ Agent-Based Misinformation Simulation")
+#st.subheader("3⃣ Agent-Based Misinformation Simulation")
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
@@ -1094,7 +1097,6 @@ class MisinformationModel(Model):
 #    st.info("👆 Use the sidebar controls above to configure and run the agent-based simulation.")
 
 
-
 # =======================
 # FOOTER
 # =======================
@@ -1110,7 +1112,6 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
-
 
 
 
