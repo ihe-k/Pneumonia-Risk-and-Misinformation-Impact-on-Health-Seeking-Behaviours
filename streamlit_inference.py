@@ -817,36 +817,43 @@ else:
 # AGENT-BASED SIMULATION (unchanged)
 # =======================
 # Always show the subheader at the end of the page
+
 st.subheader("3⃣ Agent-Based Misinformation Simulation")
 if 'simulation_results' not in st.session_state:
     st.session_state['simulation_results'] = None  # Initialize to None
 
-# if st.session_state['simulation_results'] is not None:
-   
+# This whole block is now properly indented.
 if 'simulation_results' in st.session_state:
     try:
-    df_results = st.session_state['simulation_results']
-    display_cols = ['symptom_severity', 'care_seeking_behavior', 'trust_in_clinician', 'misinformation_exposure']
-    if not all(col in df_results.columns for col in display_cols):
-        st.error("The simulation results DataFrame does not contain all the required columns.")
+        df_results = st.session_state['simulation_results']
+        display_cols = ['symptom_severity', 'care_seeking_behavior', 'trust_in_clinician', 'misinformation_exposure']
+        if not all(col in df_results.columns for col in display_cols):
+            st.error("The simulation results DataFrame does not contain all the required columns.")
             return  # Exit the function if columns are missing
-
-    df_display = df_results[display_cols]
-    st.subheader("Agent-Based Misinformation Simulation Summary")
-    st.dataframe(df_display)
-
-    plt.figure(figsize=(8, 4))
-    sns.countplot(data=df_display, x='symptom_severity')
-    plt.title("Distribution of Symptom Severity")
-    st.pyplot(plt)  # Display the plot using st.pyplot
-
-except KeyError as e:
-    st.error(f"An error occurred accessing simulation results: {e}")
-except Exception as e:  # Catch other potential errors
+        
+        #  Crucially, the code inside the 'try' block now has correct indentation.
+        df_display = df_results[display_cols]
+        st.subheader("Agent-Based Misinformation Simulation Summary")
+        st.dataframe(df_display)
+    except KeyError as e:
+        st.error(f"Error accessing simulation results: {e}")
+    except Exception as e:
         st.error(f"An unexpected error occurred: {e}")
-else:
-    st.info("No simulation results available.")  # Informative message
 
+if 'simulation_results' in st.session_state:
+    try:
+        df_results = st.session_state['simulation_results']
+        display_cols = ['symptom_severity', 'care_seeking_behavior', 'trust_in_clinician', 'misinformation_exposure']
+        if not all(col in df_results.columns for col in display_cols):
+            st.error("The simulation results DataFrame does not contain all the required columns.")
+            return  # Exit the function if columns are missing
+        # ... (rest of the code to display or process the DataFrame)
+        # e.g., st.dataframe(df_results)
+        # or other processing/display logic
+    except KeyError:  # Handle the case where 'simulation_results' is not found
+        st.error("Simulation results not found.")
+        return  # or handle in a different way
+        
     st.write("Sample data from simulation:")
     st.dataframe(df.head())
 
@@ -1023,6 +1030,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
