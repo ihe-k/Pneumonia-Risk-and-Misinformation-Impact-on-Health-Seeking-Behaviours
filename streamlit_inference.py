@@ -518,10 +518,6 @@ with col1:
         except Exception as e:
             st.error(f"An error occurred: {e}")
 
-    # Run for 30 steps
-    for _ in range(30):
-        model.step()
-
     # Save results in session state
     df = model.datacollector.get_agent_vars_dataframe()
     st.session_state['simulation_results'] = df
@@ -1118,6 +1114,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
