@@ -7,10 +7,9 @@ This project integrates AI (machine learning methods such as logistic regression
 
 ### 1. Data Collection
 * Chest X-ray Dataset from Kaggle
-* Social Media Data via Twitter scraping (SNScrape or Tweepy) and Reddit
+* Social Media Data via Reddit
 * Wikipedia
 * HealthVer dataset
-* News Articles via NewsAPI.org
 
 ### 2. Misinformation Detection Using NLP
 * Uses TextBlob for sentiment and subjectivity scoring
