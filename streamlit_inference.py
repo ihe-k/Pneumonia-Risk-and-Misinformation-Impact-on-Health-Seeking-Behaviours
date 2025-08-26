@@ -510,7 +510,7 @@ if 'simulation_results' in st.session_state:
 
     # Plot distribution of 'symptom_severity'
     plt.figure(figsize=(8,4))
-    sns.countplot(data=df, x='symptom severity')
+    sns.countplot(data=df, x='symptom_severity')
     plt.title("Distribution of Symptom Severity")
     st.pyplot()
 
@@ -1017,6 +1017,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
