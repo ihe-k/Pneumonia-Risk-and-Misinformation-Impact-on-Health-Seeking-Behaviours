@@ -49,7 +49,6 @@ from mesa.space import MultiGrid
 from mesa.datacollection import DataCollector
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-
 # =======================
 # 1) MODEL LOADING (replaces training functionality)
 # =======================
@@ -481,7 +480,7 @@ uploaded_file = st.sidebar.file_uploader("Upload Chest X-Ray Image", type=["jpg"
 num_agents = st.sidebar.slider("Number of Patient Agents", 5, 200, 50)
 num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 3)
 misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.5, 0.05)
-# simulate_button = st.sidebar.button("Run Simulation")
+simulate_button = st.sidebar.button("Run Simulation")
 # Place in sidebar
 
 width = 200  # Set width for layout
@@ -506,16 +505,6 @@ with col1:
             st.success("Simulation completed!")
         except Exception as e:
             st.error(f"An error occurred: {e}")
-
-if simulate_button:
-    # Instantiate the model
-    model = MisinformationModel(
-        num_patients=num_agents,
-        num_clinicians=num_clinicians,
-        width=10,
-        height=10,
-        misinformation_exposure=misinfo_exposure
-    )
 
     # Run for 30 steps
     for _ in range(30):
@@ -1117,6 +1106,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
