@@ -18,6 +18,11 @@ import re
 from PIL import Image
 from urllib.parse import quote_plus
 import joblib
+from mesa import Agent, Model
+from mesa.time import RandomActivation
+from mesa.space import MultiGrid
+from mesa.datacollection import DataCollector
+import random
 
 # Resolve default model directories relative to this script
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -818,52 +823,59 @@ else:
 # =======================
 # Always show the subheader at the end of the page
 
-st.subheader("3⃣ Agent-Based Misinformation Simulation")
-if 'simulation_results' not in st.session_state:
-    st.session_state['simulation_results'] = None  # Initialize to None
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# This whole block is now properly indented.
-if 'simulation_results' in st.session_state:
-    try:
-        df_results = st.session_state['simulation_results']
-        display_cols = ['symptom_severity', 'care_seeking_behavior', 'trust_in_clinician', 'misinformation_exposure']
-        if not all(col in df_results.columns for col in display_cols):
-            st.error("The simulation results DataFrame does not contain all the required columns.")
-            return  # Exit the function if columns are missing
+
+def run_simulation(num_agents):
+    """Simulates data for pneumonia model.
+
+    Args:
+        num_agents: The number of agents to simulate.
+
+    Returns:
+        pandas.DataFrame: A DataFrame containing the simulated data.
+        Returns None if input validation fails.
+    """
+    
+    # Input Validation
+    if not isinstance(num_agents, int) or num_agents <= 0:
+        st.error("Invalid input: 'num_agents' must be a positive integer.")
+        return None
+
+    data = {
+        'symptom_severity': np.random.randint(1, 4, num_agents),  # 1-3 severity
+        'care_seeking_behavior': np.random.choice(['yes', 'no'], num_agents),
+        'trust_in_clinician': np.random.rand(num_agents),  # 0-1 trust level
+        'misinformation_exposure': np.random.randint(0, 3, num_agents), # 0-2 exposure level
+        'age': np.random.randint(20, 61, num_agents),  # Example adding an age column
+        'location': np.random.choice(['Rural', 'Suburban', 'Urban'], num_agents)  # Example adding a location column
+    }
+    df = pd.DataFrame(data)
+    return df
+
+
+def display_simulation_results(df):
+    """Displays the simulation results in a user-friendly format using Streamlit.
+
+    Args:
+        df: The DataFrame containing the simulation results.
+    """
+    if df is None:
+        return  # Handle the case where run_simulation returned None
+
+
+    st.header("Simulation Results")
+
+    st.dataframe(df)  # Display the full DataFrame
+
+if st.button("Run Simulation"):
+    df = run_simulation(num_agents)
+    if df is not None:
+        display_simulation_results(df)
         
-        #  Crucially, the code inside the 'try' block now has correct indentation.
-        df_display = df_results[display_cols]
-        st.subheader("Agent-Based Misinformation Simulation Summary")
-        st.dataframe(df_display)
-    except KeyError as e:
-        st.error(f"Error accessing simulation results: {e}")
-    except Exception as e:
-        st.error(f"An unexpected error occurred: {e}")
-
-if 'simulation_results' in st.session_state:
-    try:
-        df_results = st.session_state['simulation_results']
-        display_cols = ['symptom_severity', 'care_seeking_behavior', 'trust_in_clinician', 'misinformation_exposure']
-        if not all(col in df_results.columns for col in display_cols):
-            st.error("The simulation results DataFrame does not contain all the required columns.")
-            return  # Exit the function if columns are missing
-        # ... (rest of the code to display or process the DataFrame)
-        # e.g., st.dataframe(df_results)
-        # or other processing/display logic
-    except KeyError:  # Handle the case where 'simulation_results' is not found
-        st.error("Simulation results not found.")
-        return  # or handle in a different way
-        
-    st.write("Sample data from simulation:")
-    st.dataframe(df.head())
-
 # pneumonia_v07.py
 
-from mesa import Agent, Model
-from mesa.time import RandomActivation
-from mesa.space import MultiGrid
-from mesa.datacollection import DataCollector
-import random
+
 
 # Define Patient agent
 class Patient(Agent):
@@ -1030,6 +1042,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
