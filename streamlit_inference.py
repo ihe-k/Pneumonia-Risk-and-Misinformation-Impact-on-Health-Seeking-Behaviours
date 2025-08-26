@@ -501,8 +501,6 @@ if simulate_button:
 if 'simulation_results' in st.session_state:
     df = st.session_state['simulation_results']
     # Example: show first few rows
-    st.write("Sample data from simulation:")
-    st.dataframe(df.head())
 
     # Example plot: distribution of 'Symptom Severity'
     import seaborn as sns
@@ -831,7 +829,7 @@ else:
 # =======================
 # Always show the subheader at the end of the page
 #st.subheader("3⃣ Agent-Based Misinformation Simulation")
-
+    
 if 'simulation_results' in st.session_state:
     df_results = st.session_state['simulation_results']
     display_cols = ['symptom_severity', 'care_seeking_behavior', 'trust_in_clinician', 'misinformation_exposure']
@@ -843,7 +841,10 @@ if 'simulation_results' in st.session_state:
     sns.countplot(data=df_display, x='symptom_severity')
     plt.title("Distribution of Symptom Severity")
     st.pyplot()
-    
+
+    st.write("Sample data from simulation:")
+    st.dataframe(df.head())
+
 # pneumonia_v07.py
 
 from mesa import Agent, Model
@@ -1017,6 +1018,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
