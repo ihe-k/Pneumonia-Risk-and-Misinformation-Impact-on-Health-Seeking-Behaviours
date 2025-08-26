@@ -480,8 +480,13 @@ uploaded_file = st.sidebar.file_uploader("Upload Chest X-Ray Image", type=["jpg"
 num_agents = st.sidebar.slider("Number of Patient Agents", 5, 200, 50)
 num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 3)
 misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.5, 0.05)
-simulate_button = st.sidebar.button("Run Simulation")
+# simulate_button = st.sidebar.button("Run Simulation")
 # Place in sidebar
+
+if 'num_agents' not in st.session_state:
+    st.session_state['num_agents'] = num_agents
+    st.session_state['num_clinicians'] = num_clinicians
+    st.session_state['misinfo_exposure'] = misinfo_exposure
 
 width = 200  # Set width for layout
 
@@ -491,12 +496,19 @@ with col1:
     if st.sidebar.button("Run Simulation", width=width):
     # Run simulation code here
         try:
+            # Update session state with new values
+            st.session_state['num_agents'] = num_agents
+            st.session_state['num_clinicians'] = num_clinicians
+            st.session_state['misinfo_exposure'] = misinfo_exposure
+
             model = MisinformationModel(
                 num_patients=st.session_state['num_agents'],
-                num_clinicians=3,   # or another control if you want
+                #num_patients=num_patients,
+                num_clinicians=st.session_state['num_clinicians'],   # or another control if you want
+                misinformation_exposure=st.session_state['misinfo_exposure']
                 width=10,
                 height=10,
-                misinformation_exposure=misinfo_exposure
+                
             )
             for _ in range(30):
                 model.step()
@@ -1106,6 +1118,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
