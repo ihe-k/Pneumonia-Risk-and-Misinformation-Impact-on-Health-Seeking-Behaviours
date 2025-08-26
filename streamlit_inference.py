@@ -519,11 +519,13 @@ with col1:
             st.error(f"An error occurred: {e}")
 
     # Save results in session state
-    df = model.datacollector.get_agent_vars_dataframe()
-    st.session_state['simulation_results'] = df
+        if 'model' in locals():
+            df = model.datacollector.get_agent_vars_dataframe()
+            st.session_state['simulation_results'] = df
 
-    st.success("Simulation completed!")
-
+            st.success("Simulation completed!")
+        else:
+            st.error("Model was not initialized successfully.")
 
 
 
@@ -1114,6 +1116,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
