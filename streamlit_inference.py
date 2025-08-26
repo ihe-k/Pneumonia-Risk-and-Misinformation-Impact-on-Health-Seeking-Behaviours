@@ -932,7 +932,7 @@ def main():
             st.pyplot(fig)
             plt.close(fig)
     
-    display_simulation_results(df)
+            display_simulation_results(df)
 
 
 # pneumonia_v07.py
@@ -1103,6 +1103,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
