@@ -481,7 +481,7 @@ uploaded_file = st.sidebar.file_uploader("Upload Chest X-Ray Image", type=["jpg"
 num_agents = st.sidebar.slider("Number of Patient Agents", 5, 200, 50)
 num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 3)
 misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.5, 0.05)
-simulate_button = st.sidebar.button("Run Simulation")
+# simulate_button = st.sidebar.button("Run Simulation")
 # Place in sidebar
 
 width = 200  # Set width for layout
@@ -489,8 +489,6 @@ width = 200  # Set width for layout
 col1, col2 = st.columns(2)  # Create two columns
 
 with col1:
-
-# st.sidebar.header("Agent-Based Simulation")
     if st.sidebar.button("Run Simulation", width=width):
     # Run simulation code here
         try:
@@ -836,13 +834,12 @@ if texts:
             with col4:
                 st.metric("📊 Mean", f"{np.mean(sentiment_scores):.3f}")
 
-            st.subheader("3⃣ Agent-Based Misinformation Simulation")
-
             # Show sample texts with their sentiment scores
             st.markdown("### 📝 Sample Texts with Sentiment Scores")
             sample_data = list(zip(cleaned_texts[:5], sentiment_scores[:5]))
             for text, sentiment in sample_data:
                 sentiment_label = "❌ Negative" if sentiment < 0 else "✅ Positive" if sentiment > 0 else "⚪ Neutral"
+                st.subheader("3⃣ Agent-Based Misinformation Simulation")
                 st.write(f"{sentiment_label} ({sentiment:.2f}): {text[:150]}...")
             
 
@@ -854,7 +851,7 @@ else:
 # AGENT-BASED SIMULATION (unchanged)
 # =======================
 # Always show the subheader at the end of the page
-#st.subheader("3⃣ Agent-Based Misinformation Simulation")
+
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
@@ -1113,6 +1110,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
