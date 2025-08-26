@@ -471,10 +471,10 @@ model_choice = st.sidebar.radio("Choose X-ray Model for Prediction", ("Logistic 
 uploaded_file = st.sidebar.file_uploader("Upload Chest X-Ray Image", type=["jpg", "jpeg", "png"])
 
 # Agent-Based Simulation Controls (unchanged)
-num_agents = st.sidebar.slider("Number of Patient Agents", 5, 100, 10)
-num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 3)
-misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.5, 0.05)
-simulate_button = st.sidebar.button("Run Agent-Based Simulation")
+num_agents = st.sidebar.slider("Number of Patient Agents", 5, 100, 10, key="num_agents_slider")
+num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 3,key="num_clinicians_slider")
+misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.5, 0.05,, key="misinfo_slider")
+simulate_button = st.sidebar.button("Run Agent-Based Simulation_3")
 
 # ===============================
 # 6. HealthVer Dataset Evaluation (unchanged)
@@ -889,3 +889,4 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
