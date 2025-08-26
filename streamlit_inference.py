@@ -471,7 +471,7 @@ model_choice = st.sidebar.radio("Choose X-ray Model for Prediction", ("Logistic 
 uploaded_file = st.sidebar.file_uploader("Upload Chest X-Ray Image", type=["jpg", "jpeg", "png"])
 
 # Agent-Based Simulation Controls (unchanged)
-num_agents = st.sidebar.slider("Number of Patient Agents", 5, 100, 10)
+num_agents = st.sidebar.slider("Number of Patient Agents", 5, 200, 50)
 num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 3)
 misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.5, 0.05)
 simulate_button = st.sidebar.button("Run Agent-Based Simulation")
@@ -802,6 +802,7 @@ if simulate_button:
         model.step()
 
     df_sim = model.datacollector.get_agent_vars_dataframe()
+    st.write(f"Total data points collected: {len(df_sim)}")
     st.write("### 📈 Simulation Results & Analysis")
 
     # Reset index for easier plotting
@@ -819,10 +820,10 @@ if simulate_button:
             y="Care Seeking Behavior",
             hue="Trust in Clinician",
             size="Misinformation Exposure",
-            alpha=0.7,
+            alpha=0.5,
             ax=ax1,
             palette="coolwarm",
-            sizes=(20, 200)
+            sizes=(2, 200)
         )
         ax1.set_title("Impact of Misinformation & Trust on Care-Seeking")
         ax1.set_xlabel("Symptom Severity")
@@ -884,6 +885,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
