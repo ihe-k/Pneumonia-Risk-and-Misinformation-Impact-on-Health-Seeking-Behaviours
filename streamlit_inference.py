@@ -885,12 +885,18 @@ def display_simulation_results(df):
 
 if st.button("Run Simulation"):
     df = run_simulation(num_agents)
-   # if df is not None:
     if df is not None:
-    df = df.reset_index(drop=True)
-    st.dataframe(df)   
+        df = df.reset_index(drop=True)
+        st.dataframe(df)
         display_simulation_results(df)
-   
+
+        if 'df' in locals() and not df.empty:
+            fig, ax = plt.subplots()
+            sns.histplot(df['age'], kde=True, ax=ax)
+            st.pyplot(fig)
+            plt.close(fig)
+
+    display_simulation_results(df)
 # pneumonia_v07.py
 
 
@@ -1060,6 +1066,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
