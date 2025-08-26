@@ -481,8 +481,9 @@ uploaded_file = st.sidebar.file_uploader("Upload Chest X-Ray Image", type=["jpg"
 num_agents = st.sidebar.slider("Number of Patient Agents", 5, 200, 50)
 num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 3)
 misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.5, 0.05)
-# simulate_button = st.sidebar.button("Run Agent-Based Simulation")
+simulate_button = st.sidebar.button("Run Simulation")
 # Place in sidebar
+
 st.sidebar.header("Agent-Based Simulation")
 if st.sidebar.button("Run Agent-Based Simulation"):
     # Run your simulation code here
@@ -1112,6 +1113,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
