@@ -886,7 +886,7 @@ def display_simulation_results(df):
         return  # Handle the case where run_simulation returned None
 
 
-    st.header("Simulation Results")
+    # st.header("Simulation Results")
 
     # st.dataframe(df)  # Display the full DataFrame
 
@@ -927,7 +927,7 @@ def main():
     num_agents = st.number_input("Enter the number of agents:", min_value=1, value=100, step=1)
     
         if 'df' in locals() and not df.empty:
- #           fig, ax = plt.subplots()
+            fig, ax = plt.subplots()
             sns.histplot(df['age'], kde=True, ax=ax)
             st.pyplot(fig)
             plt.close(fig)
@@ -1103,6 +1103,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
