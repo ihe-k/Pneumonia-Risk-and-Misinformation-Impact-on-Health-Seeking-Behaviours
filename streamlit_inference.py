@@ -407,9 +407,9 @@ st.markdown("""
     <p style="color: white; opacity: 0.95;">This comprehensive tool combines:</p>
     <ul style="color: white; opacity: 0.9;">
         <li><strong>🔬 AI-Powered X-ray Analysis:</strong> Advanced pneumonia detection using pretrained ML models</li>
-        <li><strong>🌐 Multi-Source Data Collection:</strong> Real-time analysis from Reddit, Wikipedia, Hacker News and more</li>
-        <li><strong>📈 Advanced Analytics:</strong> Sentiment analysis, misinformation detection, and interactive visualisations</li>
-        <li><strong>🎯 Agent-Based Simulation:</strong> Model the impact of misinformation on healthcare behaviour</li>
+        <li><strong>🌐 Multi-Source Data Collection:</strong> Real-time analysis from Reddit, Wikipedia, Hacker News, and more</li>
+        <li><strong>📈 Advanced Analytics:</strong> Sentiment analysis, misinformation detection, and interactive visualizations</li>
+        <li><strong>🎯 Agent-Based Simulation:</strong> Model the impact of misinformation on healthcare behavior</li>
     </ul>
 </div>
 """, unsafe_allow_html=True)
@@ -471,10 +471,10 @@ model_choice = st.sidebar.radio("Choose X-ray Model for Prediction", ("Logistic 
 uploaded_file = st.sidebar.file_uploader("Upload Chest X-Ray Image", type=["jpg", "jpeg", "png"])
 
 # Agent-Based Simulation Controls (unchanged)
-num_agents = st.sidebar.slider("Number of Patient Agents", 5, 100, 10, key="num_agents_slider")
-num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 3,key="num_clinicians_slider")
-misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.5, 0.05,, key="misinfo_slider")
-simulate_button = st.sidebar.button("Run Agent-Based Simulation_3")
+num_agents = st.sidebar.slider("Number of Patient Agents", 5, 100, 10)
+num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 3)
+misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.5, 0.05)
+simulate_button = st.sidebar.button("Run Agent-Based Simulation")
 
 # ===============================
 # 6. HealthVer Dataset Evaluation (unchanged)
@@ -793,13 +793,6 @@ else:
 # Always show the subheader at the end of the page
 st.subheader("3⃣ Agent-Based Misinformation Simulation")
 
-
-# Sidebar inputs (MUST be defined before button is pressed)
-num_agents = st.sidebar.slider("Number of Patient Agents", 5, 100, 10)
-num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 5)
-misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.3, 0.05)
-
-
 # Show simulation results only when button is clicked
 if simulate_button:
     st.session_state.simulation_run = True
@@ -885,8 +878,10 @@ st.markdown(
     - Real Chest X-ray pneumonia classification with pretrained Logistic Regression and XGBoost models
     - Multi-source misinformation detection: Reddit (free API), Tavily web search, Wikipedia, Hacker News, HealthVer, FullFact
     - RAPHAEL-style claim scoring for health claims with sentiment analysis
-    - Agent-based simulation modelling misinformation's impact on care-seeking behaviour, with clinician interaction
-    - Advanced visualisations: sentiment distributions, misinformation rates, and simulation trends
+    - Agent-based simulation modeling misinformation's impact on care-seeking behavior, with clinician interaction
+    - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
+
 
