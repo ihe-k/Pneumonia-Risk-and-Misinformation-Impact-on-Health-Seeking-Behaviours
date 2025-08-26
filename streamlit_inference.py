@@ -481,7 +481,23 @@ uploaded_file = st.sidebar.file_uploader("Upload Chest X-Ray Image", type=["jpg"
 num_agents = st.sidebar.slider("Number of Patient Agents", 5, 200, 50)
 num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 3)
 misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.5, 0.05)
-simulate_button = st.sidebar.button("Run Agent-Based Simulation")
+# simulate_button = st.sidebar.button("Run Agent-Based Simulation")
+# Place in sidebar
+st.sidebar.header("Agent-Based Simulation")
+if st.sidebar.button("Run Agent-Based Simulation"):
+    # Run your simulation code here
+    model = MisinformationModel(
+        num_patients=st.session_state['num_agents'],
+        num_clinicians=3,   # or another control if you want
+        width=10,
+        height=10,
+        misinformation_exposure=misinfo_exposure
+    )
+    for _ in range(30):
+        model.step()
+    df = model.datacollector.get_agent_vars_dataframe()
+    st.session_state['simulation_results'] = df
+    st.success("Simulation completed!")
 
 if simulate_button:
     # Instantiate the model
@@ -876,12 +892,12 @@ def display_simulation_results(df):
     st.bar_chart(care_seeking_counts)
     
     # Add more visualisations as needed (e.g., histograms, box plots)
-    st.subheader("Age Distribution")
-    plt.figure(figsize=(8, 6))
-    sns.histplot(df['age'], kde=True)
-    plt.xlabel("Age")
-    plt.ylabel("Frequency")
-    st.pyplot(plt)
+#    st.subheader("Age Distribution")
+ #   plt.figure(figsize=(8, 6))
+#    sns.histplot(df['age'], kde=True)
+#    plt.xlabel("Age")
+#    plt.ylabel("Frequency")
+ #   st.pyplot(plt)
 
 # Input for number of agents
 num_agents = st.number_input("Number of agents", min_value=1, max_value=1000, value=100)
@@ -890,7 +906,7 @@ if st.button("Run Simulation"):
     df = run_simulation(num_agents)
     if df is not None:
         df = df.reset_index(drop=True)
-        df.index += 1  # Shift index to start at 1
+        df.index + 1  # Shift index to start at 1
         st.dataframe(df)
         display_simulation_results(df)
  
@@ -1094,6 +1110,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
