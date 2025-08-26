@@ -476,6 +476,27 @@ num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 3)
 misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.5, 0.05)
 simulate_button = st.sidebar.button("Run Agent-Based Simulation")
 
+# Instantiate the model
+model = MisinformationModel(
+    num_patients=num_agents,
+    num_clinicians=num_clinicians,
+    width=10,
+    height=10,
+    misinformation_exposure=misinfo_exposure
+)
+
+# Run for 30 steps
+for _ in range(30):
+    model.step()
+
+# Save results for visualization
+df = model.datacollector.get_agent_vars_dataframe()
+st.session_state['simulation_results'] = df
+
+# Show sample data immediately
+st.write("Simulation complete! Here are some data points:")
+st.dataframe(df.head())
+
 # ===============================
 # 6. HealthVer Dataset Evaluation (unchanged)
 # ===============================
@@ -792,109 +813,77 @@ else:
 
 # pneumonia_v07.py
 
-import streamlit as st
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-try:
-    import plotly.express as px
-    import plotly.graph_objects as go
-    PLOTLY_AVAILABLE = True
-except ImportError:
-    PLOTLY_AVAILABLE = False
+from mesa import Agent, Model
+from mesa.time import RandomActivation
+from mesa.space import MultiGrid
+from mesa.datacollection import DataCollector
 import random
-import requests
-import os
-import re
-from PIL import Image
-from urllib.parse import quote_plus
-import joblib
 
-# Resolve default model directories relative to this script
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-DEFAULT_MODEL_DIR = os.path.join(SCRIPT_DIR, "saved_trained_model")
+# Define Patient agent
+class Patient(Agent):
+    def __init__(self, unique_id, model, misinformation_score=0.5):
+        super().__init__(unique_id, model)
+        self.symptom_severity = random.choice([0, 1])
+        self.trust_in_clinician = 0.5
+        self.misinformation_exposure = misinformation_score
+        self.care_seeking_behavior = 0.5
 
+    def step(self):
+        # Example behavior logic
+        if self.misinformation_exposure > 0.7 and random.random() < 0.4:
+            self.symptom_severity = 0
+        elif self.trust_in_clinician > 0.8:
+            self.symptom_severity = 1
+        if self.misinformation_exposure > 0.7:
+            self.care_seeking_behavior = max(0, self.care_seeking_behavior - 0.3)
+        elif self.symptom_severity == 1 and self.trust_in_clinician > 0.5:
+            self.care_seeking_behavior = min(1, self.care_seeking_behavior + 0.5)
 
-# --- Your MisinformationModel class and other imports ---
-class MisinformationModel:
-    def __init__(self, model_path=None):
-        if model_path is None:
-            model_path = os.path.join(DEFAULT_MODEL_DIR, "model.pkl")  # Default model path
-        try:
-            self.model = joblib.load(model_path)
-            self.model_loaded = True
-        except FileNotFoundError:
-            st.error(f"Model file not found at {model_path}. Please train the model.")
-            self.model_loaded = False
-        except Exception as e:
-            st.error(f"Error loading model: {e}")
-            self.model_loaded = False
+# Define Clinician agent
+class Clinician(Agent):
+    def __init__(self, unique_id, model):
+        super().__init__(unique_id, model)
 
-    def predict(self, input_data):
-        if self.model_loaded:
-            try:
-                prediction = self.model.predict(input_data)
-                return prediction
-            except Exception as e:
-                st.error(f"Error during prediction: {e}")
-                return None
-        else:
-            return None
+    def step(self):
+        # Example behavior: increase trust for patients in same cell
+        cellmates = self.model.grid.get_cell_list_contents([self.pos])
+        patients_here = [agent for agent in cellmates if isinstance(agent, Patient)]
+        for patient in patients_here:
+            patient.trust_in_clinician = min(1.0, patient.trust_in_clinician + 0.1)
+            if patient.misinformation_exposure > 0:
+                patient.misinformation_exposure = max(0, patient.misinformation_exposure - 0.05)
 
+# Define the MisinformationModel
+class MisinformationModel(Model):
+    def __init__(self, num_patients, num_clinicians, width, height, misinformation_exposure):
+        self.grid = MultiGrid(width, height, torus=True)
+        self.schedule = RandomActivation(self)
+        self.datacollector = DataCollector(
+            agent_reporters={
+                "Symptom Severity": "symptom_severity",
+                "Care Seeking Behavior": "care_seeking_behavior",
+                "Trust in Clinician": "trust_in_clinician",
+                "Misinformation Exposure": "misinformation_exposure"
+            }
+        )
 
-# Loading data, handling user input....
+        # Create patient agents
+        for i in range(num_patients):
+            patient = Patient(i, self, misinformation_exposure)
+            self.schedule.add(patient)
+            x, y = self.random.randrange(width), self.random.randrange(height)
+            self.grid.place_agent(patient, (x, y))
 
-# Initialize simulation state (outside the if block)
-if 'simulation_run' not in st.session_state:
-    st.session_state.simulation_run = False
-    st.session_state.simulation_results = None  # Store results here
+        # Create clinician agents
+        for i in range(num_patients, num_patients + num_clinicians):
+            clinician = Clinician(i, self)
+            self.schedule.add(clinician)
+            x, y = self.random.randrange(width), self.random.randrange(height)
+            self.grid.place_agent(clinician, (x, y))
 
-# Always show the subheader at the end of the page
-st.subheader("3⃣ Agent-Based Misinformation Simulation")
-
-# Input parameters (same as before)
-num_agents = st.number_input("Number of agents", value=100, min_value=10)
-num_clinicians = st.number_input("Number of clinicians", value=20, min_value=5)
-misinfo_exposure = st.slider("Misinformation exposure level", 0.0, 1.0, 0.5)
-
-simulate_button = st.button("Run Simulation")
-
-if simulate_button:
-    st.session_state.simulation_run = True
-    
-    model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinfo_exposure)
-    for _ in range(30):
-        model.step()
-
-    df_sim = model.datacollector.get_agent_vars_dataframe()
-    # Crucial: Sample only if there's data
-    if len(df_sim) > 0:
-        sample_df = df_sim.sample(n=min(500, len(df_sim)))  # Sample up to 500
-        st.write(f"Number of data points for plotting: {len(sample_df)}")
-        st.write(f"Total data points collected: {len(df_sim)}")
-        st.write("### 📈 Simulation Results & Analysis")
-
-        # Display relevant data (example)
-        st.write("Agent Belief Distribution:")
-        belief_dist = sample_df['belief'].value_counts(normalize=True).sort_index()
-        st.bar_chart(belief_dist)
-        # Add more visualizations as needed (e.g., clinician influence)
-
-        # Store results for later use (important!)
-        st.session_state.simulation_results = df_sim
-    else:
-        st.warning("No data collected for plotting.  Check your model and parameters.")
-
-
-
-# Display previous results if simulation has run
-if st.session_state.simulation_run:
-    if st.session_state.simulation_results is not None:
-        # Option to show all data (or another subset)
-        st.dataframe(st.session_state.simulation_results.head(100)) # Example: Show first 100 rows
-        # ... add more visualisation/analysis here using st.session_state.simulation_results ...
-    
+    def step(self):
+        self.datacollector.collect(self)
+        self.schedule.step()
 
 
 #####
@@ -995,6 +984,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
