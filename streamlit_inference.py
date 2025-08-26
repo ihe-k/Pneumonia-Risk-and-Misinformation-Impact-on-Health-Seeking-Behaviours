@@ -923,7 +923,7 @@ if st.button("Run Simulation"):
         df = df.reset_index(drop=True)
         df.index + 1  # Shift index to start at 1
         st.dataframe(df)
-display_simulation_results(df)
+    display_simulation_results(df)
  
         df = pd.DataFrame(data)
     
@@ -1112,6 +1112,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
