@@ -484,9 +484,9 @@ misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.
 simulate_button = st.sidebar.button("Run Simulation")
 # Place in sidebar
 
-st.sidebar.header("Agent-Based Simulation")
-if st.sidebar.button("Run Agent-Based Simulation"):
-    # Run your simulation code here
+# st.sidebar.header("Agent-Based Simulation")
+if st.sidebar.button("Run Simulation"):
+    # Run simulation code here
     model = MisinformationModel(
         num_patients=st.session_state['num_agents'],
         num_clinicians=3,   # or another control if you want
@@ -1129,6 +1129,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
