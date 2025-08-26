@@ -510,7 +510,7 @@ if 'simulation_results' in st.session_state:
 
     # Plot distribution of 'symptom_severity'
     plt.figure(figsize=(8,4))
-    sns.countplot(data=df, x='symptom_severity')
+    sns.countplot(data=df, x='symptom severity')
     plt.title("Distribution of Symptom Severity")
     st.pyplot()
 
@@ -830,8 +830,20 @@ else:
 # AGENT-BASED SIMULATION (unchanged)
 # =======================
 # Always show the subheader at the end of the page
-st.subheader("3⃣ Agent-Based Misinformation Simulation")
+#st.subheader("3⃣ Agent-Based Misinformation Simulation")
 
+if 'simulation_results' in st.session_state:
+    df_results = st.session_state['simulation_results']
+    display_cols = ['symptom_severity', 'care_seeking_behavior', 'trust_in_clinician', 'misinformation_exposure']
+    df_display = df_results[display_cols]
+    st.subheader("Agent-Based Misinformation Simulation Summary")
+    st.dataframe(df_display)
+
+    plt.figure(figsize=(8,4))
+    sns.countplot(data=df_display, x='symptom_severity')
+    plt.title("Distribution of Symptom Severity")
+    st.pyplot()
+    
 # pneumonia_v07.py
 
 from mesa import Agent, Model
@@ -1005,6 +1017,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
