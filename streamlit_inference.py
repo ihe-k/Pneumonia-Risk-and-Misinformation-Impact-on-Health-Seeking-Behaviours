@@ -484,21 +484,30 @@ misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.
 simulate_button = st.sidebar.button("Run Simulation")
 # Place in sidebar
 
+width = 200  # Set width for layout
+
+col1, col2 = st.columns(2)  # Create two columns
+
+with col1:
+
 # st.sidebar.header("Agent-Based Simulation")
-if st.sidebar.button("Run Simulation"):
+    if st.sidebar.button("Run Simulation", width=width):
     # Run simulation code here
-    model = MisinformationModel(
-        num_patients=st.session_state['num_agents'],
-        num_clinicians=3,   # or another control if you want
-        width=10,
-        height=10,
-        misinformation_exposure=misinfo_exposure
-    )
-    for _ in range(30):
-        model.step()
-    df = model.datacollector.get_agent_vars_dataframe()
-    st.session_state['simulation_results'] = df
-    st.success("Simulation completed!")
+        try:
+            model = MisinformationModel(
+                num_patients=st.session_state['num_agents'],
+                num_clinicians=3,   # or another control if you want
+                width=10,
+                height=10,
+                misinformation_exposure=misinfo_exposure
+            )
+            for _ in range(30):
+                model.step()
+            df = model.datacollector.get_agent_vars_dataframe()
+            st.session_state['simulation_results'] = df
+            st.success("Simulation completed!")
+        except Exception as e:
+            st.error(f"An error occurred: {e}")
 
 if simulate_button:
     # Instantiate the model
@@ -701,6 +710,7 @@ elif dataset_source == "Hacker News (Free)":
         texts = get_hackernews_results(search_query, size=search_count)
     if texts:
         st.session_state.data_collected = True
+        
 
 elif dataset_source == "HealthVer (local CSV)":
     # Controls for local CSV usage
@@ -1103,6 +1113,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
