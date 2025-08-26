@@ -802,7 +802,6 @@ if texts:
             else:
                 st.metric("💬 Misinformation Rate", "N/A")
 
-st.subheader("3⃣ Agent-Based Misinformation Simulation")
         
         # Show cleaning results
         if len(cleaned_texts) != len(texts):
@@ -813,6 +812,7 @@ st.subheader("3⃣ Agent-Based Misinformation Simulation")
         else:
             # Sentiment distribution
             sentiment_scores = [TextBlob(text).sentiment.polarity for text in cleaned_texts]
+
             
             # Sentiment statistics
             st.markdown("### 📈 Sentiment Statistics")
@@ -825,7 +825,9 @@ st.subheader("3⃣ Agent-Based Misinformation Simulation")
                 st.metric("😞 Negative", f"{sum(1 for s in sentiment_scores if s < 0)}")
             with col4:
                 st.metric("📊 Mean", f"{np.mean(sentiment_scores):.3f}")
-            
+
+st.subheader("3⃣ Agent-Based Misinformation Simulation")
+
             # Show sample texts with their sentiment scores
             st.markdown("### 📝 Sample Texts with Sentiment Scores")
             sample_data = list(zip(cleaned_texts[:5], sentiment_scores[:5]))
@@ -1127,6 +1129,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
