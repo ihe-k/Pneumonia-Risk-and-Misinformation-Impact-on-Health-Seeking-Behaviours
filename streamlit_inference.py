@@ -328,94 +328,76 @@ import matplotlib.pyplot as plt
 # from your_model_module import MisinformationModel
 
 # =======================
-# AGENT-BASED SIMULATION
+# 4) AGENT-BASED SIMULATION (unchanged)
 # =======================
 
-# Always show the subheader
-st.subheader("3⃣ Agent-Based Misinformation Simulation")
+class Patient(Agent):
+    def __init__(self, unique_id, model, misinformation_score=0.5):
+        super().__init__(unique_id, model)
+        self.symptom_severity = random.choice([0, 1])
+        self.trust_in_clinician = 0.5
+        self.misinformation_exposure = misinformation_score
+        self.care_seeking_behavior = 0.5
 
-# Sidebar controls
-num_agents = st.sidebar.slider("Number of Patient Agents", 5, 100, 10)
-num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 5)
-misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.3, 0.05)
+    def step(self):
+        # Misinformation reduces symptom perception and care seeking
+        if self.misinformation_exposure > 0.7 and random.random() < 0.4:
+            self.symptom_severity = 0
+        # Trust increases symptom recognition
+        elif self.trust_in_clinician > 0.8:
+            self.symptom_severity = 1
 
-# Add unique key to button to avoid duplicate ID errors
-simulate_button = st.sidebar.button("Run Agent-Based Simulation", key="run_sim_button")
+        # Care seeking behavior adjusted by misinformation and trust
+        if self.misinformation_exposure > 0.7:
+            self.care_seeking_behavior = max(0, self.care_seeking_behavior - 0.3)
+        elif self.symptom_severity == 1 and self.trust_in_clinician > 0.5:
+            self.care_seeking_behavior = min(1, self.care_seeking_behavior + 0.5)
 
-def run_simulation(num_agents, num_clinicians, misinfo_exposure):
-    st.session_state.simulation_run = True
+class Clinician(Agent):
+    def __init__(self, unique_id, model):
+        super().__init__(unique_id, model)
 
-    model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinfo_exposure)
+    def step(self):
+        # Find patients in the same cell
+        cellmates = self.model.grid.get_cell_list_contents([self.pos])
+        patients_here = [agent for agent in cellmates if isinstance(agent, Patient)]
+        for patient in patients_here:
+            # Increase patient trust if clinician present
+            patient.trust_in_clinician = min(1.0, patient.trust_in_clinician + 0.1)
+            # Potentially decrease misinformation exposure
+            if patient.misinformation_exposure > 0:
+                patient.misinformation_exposure = max(0, patient.misinformation_exposure - 0.05)
 
-    for _ in range(30):
-        model.step()
-
-    df_sim = model.datacollector.get_agent_vars_dataframe()
-    df_reset = df_sim.reset_index()
-
-    st.write("### Simulation Results & Analysis")
-
-    # Create multiple visualizations
-    col1, col2 = st.columns(2)
-
-    with col1:
-        fig1, ax1 = plt.subplots(figsize=(8, 6))
-        sns.scatterplot(
-            data=df_reset,
-            x="Symptom Severity",
-            y="Care Seeking Behavior",
-            hue="Trust in Clinician",
-            size="Misinformation Exposure",
-            alpha=0.7,
-            ax=ax1,
-            palette="coolwarm",
-            sizes=(20, 200)
+class MisinformationModel(Model):
+    def __init__(self, num_patients, num_clinicians, width, height, misinformation_exposure):
+        self.grid = MultiGrid(width, height, True)
+        self.schedule = RandomActivation(self)
+        self.datacollector = DataCollector(
+            agent_reporters={
+                "Symptom Severity": "symptom_severity",
+                "Care Seeking Behavior": "care_seeking_behavior",
+                "Trust in Clinician": "trust_in_clinician",
+                "Misinformation Exposure": "misinformation_exposure"
+            }
         )
-        ax1.set_title("Impact of Misinformation & Trust on Care-Seeking")
-        ax1.set_xlabel("Symptom Severity")
-        ax1.set_ylabel("Care Seeking Behavior")
-        st.pyplot(fig1)
 
-    if len(df_reset) > 10:
-        st.markdown("### Relationship Analysis")
-        fig3, (ax3a, ax3b) = plt.subplots(1, 2, figsize=(15, 6))
+        # Add patients
+        for i in range(num_patients):
+            patient = Patient(i, self, misinformation_exposure)
+            self.schedule.add(patient)
+            x, y = self.random.randrange(width), self.random.randrange(height)
+            self.grid.place_agent(patient, (x, y))
 
-        scatter1 = ax3a.scatter(
-            df_reset['Symptom Severity'],
-            df_reset['Care Seeking Behavior'],
-            c=df_reset['Misinformation Exposure'],
-            cmap='viridis', alpha=0.6, s=50
-        )
-        ax3a.set_xlabel('Symptom Severity')
-        ax3a.set_ylabel('Care Seeking Behavior')
-        ax3a.set_title('Symptoms vs Care-Seeking\n(Color = Misinformation Level)')
-        plt.colorbar(scatter1, ax=ax3a, label='Misinformation Exposure', shrink=0.8)
+        # Add clinicians
+        for i in range(num_patients, num_patients + num_clinicians):
+            clinician = Clinician(i, self)
+            self.schedule.add(clinician)
+            x, y = self.random.randrange(width), self.random.randrange(height)
+            self.grid.place_agent(clinician, (x, y))
 
-        scatter2 = ax3b.scatter(
-            df_reset['Trust in Clinician'],
-            df_reset['Care Seeking Behavior'],
-            c=df_reset['Misinformation Exposure'],
-            cmap='viridis', alpha=0.6, s=50
-        )
-        ax3b.set_xlabel('Trust in Clinician')
-        ax3b.set_ylabel('Care Seeking Behavior')
-        ax3b.set_title('Trust vs Care-Seeking\n(Color = Misinformation Level)')
-        plt.colorbar(scatter2, ax=ax3b, label='Misinformation Exposure', shrink=0.8)
-
-        plt.tight_layout()
-        st.pyplot(fig3)
-
-    # Summary statistics
-    st.markdown("### Simulation Summary Statistics")
-    summary_stats = df_reset[["Symptom Severity", "Care Seeking Behavior",
-                              "Trust in Clinician", "Misinformation Exposure"]].describe()
-    st.dataframe(summary_stats.round(3))
-
-
-if simulate_button:
-    run_simulation(num_agents, num_clinicians, misinfo_exposure)
-else:
-    st.info("👆 Use the sidebar controls above to configure and run the agent-based simulation.")
+    def step(self):
+        self.datacollector.collect(self)
+        self.schedule.step()
 
 # =======================
 # 5) STREAMLIT UI
@@ -819,37 +801,38 @@ import matplotlib.pyplot as plt
 # from your_model_file import MisinformationModel  # Uncomment and adjust if needed
 
 # =======================
-# AGENT-BASED SIMULATION
+# AGENT-BASED SIMULATION (unchanged)
 # =======================
 
-# Always show the subheader
+# Always show the subheader at the end of the page
 st.subheader("3⃣ Agent-Based Misinformation Simulation")
 
-# Sidebar controls
+
+# Sidebar inputs (MUST be defined before button is pressed)
 num_agents = st.sidebar.slider("Number of Patient Agents", 5, 100, 10)
 num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 5)
 misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.3, 0.05)
 
-simulate_button = st.sidebar.button("Run Agent-Based Simulation_2")
 
-
-def run_simulation(num_agents, num_clinicians, misinfo_exposure):
+# Show simulation results only when button is clicked
+if simulate_button:
     st.session_state.simulation_run = True
-
+    
     model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinfo_exposure)
-
     for _ in range(30):
         model.step()
 
     df_sim = model.datacollector.get_agent_vars_dataframe()
+    st.write("### 📈 Simulation Results & Analysis")
+
+    # Reset index for easier plotting
     df_reset = df_sim.reset_index()
-
-    st.write("### Simulation Results & Analysis")
-
+    
     # Create multiple visualizations
     col1, col2 = st.columns(2)
-
+    
     with col1:
+        # 1. Original scatter plot with enhancements
         fig1, ax1 = plt.subplots(figsize=(8, 6))
         sns.scatterplot(
             data=df_reset,
@@ -866,49 +849,44 @@ def run_simulation(num_agents, num_clinicians, misinfo_exposure):
         ax1.set_xlabel("Symptom Severity")
         ax1.set_ylabel("Care Seeking Behavior")
         st.pyplot(fig1)
-
+    
+    
+    # 3. 2D Scatter Plot (converted from 3D)
     if len(df_reset) > 10:
-        st.markdown("### Relationship Analysis")
+        st.markdown("### 🎯 2D Relationship Analysis")
         fig3, (ax3a, ax3b) = plt.subplots(1, 2, figsize=(15, 6))
-
-        scatter1 = ax3a.scatter(
-            df_reset['Symptom Severity'],
-            df_reset['Care Seeking Behavior'],
-            c=df_reset['Misinformation Exposure'],
-            cmap='viridis', alpha=0.6, s=50
-        )
+        
+        # First 2D plot: Symptom Severity vs Care Seeking Behavior
+        scatter1 = ax3a.scatter(df_reset['Symptom Severity'], 
+                               df_reset['Care Seeking Behavior'],
+                               c=df_reset['Misinformation Exposure'],
+                               cmap='viridis', alpha=0.6, s=50)
         ax3a.set_xlabel('Symptom Severity')
         ax3a.set_ylabel('Care Seeking Behavior')
         ax3a.set_title('Symptoms vs Care-Seeking\n(Color = Misinformation Level)')
         plt.colorbar(scatter1, ax=ax3a, label='Misinformation Exposure', shrink=0.8)
-
-        scatter2 = ax3b.scatter(
-            df_reset['Trust in Clinician'],
-            df_reset['Care Seeking Behavior'],
-            c=df_reset['Misinformation Exposure'],
-            cmap='viridis', alpha=0.6, s=50
-        )
+        
+        # Second 2D plot: Trust vs Care Seeking Behavior
+        scatter2 = ax3b.scatter(df_reset['Trust in Clinician'], 
+                               df_reset['Care Seeking Behavior'],
+                               c=df_reset['Misinformation Exposure'],
+                               cmap='viridis', alpha=0.6, s=50)
         ax3b.set_xlabel('Trust in Clinician')
         ax3b.set_ylabel('Care Seeking Behavior')
         ax3b.set_title('Trust vs Care-Seeking\n(Color = Misinformation Level)')
         plt.colorbar(scatter2, ax=ax3b, label='Misinformation Exposure', shrink=0.8)
-
+        
         plt.tight_layout()
         st.pyplot(fig3)
-
-    # Summary statistics
-    st.markdown("### Simulation Summary Statistics")
-    summary_stats = df_reset[["Symptom Severity", "Care Seeking Behavior",
-                              "Trust in Clinician", "Misinformation Exposure"]].describe()
+    
+    # 4. Summary statistics table
+    st.markdown("### 📋 Simulation Summary Statistics")
+    summary_stats = df_reset[["Symptom Severity", "Care Seeking Behavior", 
+                             "Trust in Clinician", "Misinformation Exposure"]].describe()
     st.dataframe(summary_stats.round(3))
-
-
-# Run simulation if button is clicked
-if simulate_button:
-    run_simulation(num_agents, num_clinicians, misinfo_exposure)
 else:
+    # Show placeholder when simulation hasn't been run
     st.info("👆 Use the sidebar controls above to configure and run the agent-based simulation.")
-
 # =======================
 # FOOTER
 # =======================
@@ -924,6 +902,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
