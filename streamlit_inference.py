@@ -844,7 +844,7 @@ num_agents = st.sidebar.slider("Number of Patient Agents", 5, 100, 10)
 num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 5)
 misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.3, 0.05)
 
-simulate_button = st.sidebar.button("Run Agent-Based Simulation")
+simulate_button = st.sidebar.button("Run Agent-Based Simulation_2")
 
 
 def run_simulation(num_agents, num_clinicians, misinfo_exposure):
@@ -938,6 +938,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
