@@ -758,8 +758,6 @@ elif dataset_source == "FullFact (local JSON)":
         except Exception as e:
             st.error(f"Failed to read FullFact JSON: {e}")
 
-st.subheader("3⃣ Agent-Based Misinformation Simulation")
-
 if texts:
     misinformation_results = detect_misinformation(texts[:10])
     st.markdown("### Misinformation Detection")
@@ -803,6 +801,8 @@ if texts:
                 st.metric("💬 Misinformation Rate", f"{misinfo_rate:.2f}")
             else:
                 st.metric("💬 Misinformation Rate", "N/A")
+
+st.subheader("3⃣ Agent-Based Misinformation Simulation")
         
         # Show cleaning results
         if len(cleaned_texts) != len(texts):
@@ -914,29 +914,43 @@ if st.button("Run Simulation"):
         st.dataframe(df)
         display_simulation_results(df)
  
-        # Create age bins
-        df['age_bin'] = pd.cut(df['age'], bins=range(20, 65, 5), right=False)
+        df = pd.DataFrame(data)
+    
+    #  Example of binning age (crucial for plotting)
+        bins = [0, 18, 35, 55, 75, 100]
+        labels = ['<18', '19-35', '36-55', '56-75', '76+']
+        df['age_bin'] = pd.cut(df['age'], bins=bins, labels=labels, right=False)
 
-        # Group by age_bin and location
-        grouped = df.groupby(['age_bin', 'location']).agg({
-            'misinformation_exposure': 'mean',
-            'care_seeking_behavior': lambda x: (x=='yes').mean(),  # proportion
-            'trust_in_clinician': 'mean'
-        }).reset_index()
 
-        # Plot each variable
-        variables = ['misinformation_exposure', 'care_seeking_behavior', 'trust_in_clinician']
-        for var in variables:
-            plt.figure(figsize=(10, 6))
-            sns.lineplot(data=grouped, x='age_bin', y=var, hue='location', marker='o')
-            plt.title(f'{var.replace("_", " ").title()} by Age and Location')
-            plt.xlabel('Age Group')
-            plt.ylabel('Average' if var != 'care_seeking_behavior' else 'Proportion seeking care')
-            plt.xticks(rotation=45)
-            plt.legend(title='Location')
-            plt.tight_layout()
-            st.pyplot(plt)
-            plt.close()
+        return df
+
+
+def plot_results(df):
+    # Example plotting function (using seaborn)
+    
+    if df is None:
+        st.warning("No data to plot.")
+        return
+   
+    # Example: Plot symptom severity by age bin and location
+    for var in ['symptom_severity']:
+      
+      
+      grouped = df.groupby(['age_bin', 'location'])[var].mean().reset_index()
+      
+      fig, ax = plt.subplots(figsize=(10, 6))
+      sns.lineplot(data=grouped, x='age_bin', y=var, hue='location', marker='o')
+      plt.title(f"Average {var} by Age Bin and Location")
+      plt.xlabel("Age Group")
+      plt.ylabel(f"Average {var}")
+      st.pyplot(fig)
+
+
+
+def main():
+    st.title("Pneumonia Simulation")
+
+    num_agents = st.number_input("Enter the number of agents:", min_value=1, value=100, step=1)
     
  #       if 'df' in locals() and not df.empty:
  #           fig, ax = plt.subplots()
@@ -1113,6 +1127,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
