@@ -628,7 +628,6 @@ if uploaded_file is not None:
 # MISINFORMATION TEXT ANALYSIS (unchanged)
 # =======================
 
-
 st.subheader("2⃣ Misinformation Text Analysis")
 
 texts = []
@@ -793,13 +792,6 @@ if texts:
 else:
     st.info("No text data loaded from selected dataset.")
 
-import streamlit as st
-import seaborn as sns
-import matplotlib.pyplot as plt
-
-# Assuming you have a class `MisinformationModel` with proper methods
-# from your_model_file import MisinformationModel  # Uncomment and adjust if needed
-
 # =======================
 # AGENT-BASED SIMULATION (unchanged)
 # =======================
@@ -902,6 +894,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
