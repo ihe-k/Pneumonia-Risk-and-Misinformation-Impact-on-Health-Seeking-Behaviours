@@ -330,7 +330,7 @@ def get_data_source_info(source):
 # 4) AGENT-BASED SIMULATION (unchanged)
 # =======================
 # Always show the subheader at the end of the page
-st.subheader("3⃣ Agent-Based Misinformation Simulation")
+# st.subheader("3⃣ Agent-Based Misinformation Simulation")
 
 class Patient(Agent):
     def __init__(self, unique_id, model, misinformation_score=0.5):
@@ -822,7 +822,7 @@ else:
 # AGENT-BASED SIMULATION (unchanged)
 # =======================
 # Always show the subheader at the end of the page
-
+st.subheader("3⃣ Agent-Based Misinformation Simulation")
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
@@ -883,6 +883,9 @@ def display_simulation_results(df):
     plt.ylabel("Frequency")
     st.pyplot(plt)
 
+# Input for number of agents
+num_agents = st.number_input("Number of agents", min_value=1, max_value=1000, value=100)
+
 if st.button("Run Simulation"):
     df = run_simulation(num_agents)
     if df is not None:
@@ -890,13 +893,37 @@ if st.button("Run Simulation"):
         df.index += 1  # Shift index to start at 1
         st.dataframe(df)
         display_simulation_results(df)
+ 
+        # Create age bins
+        df['age_bin'] = pd.cut(df['age'], bins=range(20, 65, 5), right=False)
 
-        if 'df' in locals() and not df.empty:
-            fig, ax = plt.subplots()
-            sns.histplot(df['age'], kde=True, ax=ax)
-            st.pyplot(fig)
-            plt.close(fig)
+        # Group by age_bin and location
+        grouped = df.groupby(['age_bin', 'location']).agg({
+            'misinformation_exposure': 'mean',
+            'care_seeking_behavior': lambda x: (x=='yes').mean(),  # proportion
+            'trust_in_clinician': 'mean'
+        }).reset_index()
 
+        # Plot each variable
+        variables = ['misinformation_exposure', 'care_seeking_behavior', 'trust_in_clinician']
+        for var in variables:
+            plt.figure(figsize=(10, 6))
+            sns.lineplot(data=grouped, x='age_bin', y=var, hue='location', marker='o')
+            plt.title(f'{var.replace("_", " ").title()} by Age and Location')
+            plt.xlabel('Age Group')
+            plt.ylabel('Average' if var != 'care_seeking_behavior' else 'Proportion seeking care')
+            plt.xticks(rotation=45)
+            plt.legend(title='Location')
+            plt.tight_layout()
+            st.pyplot(plt)
+            plt.close()
+    
+ #       if 'df' in locals() and not df.empty:
+ #           fig, ax = plt.subplots()
+ #           sns.histplot(df['age'], kde=True, ax=ax)
+ #           st.pyplot(fig)
+ #           plt.close(fig)
+    
     display_simulation_results(df)
 # pneumonia_v07.py
 
@@ -1067,6 +1094,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
