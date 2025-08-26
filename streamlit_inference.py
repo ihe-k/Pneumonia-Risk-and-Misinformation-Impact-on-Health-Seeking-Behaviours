@@ -324,6 +324,8 @@ def get_data_source_info(source):
 # =======================
 # 4) AGENT-BASED SIMULATION (unchanged)
 # =======================
+# Always show the subheader at the end of the page
+st.subheader("3⃣ Agent-Based Misinformation Simulation")
 
 class Patient(Agent):
     def __init__(self, unique_id, model, misinformation_score=0.5):
@@ -476,26 +478,43 @@ num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 3)
 misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.5, 0.05)
 simulate_button = st.sidebar.button("Run Agent-Based Simulation")
 
-# Instantiate the model
-model = MisinformationModel(
-    num_patients=num_agents,
-    num_clinicians=num_clinicians,
-    width=10,
-    height=10,
-    misinformation_exposure=misinfo_exposure
-)
+if simulate_button:
+    # Instantiate the model
+    model = MisinformationModel(
+        num_patients=num_agents,
+        num_clinicians=num_clinicians,
+        width=10,
+        height=10,
+        misinformation_exposure=misinfo_exposure
+    )
 
-# Run for 30 steps
-for _ in range(30):
-    model.step()
+    # Run for 30 steps
+    for _ in range(30):
+        model.step()
 
-# Save results for visualization
-df = model.datacollector.get_agent_vars_dataframe()
-st.session_state['simulation_results'] = df
+    # Save results in session state
+    df = model.datacollector.get_agent_vars_dataframe()
+    st.session_state['simulation_results'] = df
 
-# Show sample data immediately
-st.write("Simulation complete! Here are some data points:")
-st.dataframe(df.head())
+    st.success("Simulation completed!")
+
+if 'simulation_results' in st.session_state:
+    df = st.session_state['simulation_results']
+    # Example: show first few rows
+    st.write("Sample data from simulation:")
+    st.dataframe(df.head())
+
+    # Example plot: distribution of 'Symptom Severity'
+    import seaborn as sns
+    import matplotlib.pyplot as plt
+
+    # Plot distribution of 'symptom_severity'
+    plt.figure(figsize=(8,4))
+    sns.countplot(data=df, x='symptom_severity')
+    plt.title("Distribution of Symptom Severity")
+    st.pyplot()
+
+
 
 # ===============================
 # 6. HealthVer Dataset Evaluation (unchanged)
@@ -810,6 +829,8 @@ else:
 # =======================
 # AGENT-BASED SIMULATION (unchanged)
 # =======================
+# Always show the subheader at the end of the page
+st.subheader("3⃣ Agent-Based Misinformation Simulation")
 
 # pneumonia_v07.py
 
@@ -984,6 +1005,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
