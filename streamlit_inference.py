@@ -914,18 +914,23 @@ def display_simulation_results(df):
 
 # Input for number of agents
 num_agents = st.number_input("Number of agents", min_value=1, max_value=1000, value=100)
-results = calculate_something(num_agents)
-st.write("Results:", results)
+#results = calculate_something(num_agents)  # Assuming this is not needed
+#st.write("Results:", results) # Remove this line if not needed
 
 if st.button("Run Simulation"):
     df = run_simulation(num_agents)
     if df is not None:
         df = df.reset_index(drop=True)
-        df.index + 1  # Shift index to start at 1
+        df.index = df.index + 1  # Shift index to start at 1  (Correcting the indentation here)
         st.dataframe(df)
-    display_simulation_results(df)
- 
-        df = pd.DataFrame(data)
+    #display_simulation_results(df)  # Remove or adjust if needed
+    
+    # This section appears to be attempting to create a DataFrame from 'data'
+    # but 'data' isn't defined in the snippet.  
+    # If 'data' is available, and you want to display it, use this (or modify):
+    # if 'data' exists:
+    #  data_df = pd.DataFrame(data)
+    #  st.dataframe(data_df)
     
   
 
@@ -1112,6 +1117,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
