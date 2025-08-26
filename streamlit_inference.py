@@ -866,13 +866,30 @@ def display_simulation_results(df):
 
     st.header("Simulation Results")
 
+    # st.dataframe(df)  # Display the full DataFrame
+
+
+    st.write("Number of agents:", len(df))
+    st.write("Average symptom severity:", df['symptom_severity'].mean())
+    st.write("Distribution of care-seeking behavior:")
+    care_seeking_counts = df['care_seeking_behavior'].value_counts()
+    st.bar_chart(care_seeking_counts)
+    
+    # Add more visualisations as needed (e.g., histograms, box plots)
+    st.subheader("Age Distribution")
+    plt.figure(figsize=(8, 6))
+    sns.histplot(df['age'], kde=True)
+    plt.xlabel("Age")
+    plt.ylabel("Frequency")
+    st.pyplot(plt)
+
     st.dataframe(df)  # Display the full DataFrame
 
 if st.button("Run Simulation"):
     df = run_simulation(num_agents)
     if df is not None:
         display_simulation_results(df)
-        
+
 # pneumonia_v07.py
 
 
@@ -1042,6 +1059,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
