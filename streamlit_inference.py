@@ -498,19 +498,6 @@ if simulate_button:
 
     st.success("Simulation completed!")
 
-if 'simulation_results' in st.session_state:
-    df = st.session_state['simulation_results']
-    # Example: show first few rows
-
-    # Example plot: distribution of 'Symptom Severity'
-    import seaborn as sns
-    import matplotlib.pyplot as plt
-
-    # Plot distribution of 'symptom_severity'
-    plt.figure(figsize=(8,4))
-    sns.countplot(data=df, x='symptom_severity')
-    plt.title("Distribution of Symptom Severity")
-    st.pyplot()
 
 
 
@@ -654,7 +641,7 @@ if uploaded_file is not None:
         label = "Pneumonia" if pred == 1 else "Normal"
         st.success(f"Prediction: {label}")
     else:
-        st.warning("Please load the pretrained models first to predict on uploaded images.")
+        st.warning("Please load the pretrained models first for a prediction.")
 
 # =======================
 # MISINFORMATION TEXT ANALYSIS (unchanged)
@@ -668,6 +655,8 @@ if dataset_source == "Reddit (Free API)":
         texts = get_reddit_posts(search_query, size=search_count)
     if texts:
         st.session_state.data_collected = True
+
+        st.success("Simulation completed!")
 
 elif dataset_source == "Tavily Web Search":
     if tavily_api_key:
@@ -1018,6 +1007,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
