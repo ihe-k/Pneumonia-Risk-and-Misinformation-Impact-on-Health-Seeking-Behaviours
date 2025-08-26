@@ -802,6 +802,8 @@ if simulate_button:
         model.step()
 
     df_sim = model.datacollector.get_agent_vars_dataframe()
+    sample_df = df_sim.sample(n=500)  # or any number <= total points
+    st.write(f"Number of data points for plotting: {len(df_sim)}")
     st.write(f"Total data points collected: {len(df_sim)}")
     st.write("### 📈 Simulation Results & Analysis")
 
@@ -837,9 +839,9 @@ if simulate_button:
         fig3, (ax3a, ax3b) = plt.subplots(1, 2, figsize=(15, 6))
         
         # First 2D plot: Symptom Severity vs Care Seeking Behavior
-        scatter1 = ax3a.scatter(df_reset['Symptom Severity'], 
-                               df_reset['Care Seeking Behavior'],
-                               c=df_reset['Misinformation Exposure'],
+        scatter1 = ax3a.scatter(df_sim['Symptom Severity'], 
+                               df_sim['Care Seeking Behavior'],
+                               c=df_sim['Misinformation Exposure'],
                                cmap='viridis', alpha=0.6, s=50)
         ax3a.set_xlabel('Symptom Severity')
         ax3a.set_ylabel('Care Seeking Behavior')
@@ -848,8 +850,8 @@ if simulate_button:
         
         # Second 2D plot: Trust vs Care Seeking Behavior
         scatter2 = ax3b.scatter(df_reset['Trust in Clinician'], 
-                               df_reset['Care Seeking Behavior'],
-                               c=df_reset['Misinformation Exposure'],
+                               df_sim['Care Seeking Behavior'],
+                               c=df_sim['Misinformation Exposure'],
                                cmap='viridis', alpha=0.6, s=50)
         ax3b.set_xlabel('Trust in Clinician')
         ax3b.set_ylabel('Care Seeking Behavior')
@@ -885,6 +887,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
