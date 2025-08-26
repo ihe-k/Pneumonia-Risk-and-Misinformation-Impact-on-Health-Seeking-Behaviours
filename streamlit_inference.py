@@ -817,14 +817,23 @@ else:
 # AGENT-BASED SIMULATION (unchanged)
 # =======================
 # Always show the subheader at the end of the page
-#st.subheader("3⃣ Agent-Based Misinformation Simulation")
-    
+st.subheader("3⃣ Agent-Based Misinformation Simulation")
+if 'simulation_results' not in st.session_state:
+    st.session_state['simulation_results'] = None  # Initialize to None
+
+# if st.session_state['simulation_results'] is not None:
+try:    
 if 'simulation_results' in st.session_state:
     df_results = st.session_state['simulation_results']
     display_cols = ['symptom_severity', 'care_seeking_behavior', 'trust_in_clinician', 'misinformation_exposure']
     df_display = df_results[display_cols]
     st.subheader("Agent-Based Misinformation Simulation Summary")
     st.dataframe(df_display)
+
+else:
+    st.info("No simulation results available.")  # Informative message
+except KeyError as e:
+    st.error(f"An error occurred: {e}")
 
     plt.figure(figsize=(8,4))
     sns.countplot(data=df_display, x='symptom_severity')
@@ -1007,6 +1016,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
