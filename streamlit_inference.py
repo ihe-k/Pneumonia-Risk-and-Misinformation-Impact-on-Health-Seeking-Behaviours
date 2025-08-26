@@ -364,7 +364,7 @@ class Clinician(Agent):
 
 class MisinformationModel(Model):
     def __init__(self, num_patients, num_clinicians, width, height, misinformation_exposure):
-        self.grid = MultiGrid(width, height, True)
+        self.grid = MultiGrid(width, height, torus=True)
         self.schedule = RandomActivation(self)
         self.datacollector = DataCollector(
             agent_reporters={
@@ -995,6 +995,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
