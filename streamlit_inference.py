@@ -171,7 +171,6 @@ def preprocess_image(uploaded_file, img_size=(150, 150)):
     img_array = image.img_to_array(img) / 255.0
     return img_array.reshape(1, -1)
 
-
 # =======================
 # 3) MISINFORMATION DETECTION & DATA (unchanged)
 # =======================
@@ -475,7 +474,7 @@ uploaded_file = st.sidebar.file_uploader("Upload Chest X-Ray Image", type=["jpg"
 num_agents = st.sidebar.slider("Number of Patient Agents", 5, 100, 10)
 num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 3)
 misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.5, 0.05)
-simulate_button = st.sidebar.button("Run Agent-Based Simulation", key="run_sim_button")
+simulate_button = st.sidebar.button("Run Agent-Based Simulation")
 
 # ===============================
 # 6. HealthVer Dataset Evaluation (unchanged)
@@ -533,7 +532,7 @@ try:
     st.markdown(f"**✅ Test Accuracy:** {test_acc:.3f}")
 
     # Classification Report
-    st.markdown("### Classification Report (Test Set)")
+    st.markdown("### 📊 Classification Report (Test Set)")
     
     # Get the classification report as a string and parse it
     report_str = classification_report(y_test, y_test_pred, target_names=label_map.keys(), output_dict=True)
@@ -555,7 +554,7 @@ try:
     )
     
     # Also show accuracy metrics separately for better visibility
-    st.markdown("### Overall Metrics")
+    st.markdown("### 📈 Overall Metrics")
     
     # Create a summary metrics table
     metrics_data = {
@@ -617,7 +616,7 @@ if uploaded_file is not None:
         label = "Pneumonia" if pred == 1 else "Normal"
         st.success(f"Prediction: {label}")
     else:
-        st.warning("Please load the pretrained models first to predict uploaded image(s).")
+        st.warning("Please load the pretrained models first to predict on uploaded images.")
 
 # =======================
 # MISINFORMATION TEXT ANALYSIS (unchanged)
@@ -874,6 +873,7 @@ if simulate_button:
 else:
     # Show placeholder when simulation hasn't been run
     st.info("👆 Use the sidebar controls above to configure and run the agent-based simulation.")
+
 # =======================
 # FOOTER
 # =======================
@@ -885,35 +885,7 @@ st.markdown(
     - Real Chest X-ray pneumonia classification with pretrained Logistic Regression and XGBoost models
     - Multi-source misinformation detection: Reddit (free API), Tavily web search, Wikipedia, Hacker News, HealthVer, FullFact
     - RAPHAEL-style claim scoring for health claims with sentiment analysis
-    - Agent-based simulation modelling misinformation's impact on care-seeking behaviour with clinician interaction
-    - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
+    - Agent-based simulation modelling misinformation's impact on care-seeking behaviour, with clinician interaction
+    - Advanced visualisations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
