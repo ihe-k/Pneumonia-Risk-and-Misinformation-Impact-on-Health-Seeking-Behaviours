@@ -914,6 +914,8 @@ def display_simulation_results(df):
 
 # Input for number of agents
 num_agents = st.number_input("Number of agents", min_value=1, max_value=1000, value=100)
+results = calculate_something(num_agents)
+st.write("Results:", results)
 
 if st.button("Run Simulation"):
     df = run_simulation(num_agents)
@@ -921,7 +923,7 @@ if st.button("Run Simulation"):
         df = df.reset_index(drop=True)
         df.index + 1  # Shift index to start at 1
         st.dataframe(df)
-        display_simulation_results(df)
+display_simulation_results(df)
  
         df = pd.DataFrame(data)
     
@@ -1110,6 +1112,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
