@@ -826,7 +826,7 @@ if texts:
             with col4:
                 st.metric("📊 Mean", f"{np.mean(sentiment_scores):.3f}")
 
-st.subheader("3⃣ Agent-Based Misinformation Simulation")
+            st.subheader("3⃣ Agent-Based Misinformation Simulation")
 
             # Show sample texts with their sentiment scores
             st.markdown("### 📝 Sample Texts with Sentiment Scores")
@@ -1129,6 +1129,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
