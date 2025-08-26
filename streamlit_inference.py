@@ -171,10 +171,11 @@ def preprocess_image(uploaded_file, img_size=(150, 150)):
     img_array = image.img_to_array(img) / 255.0
     return img_array.reshape(1, -1)
 
+
 # =======================
 # 3) MISINFORMATION DETECTION & DATA (unchanged)
 # =======================
-        
+
 def detect_misinformation(texts):
     results = []
     for text in texts:
@@ -320,12 +321,6 @@ def get_data_source_info(source):
         "FullFact (local JSON)": "Fact-checking dataset"
     }
     return info.get(source, "Unknown source")
-import streamlit as st
-import seaborn as sns
-import matplotlib.pyplot as plt
-
-# Assuming MisinformationModel is defined elsewhere and imported properly
-# from your_model_module import MisinformationModel
 
 # =======================
 # 4) AGENT-BASED SIMULATION (unchanged)
@@ -894,6 +889,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
