@@ -822,23 +822,30 @@ if 'simulation_results' not in st.session_state:
     st.session_state['simulation_results'] = None  # Initialize to None
 
 # if st.session_state['simulation_results'] is not None:
-try:    
+   
 if 'simulation_results' in st.session_state:
+    try:
     df_results = st.session_state['simulation_results']
     display_cols = ['symptom_severity', 'care_seeking_behavior', 'trust_in_clinician', 'misinformation_exposure']
+    if not all(col in df_results.columns for col in display_cols):
+        st.error("The simulation results DataFrame does not contain all the required columns.")
+            return  # Exit the function if columns are missing
+
     df_display = df_results[display_cols]
     st.subheader("Agent-Based Misinformation Simulation Summary")
     st.dataframe(df_display)
 
-else:
-    st.info("No simulation results available.")  # Informative message
-except KeyError as e:
-    st.error(f"An error occurred: {e}")
-
-    plt.figure(figsize=(8,4))
+    plt.figure(figsize=(8, 4))
     sns.countplot(data=df_display, x='symptom_severity')
     plt.title("Distribution of Symptom Severity")
-    st.pyplot()
+    st.pyplot(plt)  # Display the plot using st.pyplot
+
+except KeyError as e:
+    st.error(f"An error occurred accessing simulation results: {e}")
+except Exception as e:  # Catch other potential errors
+        st.error(f"An unexpected error occurred: {e}")
+else:
+    st.info("No simulation results available.")  # Informative message
 
     st.write("Sample data from simulation:")
     st.dataframe(df.head())
@@ -1016,6 +1023,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
