@@ -505,7 +505,7 @@ with col1:
                 num_patients=st.session_state['num_agents'],
                 #num_patients=num_patients,
                 num_clinicians=st.session_state['num_clinicians'],   # or another control if you want
-                misinformation_exposure=st.session_state['misinfo_exposure']
+                misinformation_exposure=st.session_state['misinfo_exposure'],
                 width=10,
                 height=10,
                 
@@ -1118,6 +1118,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
