@@ -921,18 +921,18 @@ if st.button("Run Simulation"):
   
 
 
-def main():
-    st.title("Pneumonia Simulation")
+# def main():
+#    st.title("Pneumonia Simulation")
 
-    num_agents = st.number_input("Enter the number of agents:", min_value=1, value=100, step=1)
+#    num_agents = st.number_input("Enter the number of agents:", min_value=1, value=100, step=1)
     
-        if 'df' in locals() and not df.empty:
-            fig, ax = plt.subplots()
-            sns.histplot(df['age'], kde=True, ax=ax)
-            st.pyplot(fig)
-            plt.close(fig)
+#        if 'df' in locals() and not df.empty:
+#            fig, ax = plt.subplots()
+#            sns.histplot(df['age'], kde=True, ax=ax)
+#            st.pyplot(fig)
+#            plt.close(fig)
     
-            display_simulation_results(df)
+        # display_simulation_results(df)
 
 
 # pneumonia_v07.py
@@ -1103,6 +1103,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
