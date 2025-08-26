@@ -918,35 +918,7 @@ if st.button("Run Simulation"):
  
         df = pd.DataFrame(data)
     
-    #  Example of binning age (crucial for plotting)
-        bins = [0, 18, 35, 55, 75, 100]
-        labels = ['<18', '19-35', '36-55', '56-75', '76+']
-        df['age_bin'] = pd.cut(df['age'], bins=bins, labels=labels, right=False)
-
-
-        return df
-
-
-def plot_results(df):
-    # Example plotting function (using seaborn)
-    
-    if df is None:
-        st.warning("No data to plot.")
-        return
-   
-    # Example: Plot symptom severity by age bin and location
-    for var in ['symptom_severity']:
-      
-      
-      grouped = df.groupby(['age_bin', 'location'])[var].mean().reset_index()
-      
-      fig, ax = plt.subplots(figsize=(10, 6))
-      sns.lineplot(data=grouped, x='age_bin', y=var, hue='location', marker='o')
-      plt.title(f"Average {var} by Age Bin and Location")
-      plt.xlabel("Age Group")
-      plt.ylabel(f"Average {var}")
-      st.pyplot(fig)
-
+  
 
 
 def main():
@@ -954,13 +926,15 @@ def main():
 
     num_agents = st.number_input("Enter the number of agents:", min_value=1, value=100, step=1)
     
- #       if 'df' in locals() and not df.empty:
+        if 'df' in locals() and not df.empty:
  #           fig, ax = plt.subplots()
- #           sns.histplot(df['age'], kde=True, ax=ax)
- #           st.pyplot(fig)
- #           plt.close(fig)
+            sns.histplot(df['age'], kde=True, ax=ax)
+            st.pyplot(fig)
+            plt.close(fig)
     
     display_simulation_results(df)
+
+
 # pneumonia_v07.py
 
 
@@ -1129,6 +1103,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
