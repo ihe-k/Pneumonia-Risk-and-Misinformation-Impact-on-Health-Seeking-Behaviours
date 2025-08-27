@@ -697,11 +697,11 @@ try:
  # ... (previous code)
 
 # Round numeric values to 3 decimal places
-   try:
+      try:
         numeric_columns = ['precision', 'recall', 'f1-score', 'support']
         for col in numeric_columns:
             if col in report_df.columns:
-                report_df[col] = report_df[col].round(3)
+                report_df[col] = report_df[col].astype(float).round(3)  # Crucial: Convert to float
     except KeyError as e:
         print(f"Error: Column '{e}' not found in report_df. Skipping rounding.")
     except Exception as e:
@@ -1258,6 +1258,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
