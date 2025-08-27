@@ -1039,6 +1039,18 @@ if texts:
             # st.subheader("3⃣ Agent-Based Misinformation Simulation")   
 
 
+            # Sentiment statistics
+st.markdown("### 📈 Sentiment Statistics")
+col1, col2, col3, col4 = st.columns(4)
+with col1:
+    st.metric("😊 Positive", f"{sum(1 for s in sentiment_scores if s > 0)}")
+with col2:
+    st.metric("😐 Neutral", f"{sum(1 for s in sentiment_scores if s == 0)}")
+with col3:
+    st.metric("😞 Negative", f"{sum(1 for s in sentiment_scores if s < 0)}")
+with col4:
+    st.metric("📊 Mean", f"{np.mean(sentiment_scores):.3f}")
+
 # === RAG Color Logic for Misinformation Rate ===
 def get_misinfo_rag(misinfo_rate):
     if misinfo_rate < 0.1:
@@ -1067,37 +1079,7 @@ mean_sentiment = -0.052  # Example sentiment mean
 misinfo_label, misinfo_color = get_misinfo_rag(misinfo_rate)
 sentiment_label, sentiment_color = get_sentiment_rag(mean_sentiment)
 
-# Display metrics with horizontal bars and RAG context using HTML
-col1, col2 = st.columns(2)
-
-# Misinformation Rate with Progress Bar
-with col1:
-    st.markdown(f"### 💬 Misinformation Rate: {misinfo_rate:.2f} — {misinfo_label}")
-    # Displaying the horizontal progress bar with color
-    st.markdown(f"""
-    <div style="background-color:{misinfo_color}; padding: 5px; border-radius: 10px;">
-        <p style="font-size:20px; font-weight:bold; color: #000;">{misinfo_label}</p>
-        <div style="height: 25px; background-color: #e9ecef; border-radius: 5px;">
-            <div style="width: {misinfo_rate * 100}%; height: 100%; background-color: {misinfo_color}; border-radius: 5px;"></div>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-# Sentiment Mean with Progress Bar
-with col2:
-    st.markdown(f"### 📊 Sentiment Mean: {mean_sentiment:.3f} — {sentiment_label}")
-    # Displaying the horizontal progress bar with color
-    st.markdown(f"""
-    <div style="background-color:{sentiment_color}; padding: 5px; border-radius: 10px;">
-        <p style="font-size:20px; font-weight:bold; color: #000;">{sentiment_label}</p>
-        <div style="height: 25px; background-color: #e9ecef; border-radius: 5px;">
-            <div style="width: {((mean_sentiment + 1) / 2) * 100}%; height: 100%; background-color: {sentiment_color}; border-radius: 5px;"></div>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-
-# Display metrics with horizontal bars and RAG context using HTML
+# Create columns for displaying the progress bars side-by-side
 col1, col2 = st.columns(2)
 
 # Misinformation Rate with Progress Bar
@@ -1388,6 +1370,7 @@ class MisinformationModel(Model):
 #else:
     # Show placeholder when simulation hasn't been run
 #    st.info("👆 Use the sidebar controls above to configure and run the agent-based simulation.")
+
 
 
 
