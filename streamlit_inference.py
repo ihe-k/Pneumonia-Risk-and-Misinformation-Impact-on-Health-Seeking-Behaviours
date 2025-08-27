@@ -632,7 +632,7 @@ uploaded_file = st.sidebar.file_uploader("Upload Chest X-Ray Image", type=["jpg"
 # Agent-Based Simulation Controls (unchanged)
 num_agents = st.sidebar.slider("Number of Patient Agents", 5, 100, 10, key="num_agents_slider")
 num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 3,key="num_clinicians_slider")
-misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.5, 0.05,, key="misinfo_slider")
+misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.5, 0.05, key="misinfo_slider")
 # simulate_button = st.sidebar.button("Run Agent-Based Simulation_3")
 simulate_button = st.sidebar.button("Run Simulation")
 # Place in sidebar
@@ -1474,6 +1474,7 @@ if simulate_button:
 #else:
     # Show placeholder when simulation hasn't been run
 #    st.info("👆 Use the sidebar controls above to configure and run the agent-based simulation.")
+
 
 
 
