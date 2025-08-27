@@ -23,6 +23,26 @@ from mesa.time import RandomActivation
 from mesa.space import MultiGrid
 from mesa.datacollection import DataCollector
 import random
+def plot_relationship(df, x_col, y_col):
+    # Scatter plot
+    plt.figure(figsize=(8,6))
+    sns.scatterplot(x=x_col, y=y_col, data=df)
+
+    # Fit regression
+    X = sm.add_constant(df[x_col])
+    model = sm.OLS(df[y_col], X).fit()
+    p_value = model.pvalues[1]
+    pred = model.predict(X)
+
+if p_value < 0.05:
+    st.success("Trend is statistically significant.")
+else:
+    st.info("Trend is not statistically significant.")
+sns.lineplot(x=df[x_col], y=pred, color='red')
+plt.xlabel(x_col)
+plt.ylabel(y_col)
+plt.title(f"{y_col} vs {x_col}\nP-value: {p_value:.3f}")
+st.pyplot(plt)
 
 # Create a placeholder in the sidebar
 run_button_placeholder = st.sidebar.empty()
@@ -951,7 +971,8 @@ if st.sidebar.button("Run Simulation"):
         df = df.reset_index(drop=True)
         df.index = df.index + 1  # Shift index to start at 1  (Correcting the indentation here)
         st.dataframe(df)
-
+        st.markdown("## Agent Data Relationship & Significance")
+        plot_relationship(df, 'misinformation_exposure', 'trust_in_clinician')
     display_simulation_results(df)  # Remove or adjust if needed
     
     # This section appears to be attempting to create a DataFrame from 'data'
@@ -1145,6 +1166,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
