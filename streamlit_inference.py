@@ -1310,7 +1310,6 @@ class MisinformationModel(Model):
 # FOOTER
 # =======================
 
-st.markdown("---")
 st.markdown("""
 This app integrates:
 - Real Chest X-ray pneumonia classification with pretrained Logistic Regression and XGBoost models  
@@ -1319,6 +1318,7 @@ This app integrates:
 - Agent-based simulation modelling to illustrate the impact of misinformation on care-seeking behaviour with clinician interaction  
 - Advanced visualizations: sentiment distributions, misinformation rates and simulation trends  
 """)
+
 
 
 
