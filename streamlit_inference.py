@@ -151,11 +151,11 @@ def display_classification_report(report_df):
             st.write("Overall accuracy not found in the report.")
 
         # Display the table with better formatting
-        st.dataframe(
-            report_df,
-            use_container_width=True,
-            hide_index=False,  # Show row numbers
-            )
+        #st.dataframe(
+        #    report_df,
+         #   use_container_width=True,
+         #   hide_index=False,  # Show row numbers
+          #  )
 
     except KeyError as e:
         print(f"Error: Column '{e}' not found in report_df. Skipping rounding and accuracy calculation.")
@@ -1296,6 +1296,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
