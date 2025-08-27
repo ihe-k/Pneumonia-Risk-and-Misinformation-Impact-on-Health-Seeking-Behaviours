@@ -748,11 +748,6 @@ try:
 # Example accuracy calculations
 # (Replace these with your actual predictions and labels)
 # y_dev, y_dev_pred, y_test, y_test_pred should be defined in your code
-# For demonstration, here's dummy data:
-y_dev = [0, 1, 0, 1]
-y_dev_pred = [0, 1, 1, 1]
-y_test = [0, 1, 0, 1]
-y_test_pred = [0, 0, 0, 1]
 
 dev_acc = accuracy_score(y_dev, y_dev_pred)
 test_acc = accuracy_score(y_test, y_test_pred)
@@ -1357,6 +1352,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
