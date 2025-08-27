@@ -16,6 +16,7 @@ import random
 import requests
 import os
 import re
+import traceback
 import html
 from PIL import Image
 from urllib.parse import quote_plus
@@ -1290,6 +1291,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
