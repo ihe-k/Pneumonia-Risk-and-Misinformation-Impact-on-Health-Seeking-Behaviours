@@ -360,7 +360,9 @@ def get_reddit_posts(query='pneumonia', size=50):
 
     try:
         reddit_url = f"https://www.reddit.com/search.json?q={quote_plus(query)}&limit={size}&sort=new"
-        headers = {"User-Agent": "Mozilla/5.0 (StreamlitApp)"}
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
+}
+
         response = requests.get(reddit_url, headers=headers, timeout=15)
 
         response.raise_for_status() # Check for bad status codes (e.g., 404, 500)
@@ -1325,6 +1327,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
