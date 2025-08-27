@@ -182,7 +182,7 @@ from sklearn.metrics import accuracy_score, confusion_matrix, classification_rep
 from keras.preprocessing import image
 
 # for local
-from keras.preprocessing.image import ImageDataGenerator
+# from keras.preprocessing.image import ImageDataGenerator
 
 # for streamlit
 from keras.src.legacy.preprocessing.image import ImageDataGenerator
@@ -1474,6 +1474,7 @@ if simulate_button:
 #else:
     # Show placeholder when simulation hasn't been run
 #    st.info("👆 Use the sidebar controls above to configure and run the agent-based simulation.")
+
 
 
 
