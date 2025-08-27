@@ -766,16 +766,17 @@ with st.expander("Summary of Terms (Click Here)"):
     </div>
     """, unsafe_allow_html=True)
 
-    # Here, the remaining markdown content outside the HTML block
-    st.markdown("""
-    - **Precision:** Measures the number of times a model correctly predicts a class.  
-    - **Recall:** The proportion of true instances of a class that the model found.  
-    - **F1-score:** The balance between precision and recall (harmonic mean).  
-    - **Supports / Refutes / Neutral:** The categories being classified.  
-    - **Macro avg:** Average of metrics treating all classes equally.  
-    - **Weighted avg:** Average of metrics weighted by class size (support).  
-    - **Accuracy:** Overall correctness of the model.  
-    """)
+# This part should be outside the 'with' block, so no indentation needed here
+st.markdown("""
+- **Precision:** Measures the number of times a model correctly predicts a class.  
+- **Recall:** The proportion of true instances of a class that the model found.  
+- **F1-score:** The balance between precision and recall (harmonic mean).  
+- **Supports / Refutes / Neutral:** The categories being classified.  
+- **Macro avg:** Average of metrics treating all classes equally.  
+- **Weighted avg:** Average of metrics weighted by class size (support).  
+- **Accuracy:** Overall correctness of the model.  
+""")
+
 
 
     
@@ -1409,6 +1410,7 @@ if simulate_button:
 #else:
     # Show placeholder when simulation hasn't been run
 #    st.info("👆 Use the sidebar controls above to configure and run the agent-based simulation.")
+
 
 
 
