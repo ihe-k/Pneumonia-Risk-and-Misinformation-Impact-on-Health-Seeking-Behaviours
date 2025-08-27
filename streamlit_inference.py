@@ -752,6 +752,8 @@ try:
             report_df[col] = report_df[col].round(3)
 
 # After code that  displays the classification report as a DataFrame:
+    st.write("### Classification Metrics")
+    st.dataframe(report_df.drop(columns=["support"], errors="ignore").style.format("{:.3f}"))
 
     with st.expander("Summary of Terms"):
         st.markdown("""
@@ -1306,6 +1308,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
