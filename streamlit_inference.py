@@ -1129,47 +1129,7 @@ class MisinformationModel(Model):
     # Show placeholder when simulation hasn't been run
 #    st.info("👆 Use the sidebar controls above to configure and run the agent-based simulation.")
 
-import streamlit as st
-import pandas as pd
-import numpy as np
-import seaborn as sns
-import matplotlib.pyplot as plt
 
-st.title("Agent-Based Simulation Data Heatmap")
-
-st.write("Upload your simulation data CSV with columns like 'Misinformation Exposure' and 'Trust in Clinician'.")
-
-uploaded_file = st.file_uploader("Choose your simulation CSV file", type=["csv"])
-
-if uploaded_file:
-    df = pd.read_csv(uploaded_file)
-    st.success("Data loaded successfully!")
-
-    # Check for required columns
-    required_cols = ["Misinformation Exposure", "Trust in Clinician"]
-    if all(col in df.columns for col in required_cols):
-        # Drop NaNs
-        df = df.dropna(subset=required_cols)
-
-        # Create bins for each variable
-        bins = 20
-        df['Misinfo_bin'] = pd.cut(df['Misinformation Exposure'], bins=bins, labels=False)
-        df['Trust_bin'] = pd.cut(df['Trust in Clinician'], bins=bins, labels=False)
-
-        # Create a 2D matrix of counts
-        heatmap_data = pd.crosstab(df['Misinfo_bin'], df['Trust_bin'])
-
-        # Plot heatmap
-        plt.figure(figsize=(10, 8))
-        sns.heatmap(heatmap_data, cmap='YlGnBu', cbar=True)
-        plt.xlabel("Trust in Clinician (binned)")
-        plt.ylabel("Misinformation Exposure (binned)")
-        plt.title("Heatmap of Misinformation Exposure vs Trust")
-        st.pyplot(plt)
-    else:
-        st.error(f"Your CSV must include columns: {', '.join(required_cols)}")
-else:
-    st.info("Please upload your simulation data CSV file.")
 # =======================
 # FOOTER
 # =======================
@@ -1185,6 +1145,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
