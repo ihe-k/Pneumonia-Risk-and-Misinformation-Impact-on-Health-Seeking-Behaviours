@@ -753,16 +753,16 @@ try:
 
 # After code that  displays the classification report as a DataFrame:
 
-with st.expander("Summary of Terms"):
-    st.markdown("""
-    - **Precision:** Measures the number of times a model correctly predicts a class. 
-    - **Recall:** The proportion of true instances of a class that the model found.
-    - **F1-score:** The balance between precision and recall (harmonic mean).  
-    - **Supports / Refutes / Neutral:** The categories being classified.  
-    - **Macro avg:** Average of metrics treating all classes equally.  
-    - **Weighted avg:** Average of metrics weighted by class size (support).  
-    - **Accuracy:** Overall correctness of the model.  
-    """)
+    with st.expander("Summary of Terms"):
+        st.markdown("""
+        - **Precision:** Measures the number of times a model correctly predicts a class. 
+        - **Recall:** The proportion of true instances of a class that the model found.
+        - **F1-score:** The balance between precision and recall (harmonic mean).  
+        - **Supports / Refutes / Neutral:** The categories being classified.  
+        - **Macro avg:** Average of metrics treating all classes equally.  
+        - **Weighted avg:** Average of metrics weighted by class size (support).  
+        - **Accuracy:** Overall correctness of the model.  
+        """)
 
     
     # Display the table with better formatting
@@ -1306,6 +1306,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
