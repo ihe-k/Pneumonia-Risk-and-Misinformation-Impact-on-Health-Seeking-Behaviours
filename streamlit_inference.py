@@ -144,11 +144,11 @@ def display_classification_report(report_df):
                 report_df[col] = report_df[col].fillna(0)  # Or another appropriate value (e.g., report_df[col].mean())
 
         # Calculate and display overall accuracy (if applicable)
-     #   if 'accuracy' in report_df.columns:
-     #       overall_accuracy = report_df['accuracy'].iloc[0]  # Assuming accuracy is in the first row
-     #       st.write(f"**Overall Accuracy:** {overall_accuracy:.3f}")
-    #    else:
-     #       st.write("Overall accuracy not found in the report.")
+        if 'accuracy' in report_df.columns:
+            overall_accuracy = report_df['accuracy'].iloc[0]  # Assuming accuracy is in the first row
+            st.write(f"**Overall Accuracy:** {overall_accuracy:.3f}")
+        else:
+            st.write("Overall accuracy not found in the report.")
 
         # Display the table with better formatting
         #st.dataframe(
@@ -1296,6 +1296,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
