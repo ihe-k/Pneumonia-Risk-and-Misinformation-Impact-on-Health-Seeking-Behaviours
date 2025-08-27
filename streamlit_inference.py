@@ -916,13 +916,14 @@ def display_simulation_results(df):
 #results = calculate_something(num_agents)  # Assuming this is not needed
 #st.write("Results:", results) # Remove this line if not needed
 
-if st.button("Run Simulation"):
+if st.sidebar.button("Run Simulation"):
     df = run_simulation(num_agents)
     if df is not None:
         df = df.reset_index(drop=True)
         df.index = df.index + 1  # Shift index to start at 1  (Correcting the indentation here)
         st.dataframe(df)
 
+st.subheader("3⃣ Agent-Based Misinformation Simulation")
     display_simulation_results(df)  # Remove or adjust if needed
     
     # This section appears to be attempting to create a DataFrame from 'data'
@@ -951,7 +952,6 @@ if st.button("Run Simulation"):
 
 # pneumonia_v07.py
 
-st.subheader("3⃣ Agent-Based Misinformation Simulation")
 
 # Define Patient agent
 class Patient(Agent):
@@ -1117,6 +1117,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
