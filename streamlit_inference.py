@@ -836,12 +836,13 @@ if texts:
             # Show sample texts with their sentiment scores
             st.markdown("### 📝 Sample Texts with Sentiment Scores")
             sample_data = list(zip(cleaned_texts[:5], sentiment_scores[:5]))
+            st.subheader("3⃣ Agent-Based Misinformation Simulation")
             for text, sentiment in sample_data:
                 sentiment_label = "❌ Negative" if sentiment < 0 else "✅ Positive" if sentiment > 0 else "⚪ Neutral"
              
                 st.write(f"{sentiment_label} ({sentiment:.2f}): {text[:150]}...")
 
-                st.subheader("3⃣ Agent-Based Misinformation Simulation")
+                
 
 
 else:
@@ -913,7 +914,7 @@ def display_simulation_results(df):
  #   st.pyplot(plt)
 
 # Input for number of agents
-num_agents = st.number_input("Number of agents", min_value=1, max_value=1000, value=100)
+#num_agents = st.number_input("Number of agents", min_value=1, max_value=1000, value=100)
 #results = calculate_something(num_agents)  # Assuming this is not needed
 #st.write("Results:", results) # Remove this line if not needed
 
@@ -923,7 +924,7 @@ if st.button("Run Simulation"):
         df = df.reset_index(drop=True)
         df.index = df.index + 1  # Shift index to start at 1  (Correcting the indentation here)
         st.dataframe(df)
-    #display_simulation_results(df)  # Remove or adjust if needed
+    display_simulation_results(df)  # Remove or adjust if needed
     
     # This section appears to be attempting to create a DataFrame from 'data'
     # but 'data' isn't defined in the snippet.  
@@ -1117,6 +1118,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
