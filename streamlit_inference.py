@@ -430,42 +430,30 @@ def get_tavily_results(query='pneumonia', size=20, api_key=None):
         st.error(f"Error fetching Tavily results: {e}")
         return []
 
-import requests
-import re
-import html
-from urllib.parse import quote_plus
 
 def get_wikipedia_results(query='pneumonia', size=20):
-    """Fetch Wikipedia search results using Wikimedia REST API."""
+    """Get Wikipedia search results (free, no auth required)"""
     try:
         wiki_url = f"https://en.wikipedia.org/w/rest.php/v1/search/page?q={quote_plus(query)}&limit={size}"
-        headers = {
-            "User-Agent": (
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                "AppleWebKit/537.36 (KHTML, like Gecko) "
-                "Chrome/115.0.0.0 Safari/537.36"
-            )
-        }
-        response = requests.get(wiki_url, headers=headers, timeout=15)
-        response.raise_for_status()
-
-        data = response.json()
-        pages = data.get("pages", [])
-        texts = []
-        for page in pages:
-            title = page.get("title", "")
-            excerpt = page.get("excerpt", "")
-            excerpt_clean = re.sub(r"<[^>]+>", " ", excerpt)
-            excerpt_clean = html.unescape(excerpt_clean)
-            if title or excerpt_clean:
-                texts.append(f"**{title}**\n{excerpt_clean.strip()}")
-        return texts
-
-    except requests.exceptions.HTTPError as e:
-        print(f"HTTP error: {e}")
-        return []
+        response = requests.get(wiki_url, timeout=20)
+        if response.status_code == 200:
+            data = response.json()
+            pages = data.get("pages", [])
+            texts = []
+            for page in pages:
+                title = page.get("title") or ""
+                excerpt = page.get("excerpt") or ""
+                # Strip HTML tags in excerpt
+                excerpt_clean = re.sub(r"<[^>]+>", " ", excerpt)
+                text = f"{title} {excerpt_clean}".strip()
+                if text:
+                    texts.append(text)
+            return texts
+        else:
+            st.warning(f"⚠️ Wikipedia search returned status {response.status_code}.")
+            return []
     except Exception as e:
-        print(f"Unexpected error: {e}")
+        st.error(f"Error fetching Wikipedia results: {e}")
         return []
 
 
@@ -1337,6 +1325,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
