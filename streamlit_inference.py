@@ -653,9 +653,9 @@ col1, col2 = st.columns(2)  # Create two columns
     # Run simulation code here
             try:
             # Update session state with new values
-                st.session_state['num_agents'] = num_agents
-                st.session_state['num_clinicians'] = num_clinicians
-                st.session_state['misinfo_exposure'] = misinfo_exposure
+            #    st.session_state['num_agents'] = num_agents
+             #   st.session_state['num_clinicians'] = num_clinicians
+              #  st.session_state['misinfo_exposure'] = misinfo_exposure
 
                 model = MisinformationModel(
                     num_patients=st.session_state['num_agents'],
@@ -1469,6 +1469,7 @@ if simulate_button:
 #else:
     # Show placeholder when simulation hasn't been run
 #    st.info("👆 Use the sidebar controls above to configure and run the agent-based simulation.")
+
 
 
 
