@@ -865,7 +865,6 @@ def run_simulation(num_agents):
         pandas.DataFrame: A DataFrame containing the simulated data.
         Returns None if input validation fails.
     """
-st.subheader("3⃣ Agent-Based Misinformation Simulation")
     
     # Input Validation
     if not isinstance(num_agents, int) or num_agents <= 0:
@@ -883,7 +882,7 @@ st.subheader("3⃣ Agent-Based Misinformation Simulation")
     df = pd.DataFrame(data)
     return df
 
-
+st.subheader("3⃣ Agent-Based Misinformation Simulation")
 def display_simulation_results(df):
     """Displays the simulation results in a user-friendly format using Streamlit.
 
@@ -1118,6 +1117,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
