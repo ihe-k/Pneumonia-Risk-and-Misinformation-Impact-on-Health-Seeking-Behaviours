@@ -770,39 +770,7 @@ try:
     # Display the metrics table
     st.dataframe(
         metrics_df,
-        use_container_width=True,
-        hide_index=True
-    )
-
-except Exception as e:
-    st.error(f"⚠️ Could not evaluate HealthVer dataset: {e}")
-
-# Expander for summary of terms
-with st.expander("Summary of Terms (Click Here)"):
-    st.markdown("""
-    <div style="background-color: #003A6B; padding: 15px; border-radius: 6px; border: 1px solid #ddd;">
-    <ul style="margin-top: 0;">
-        <li><strong>Precision:</strong> Measures how many selected items are relevant.</li>
-        <li><strong>Recall:</strong> Measures how many relevant items are selected.</li>
-        <li><strong>F1-score:</strong> Harmonic mean of precision and recall.</li>
-        <li><strong>Supports / Refutes / Neutral:</strong> The categories being classified.</li>
-        <li><strong>Macro avg:</strong> Average of metrics treating all classes equally.</li>
-        <li><strong>Weighted avg:</strong> Metrics weighted by the number of true instances in each class.</li>
-        <li><strong>Accuracy:</strong> Overall proportion of correctly classified samples.</li>
-    </ul>
-    </div>
-    """, unsafe_allow_html=True)
-
-# Additional markdown for terms explanation
-st.markdown("""
-- **Precision:** Measures the number of times a model correctly predicts a class.  
-- **Recall:** Measures how many relevant items are selected by the model.  
-- **F1-score:** The harmonic mean of precision and recall.  
-- **Supports / Refutes / Neutral:** The categories being classified.  
-- **Macro avg:** Average of metrics treating all classes equally.  
-- **Weighted avg:** Metrics weighted by the number of true instances in each class.  
-- **Accuracy:** Overall correctness of the model.  
-""")
+        use_container_
 
 
 
@@ -1437,6 +1405,7 @@ if simulate_button:
 #else:
     # Show placeholder when simulation hasn't been run
 #    st.info("👆 Use the sidebar controls above to configure and run the agent-based simulation.")
+
 
 
 
