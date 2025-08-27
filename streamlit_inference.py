@@ -77,7 +77,7 @@ def plot_custom_scatter(df, category_col, value_col, category_positions):
     # Important: Check for valid category positions
     if not all(cat in category_positions for cat in df[category_col].unique()):
         missing_categories = set(df[category_col].unique()) - set(category_positions.keys())
-        st.error(f"The following categories in the DataFrame do not have corresponding positions in 'category_positions': {missing_categories}.")
+        st.error(f"The following categories in your DataFrame are not found in 'category_positions': {', '.join(missing_categories)}")
         return
     # Create a dictionary mapping categories to their positions
     category_to_position = {k: v for k, v in category_positions.items()}
@@ -91,10 +91,36 @@ def plot_custom_scatter(df, category_col, value_col, category_positions):
     plt.show()
     st.pyplot(plt)  # Display the plot in Streamlit
 
-plot_custom_scatter(df, 'Category', 'Value', category_positions)
+    # Create the figure and axes
+    fig, ax = plt.subplots()
 
-   
+    # Map category values to x-axis positions
+    x_coords = [category_positions[cat] for cat in df[category_col]]
+
+    # Plot the scatter points
+    ax.scatter(x_coords, df[value_col])
+
+    # Customize the plot (optional)
+    ax.set_xlabel(category_col)
+    ax.set_ylabel(value_col)
+    ax.set_title(f"Scatter Plot of {value_col} by {category_col}")
     
+    # Set x-axis ticks and labels for better readability
+    ax.set_xticks(list(category_positions.values()))
+    ax.set_xticklabels(list(category_positions.keys()))
+
+    st.pyplot(fig)
+
+    # Example data
+    data = {'Category': ['A', 'B', 'C', 'A', 'B', 'C'], 'Value': [1, 3, 2, 2, 4, 3]}
+    df = pd.DataFrame(data)
+
+    category_positions = {'A': 0.05, 'B': 0.1, 'C': 0.15}  # Example positions
+
+
+    # Call the function to plot
+    plot_custom_scatter(df, 'Category', 'Value', category_positions)
+
     
 
 # Resolve default model directories relative to this script
@@ -1217,6 +1243,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
