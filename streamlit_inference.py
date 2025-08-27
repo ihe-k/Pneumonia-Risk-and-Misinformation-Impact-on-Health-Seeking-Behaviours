@@ -435,30 +435,51 @@ def get_tavily_results(query='pneumonia', size=20, api_key=None):
         st.error(f"Error fetching Tavily results: {e}")
         return []
 
+import requests
+import re
+import html
+from urllib.parse import quote_plus
+import streamlit as st
+
 def get_wikipedia_results(query='pneumonia', size=20):
-    """Get Wikipedia search results (free, no auth required)"""
+    """Fetches Wikipedia search results using the Wikimedia REST API."""
     try:
         wiki_url = f"https://en.wikipedia.org/w/rest.php/v1/search/page?q={quote_plus(query)}&limit={size}"
-        response = requests.get(wiki_url, timeout=20)
-        if response.status_code == 200:
-            data = response.json()
-            pages = data.get("pages", [])
-            texts = []
-            for page in pages:
-                title = page.get("title") or ""
-                excerpt = page.get("excerpt") or ""
-                # Strip HTML tags in excerpt
-                excerpt_clean = re.sub(r"<[^>]+>", " ", excerpt)
-                text = f"{title} {excerpt_clean}".strip()
-                if text:
-                    texts.append(text)
-            return texts
-        else:
-            st.warning(f"⚠️ Wikipedia search returned status {response.status_code}.")
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"  # good practice for public APIs
+        }
+        response = requests.get(wiki_url, headers=headers, timeout=20)
+        response.raise_for_status()  # Will raise HTTPError for bad responses
+
+        data = response.json()
+        pages = data.get("pages", [])
+        if not pages:
+            st.info("No results found from Wikipedia.")
             return []
-    except Exception as e:
-        st.error(f"Error fetching Wikipedia results: {e}")
+
+        texts = []
+        for page in pages:
+            title = page.get("title", "").strip()
+            excerpt = page.get("excerpt", "")
+            excerpt_clean = re.sub(r"<[^>]+>", " ", excerpt)  # Remove HTML tags
+            excerpt_clean = html.unescape(excerpt_clean)  # Decode HTML entities
+
+            if title or excerpt_clean:
+                text = f"**{title}**\n{excerpt_clean.strip()}"
+                texts.append(text)
+
+        return texts
+
+    except requests.exceptions.RequestException as e:
+        st.error(f"Network error while fetching Wikipedia data: {e}")
         return []
+    except ValueError as e:
+        st.error(f"Failed to parse response from Wikipedia: {e}")
+        return []
+    except Exception as e:
+        st.error(f"Unexpected error: {e}")
+        return []
+
 
 def get_hackernews_results(query='pneumonia', size=20):
     """Get Hacker News search results (free via Algolia API)"""
@@ -1327,6 +1348,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
