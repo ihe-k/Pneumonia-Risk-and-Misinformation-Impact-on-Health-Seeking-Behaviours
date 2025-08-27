@@ -836,7 +836,7 @@ if texts:
             # Show sample texts with their sentiment scores
             st.markdown("### 📝 Sample Texts with Sentiment Scores")
             sample_data = list(zip(cleaned_texts[:5], sentiment_scores[:5]))
-            st.subheader("3⃣ Agent-Based Misinformation Simulation")
+            
             for text, sentiment in sample_data:
                 sentiment_label = "❌ Negative" if sentiment < 0 else "✅ Positive" if sentiment > 0 else "⚪ Neutral"
              
@@ -855,7 +855,6 @@ else:
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
-
 def run_simulation(num_agents):
     """Simulates data for pneumonia model.
 
@@ -866,6 +865,7 @@ def run_simulation(num_agents):
         pandas.DataFrame: A DataFrame containing the simulated data.
         Returns None if input validation fails.
     """
+st.subheader("3⃣ Agent-Based Misinformation Simulation")
     
     # Input Validation
     if not isinstance(num_agents, int) or num_agents <= 0:
@@ -1118,6 +1118,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
