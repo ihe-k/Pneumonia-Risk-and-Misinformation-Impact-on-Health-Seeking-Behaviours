@@ -561,9 +561,9 @@ st.markdown("""
     <p style="color: white; opacity: 0.95;">This comprehensive tool combines:</p>
     <ul style="color: white; opacity: 0.9;">
         <li><strong>🔬 AI-Powered X-ray Analysis:</strong> Advanced pneumonia detection using pretrained ML models</li>
-        <li><strong>🌐 Multi-Source Data Collection:</strong> Real-time analysis from Reddit, Wikipedia, Hacker News, and more</li>
-        <li><strong>📈 Advanced Analytics:</strong> Sentiment analysis, misinformation detection, and interactive visualizations</li>
-        <li><strong>🎯 Agent-Based Simulation:</strong> Model the impact of misinformation on healthcare behavior</li>
+        <li><strong>🌐 Multi-Source Data Collection:</strong> Real-time analysis from Reddit, Wikipedia, Hacker News and more</li>
+        <li><strong>📈 Advanced Analytics:</strong> Sentiment analysis, misinformation detection and interactive visualisations</li>
+        <li><strong>🎯 Agent-Based Simulation:</strong> Model the impact of misinformation on healthcare behaviour</li>
     </ul>
 </div>
 """, unsafe_allow_html=True)
@@ -755,8 +755,21 @@ try:
     st.write("### Classification Metrics")
     st.dataframe(report_df.drop(columns=["support"], errors="ignore").style.format("{:.3f}"))
 
-    with st.expander("Summary of Terms"):
+    with st.expander("Summary of Terms (Click Here)"):
         st.markdown("""
+        <div style="background-color: #003A6B; padding: 15px; border-radius: 6px; border: 1px solid #ddd;">
+        <ul style="margin-top: 0;">
+            <li><strong>Precision:</strong> Measures how many selected items are relevant.</li>
+            <li><strong>Recall:</strong> Measures how many relevant items are selected.</li>
+            <li><strong>F1-score:</strong> Harmonic mean of precision and recall.</li>
+            <li><strong>Supports / Refutes / Neutral:</strong> The classes predicted by the model.</li>
+            <li><strong>Macro avg:</strong> Average of metrics treating all classes equally.</li>
+            <li><strong>Weighted avg:</strong> Metrics weighted by the number of true instances in each class.</li>
+            <li><strong>Accuracy:</strong> Overall proportion of correctly classified samples.</li>
+        </ul>
+    </div>
+    """, unsafe_allow_html=True)
+
         - **Precision:** Measures the number of times a model correctly predicts a class. 
         - **Recall:** The proportion of true instances of a class that the model found.
         - **F1-score:** The balance between precision and recall (harmonic mean).  
@@ -1302,12 +1315,13 @@ st.markdown(
     """
     💡 This app integrates:
     - Real Chest X-ray pneumonia classification with pretrained Logistic Regression and XGBoost models
-    - Multi-source misinformation detection: Reddit (free API), Tavily web search, Wikipedia, Hacker News, HealthVer, FullFact
+    - Multi-source misinformation detection: Reddit (free API), Tavily web search, Wikipedia, Hacker News, HealthVer and FullFact
     - RAPHAEL-style claim scoring for health claims with sentiment analysis
-    - Agent-based simulation modeling misinformation's impact on care-seeking behavior, with clinician interaction
-    - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
+    - Agent-based simulation modeling misinformation's impact on care-seeking behavior with clinician interaction
+    - Advanced visualizations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
