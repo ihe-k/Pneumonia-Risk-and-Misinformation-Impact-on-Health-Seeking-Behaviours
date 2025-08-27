@@ -751,11 +751,7 @@ try:
         if col in report_df.columns:
             report_df[col] = report_df[col].round(3)
 
-# After code that  displays the classification report as a DataFrame:
-    st.write("### Classification Metrics")
-    st.dataframe(report_df.drop(columns=["support"], errors="ignore").style.format("{:.3f}"))
-
-    with st.expander("Summary of Terms (Click Here)"):
+with st.expander("Summary of Terms (Click Here)"):
     st.markdown("""
     <div style="background-color: #003A6B; padding: 15px; border-radius: 6px; border: 1px solid #ddd;">
     <ul style="margin-top: 0;">
@@ -770,14 +766,17 @@ try:
     </div>
     """, unsafe_allow_html=True)
 
-        - **Precision:** Measures the number of times a model correctly predicts a class. 
-        - **Recall:** The proportion of true instances of a class that the model found.
-        - **F1-score:** The balance between precision and recall (harmonic mean).  
-        - **Supports / Refutes / Neutral:** The categories being classified.  
-        - **Macro avg:** Average of metrics treating all classes equally.  
-        - **Weighted avg:** Average of metrics weighted by class size (support).  
-        - **Accuracy:** Overall correctness of the model.  
-        """)
+    # Here, the remaining markdown content outside the HTML block
+    st.markdown("""
+    - **Precision:** Measures the number of times a model correctly predicts a class.  
+    - **Recall:** The proportion of true instances of a class that the model found.  
+    - **F1-score:** The balance between precision and recall (harmonic mean).  
+    - **Supports / Refutes / Neutral:** The categories being classified.  
+    - **Macro avg:** Average of metrics treating all classes equally.  
+    - **Weighted avg:** Average of metrics weighted by class size (support).  
+    - **Accuracy:** Overall correctness of the model.  
+    """)
+
 
     
     # Display the table with better formatting
@@ -1410,6 +1409,7 @@ if simulate_button:
 #else:
     # Show placeholder when simulation hasn't been run
 #    st.info("👆 Use the sidebar controls above to configure and run the agent-based simulation.")
+
 
 
 
