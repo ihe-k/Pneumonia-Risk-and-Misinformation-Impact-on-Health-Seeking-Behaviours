@@ -1317,10 +1317,11 @@ st.markdown(
     - Real Chest X-ray pneumonia classification with pretrained Logistic Regression and XGBoost models
     - Multi-source misinformation detection: Reddit (free API), Tavily web search, Wikipedia, Hacker News, HealthVer and FullFact
     - RAPHAEL-style claim scoring for health claims with sentiment analysis
-    - Agent-based simulation modeling misinformation's impact on care-seeking behavior with clinician interaction
+    - Agent-based simulation modelling to illustrate the impact of misinformation on care-seeking behaviour with clinician interaction
     - Advanced visualizations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
