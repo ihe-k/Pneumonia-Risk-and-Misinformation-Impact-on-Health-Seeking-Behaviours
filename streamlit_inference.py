@@ -694,59 +694,61 @@ try:
     # Convert to DataFrame for better display
     report_df = pd.DataFrame(report_str).transpose()
     
-   # Round numeric values to 3 decimal places
-numeric_columns = ['precision', 'recall', 'f1-score', 'support']
-for col in numeric_columns:
-    if col in report_df.columns:
-        report_df[col] = report_df[col].round(3)
+ # ... (previous code)
 
-# Display the table with better formatting
-st.dataframe(
-    report_df,
-    use_container_width=True,
-    hide_index=False
-)
+# Round numeric values to 3 decimal places
+   try:
+        numeric_columns = ['precision', 'recall', 'f1-score', 'support']
+        for col in numeric_columns:
+            if col in report_df.columns:
+                report_df[col] = report_df[col].round(3)
+    except KeyError as e:
+        print(f"Error: Column '{e}' not found in report_df. Skipping rounding.")
+    except Exception as e:
+        print(f"An unexpected error occurred during rounding: {e}")
 
-# Also show accuracy metrics separately for better visibility
-st.markdown("### 📈 Overall Metrics")
+    # Display the table with better formatting
+    st.dataframe(
+        report_df,
+        use_container_width=True,
+        hide_index=False
+    )
 
-import pandas as pd
-import streamlit as st
-
-try:
-    # Create the metrics DataFrame with actual report data
-    metrics_data = {
-        'Metric': ['Accuracy', 'Macro Avg F1', 'Weighted Avg F1'],
-        'Value': [
-            report_df['accuracy'].iloc[0] if 'accuracy' in report_df and not report_df['accuracy'].empty else None,  # Check for existence and avoid errors
-            report_df['macro avg']['f1-score'].iloc[0] if 'macro avg' in report_df and 'f1-score' in report_df['macro avg'] and not report_df['macro avg']['f1-score'].empty else None,
-            report_df['weighted avg']['f1-score'].iloc[0] if 'weighted avg' in report_df and 'f1-score' in report_df['weighted avg'] and not report_df['weighted avg']['f1-score'].empty else None
-        ]
-    }
-
-    # Handle potential missing data gracefully
-    metrics_df = pd.DataFrame(metrics_data)
-    metrics_df = metrics_df.dropna() # Remove rows with missing values.
+    # Calculate and display overall accuracy (example)
+    try:
+        total_support = report_df['support'].sum()
+        correct_predictions = report_df['support'].sum()
+        accuracy = round(correct_predictions / total_support, 3) if total_support >0 else 0
+        st.markdown("### 📈 Overall Metrics")
+        st.write(f"**Accuracy:** {accuracy}")  # More user-friendly display
+    except (KeyError, TypeError) as e:
+        st.error(f"Error calculating accuracy: {e}.  Ensure 'support' column exists and contains numeric values.")
 
 
-    if metrics_df.empty:
-        st.warning("No metrics data available.")  # Inform the user if no valid data exists
-        return
+# Example usage (replace with your data loading)
+# Example data (replace with your actual data)
+data = {
+    'label': ['A', 'B', 'C'],
+    'precision': [0.95, 0.82, 0.78],
+    'recall': [0.92, 0.85, 0.80],
+    'f1-score': [0.93, 0.84, 0.79],
+    'support': [100, 80, 60]
+}
+report_df = pd.DataFrame(data)
 
-    # Display the metrics DataFrame
-    st.dataframe(metrics_df, use_container_width=True, hide_index=True)
-
-except (KeyError, AttributeError, IndexError, TypeError) as e:
-    st.error(f"Error retrieving metrics: {e}")
-    #  Consider logging the error for debugging purposes
-    # ... error handling logic ...
-    # This is crucial for debugging.  
-    import traceback
-    traceback.print_exc()  # Print the full traceback for detailed error information
-
-    # Add a placeholder or a generic message to the app
-    st.error("An error occurred while displaying metrics. Please check the logs.")
-
+# --- Streamlit App ---
+if __name__ == "__main__":
+    # Example usage (replace with your data loading).
+    # Important:  Replace this with your actual report_df
+    report_df_example = pd.DataFrame({
+        'class': ['class_1', 'class_2'],
+        'precision': [0.857, 0.789],
+        'recall': [0.912, 0.833],
+        'f1-score': [0.884, 0.810],
+        'support': [10, 20]
+    })
+    
+    display_classification_report(report_df)
 
 # =======================
 # LOAD MODELS (replaces training)
@@ -1256,6 +1258,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
