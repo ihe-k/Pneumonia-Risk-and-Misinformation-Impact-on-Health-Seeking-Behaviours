@@ -126,9 +126,6 @@ def plot_custom_scatter(df, category_col, value_col, category_positions):
     # Call the function to plot
     plot_custom_scatter(df, 'Category', 'Value', category_positions)
 
-import pandas as pd
-import streamlit as st
-from sklearn.metrics import classification_report
 
 def display_classification_report(report_df):
     """
@@ -1339,6 +1336,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
