@@ -2,6 +2,7 @@
 
 import streamlit as st
 import numpy as np
+from sklearn.metrics import accuracy_score, classification_report
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -739,8 +740,7 @@ try:
     st.markdown(f"**✅ Test Accuracy:** {test_acc:.3f}")
 
 
-import pandas as pd
-import streamlit as st
+
 from sklearn.metrics import accuracy_score, classification_report
 
 # Example accuracy calculations
@@ -755,6 +755,24 @@ y_test_pred = [0, 0, 0, 1]
 dev_acc = accuracy_score(y_dev, y_dev_pred)
 test_acc = accuracy_score(y_test, y_test_pred)
 
+st.markdown(f"**✅ Dev Accuracy:** {dev_acc:.3f}")
+st.markdown(f"**✅ Test Accuracy:** {test_acc:.3f}")
+
+import pandas as pd
+import streamlit as st
+from sklearn.metrics import accuracy_score, classification_report
+
+# Example true labels and predictions - replace these with your actual data
+y_dev = [0, 1, 0, 1, 1, 0]
+y_dev_pred = [0, 1, 1, 1, 0, 0]
+y_test = [0, 1, 0, 1, 1]
+y_test_pred = [0, 0, 0, 1, 1]
+
+# Calculate accuracy scores
+dev_acc = accuracy_score(y_dev, y_dev_pred)
+test_acc = accuracy_score(y_test, y_test_pred)
+
+# Display accuracy scores
 st.markdown(f"**✅ Dev Accuracy:** {dev_acc:.3f}")
 st.markdown(f"**✅ Test Accuracy:** {test_acc:.3f}")
 
@@ -780,7 +798,7 @@ def display_classification_report(report_df):
         # Calculate overall accuracy if support column exists
         if 'support' in report_df.columns:
             total_support = report_df['support'].sum()
-            # Assuming support sums correspond to total correct predictions
+            # For demonstration, assume total correct predictions is sum of support (simplified)
             correct_predictions = report_df['support'].sum()
             accuracy = round(correct_predictions / total_support, 3) if total_support > 0 else 0
             st.markdown(f"### 📈 Overall Accuracy: {accuracy}")
@@ -792,24 +810,24 @@ def display_classification_report(report_df):
     except Exception as e:
         st.error(f"An unexpected error occurred: {e}")
 
-# Example usage:
+# Generate classification report from dummy data
 if __name__ == "__main__":
-    # Replace with your actual model predictions and true labels
+    # Replace with your actual true labels and predictions
     y_true = [0, 1, 0, 1]
     y_pred = [0, 0, 0, 1]
     label_names = ['Class 0', 'Class 1']
 
-    # Generate classification report as dict
+    # Generate report as dict
     report_dict = classification_report(y_true, y_pred, target_names=label_names, output_dict=True)
+
     # Convert to DataFrame
     report_df = pd.DataFrame(report_dict).transpose()
 
-    # Display the report in Streamlit
+    # Display the report
     display_classification_report(report_df)
 
 
 # Example usage (replace with your data loading)
-# Example data (replace with your actual data)
 data = {
     'label': ['A', 'B', 'C'],
     'precision': [0.95, 0.82, 0.78],
@@ -1341,6 +1359,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
