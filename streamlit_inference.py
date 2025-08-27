@@ -477,7 +477,7 @@ model_choice = st.sidebar.radio("Choose X-ray Model for Prediction", ("Logistic 
 uploaded_file = st.sidebar.file_uploader("Upload Chest X-Ray Image", type=["jpg", "jpeg", "png"])
 
 # Agent-Based Simulation Controls (unchanged)
-st.subheader("3⃣ Agent-Based Misinformation Simulation")
+# st.subheader("3⃣ Agent-Based Misinformation Simulation")
 num_agents = st.sidebar.slider("Number of Patient Agents", 5, 200, 50)
 num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 3)
 misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.5, 0.05)
@@ -806,7 +806,7 @@ if texts:
             st.write(f"{sentiment_label} ({sentiment:.2f}): {text[:150]}...")
 
         
-        st.markdown("### 📊 Misinormation Analysis")
+        st.markdown("### 📊 Misinformation Analysis")
         # Data summary
         col1, col2, col3 = st.columns(3)
         with col1:
@@ -1130,6 +1130,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
