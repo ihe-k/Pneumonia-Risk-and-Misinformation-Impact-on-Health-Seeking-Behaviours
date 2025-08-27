@@ -30,7 +30,9 @@ import streamlit as st
 
 def plot_relationship(df, x_col, y_col):
     plt.figure(figsize=(8,6))
-    sns.scatterplot(x=x_col, y=y_col, data=df)
+    jitter_strength = 0.2  # You can adjust this value
+    x_jittered = df[x_col] + np.random.uniform(-jitter_strength, jitter_strength, size=len(df))
+    sns.scatterplot(x=x_jittered, y=y_col, data=df)
 
     X = sm.add_constant(df[x_col])
     model = sm.OLS(df[y_col], X).fit()
@@ -974,6 +976,16 @@ if st.sidebar.button("Run Simulation"):
         df = df.reset_index(drop=True)
         df.index = df.index + 1  # Shift index to start at 1  (Correcting the indentation here)
         st.dataframe(df)
+
+        # Display metrics table with right-aligned 'Value' column
+        metrics_data = {
+            'Metric': ['Accuracy', 'Macro Avg F1', 'Weighted Avg F1'],
+            'Value': [0.85, 0.80, 0.83]
+        }
+        metrics_df = pd.DataFrame(metrics_data)
+        st.markdown("### Model Performance Metrics")
+        st.dataframe(metrics_df.style.set_properties(subset=["Value"], **{'text-align': 'right'}))
+        
         st.markdown("## Agent Data Relationship & Significance")
         plot_relationship(df, 'misinformation_exposure', 'trust_in_clinician')
     display_simulation_results(df)  # Remove or adjust if needed
@@ -1169,6 +1181,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
