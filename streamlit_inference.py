@@ -746,17 +746,16 @@ try:
    # accuracy_value = report_df.loc['accuracy', 'precision']
    
     # Round numeric values to 3 decimal places
-    numeric_columns = ['precision', 'recall', 'f1-score', 'support']
+    numeric_columns = ['precision', 'recall', 'f1-score']
     for col in numeric_columns:
         if col in report_df.columns:
             report_df[col] = report_df[col].round(3)
 
-# After your code that gets and displays the classification report as a DataFrame:
+# After code that  displays the classification report as a DataFrame:
 st.write("### Classification Metrics")
-st.dataframe(df_metrics.style.format("{:.3f}"))
+st.dataframe(report_df.drop(columns=["support"], errors="ignore").style.format("{:.3f}"))
 
-# Place the dropdown explanation immediately after the table:
-with st.expander("What do these metrics mean?"):
+with st.expander("Summary of Terms"):
     st.markdown("""
     - **Precision:** Measures the number of times a model correctly predicts a class 
     - **Recall:** The proportion of true instances of a class that the model found
@@ -1309,6 +1308,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
