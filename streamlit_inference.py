@@ -1313,7 +1313,7 @@ class MisinformationModel(Model):
 st.markdown("---")
 st.markdown(
     """
-    💡 This app integrates:
+    This app integrates:
     - Real Chest X-ray pneumonia classification with pretrained Logistic Regression and XGBoost models
     - Multi-source misinformation detection: Reddit (free API), Tavily web search, Wikipedia, Hacker News, HealthVer and FullFact
     - RAPHAEL-style claim scoring for health claims with sentiment analysis
@@ -1321,6 +1321,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
