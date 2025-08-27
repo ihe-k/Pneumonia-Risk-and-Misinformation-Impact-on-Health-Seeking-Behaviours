@@ -126,7 +126,7 @@ def plot_custom_scatter(df, category_col, value_col, category_positions):
     plot_custom_scatter(df, 'Category', 'Value', category_positions)
 
 
-def display_classification_report(report_df):
+#def display_classification_report(report_df):
     """
     Displays a classification report DataFrame in a user-friendly way using Streamlit.
 
@@ -134,21 +134,21 @@ def display_classification_report(report_df):
         report_df: A pandas DataFrame containing the classification report.
     """
 
-    try:
-        numeric_columns = ['precision', 'recall', 'f1-score', 'support']
-        for col in numeric_columns:
-            if col in report_df.columns:
+  #  try:
+   #     numeric_columns = ['precision', 'recall', 'f1-score', 'support']
+      #  for col in numeric_columns:
+        #    if col in report_df.columns:
                 # Crucial: Convert to float *before* rounding.  Avoid errors if the column isn't numeric.
-                report_df[col] = pd.to_numeric(report_df[col], errors='coerce').round(3)
+            #    report_df[col] = pd.to_numeric(report_df[col], errors='coerce').round(3)
                 # Handle potential NaN values after conversion - crucial!
-                report_df[col] = report_df[col].fillna(0)  # Or another appropriate value (e.g., report_df[col].mean())
+     #           report_df[col] = report_df[col].fillna(0)  # Or another appropriate value (e.g., report_df[col].mean())
 
         # Calculate and display overall accuracy (if applicable)
-        if 'accuracy' in report_df.columns:
-            overall_accuracy = report_df['accuracy'].iloc[0]  # Assuming accuracy is in the first row
-            st.write(f"**Overall Accuracy:** {overall_accuracy:.3f}")
-        else:
-            st.write("Overall accuracy not found in the report.")
+        #if 'accuracy' in report_df.columns:
+        #    overall_accuracy = report_df['accuracy'].iloc[0]  # Assuming accuracy is in the first row
+         #   st.write(f"**Overall Accuracy:** {overall_accuracy:.3f}")
+      #  else:
+      #      st.write("Overall accuracy not found in the report.")
 
         # Display the table with better formatting
         #st.dataframe(
@@ -1296,6 +1296,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
