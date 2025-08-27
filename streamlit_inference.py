@@ -1093,13 +1093,13 @@ if st.sidebar.button("Run Simulation"):
         st.dataframe(df)
 
         # Display metrics table with right-aligned 'Value' column
-        metrics_data = {
-            'Metric': ['Accuracy', 'Macro Avg F1', 'Weighted Avg F1'],
-            'Value': [0.85, 0.80, 0.83]
-        }
-        metrics_df = pd.DataFrame(metrics_data)
-        st.markdown("### Model Performance Metrics")
-        st.dataframe(metrics_df.style.set_properties(subset=["Value"], **{'text-align': 'right'}))
+       # metrics_data = {
+       #     'Metric': ['Accuracy', 'Macro Avg F1', 'Weighted Avg F1'],
+       #     'Value': [0.85, 0.80, 0.83]
+      #  }
+       # metrics_df = pd.DataFrame(metrics_data)
+       # st.markdown("### Model Performance Metrics")
+       # st.dataframe(metrics_df.style.set_properties(subset=["Value"], **{'text-align': 'right'}))
         
         st.markdown("## Agent Data Relationship & Significance")
         plot_relationship(df, 'misinformation_exposure', 'trust_in_clinician')
@@ -1296,6 +1296,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
