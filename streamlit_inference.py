@@ -657,32 +657,34 @@ col1, col2 = st.columns(2)  # Create two columns
              #   st.session_state['num_clinicians'] = num_clinicians
               #  st.session_state['misinfo_exposure'] = misinfo_exposure
 
-                model = MisinformationModel(
-                    num_patients=st.session_state['num_agents'],
-                    #num_patients=num_patients,
-                    num_clinicians=st.session_state['num_clinicians'],   # or another control if you want
-                    misinformation_exposure=st.session_state['misinfo_exposure'],
-                    width=10,
-                    height=10,
-                
-                )
-                for _ in range(30):
-                    model.step()
-                df = model.datacollector.get_agent_vars_dataframe()
-                st.session_state['simulation_results'] = df
-                st.success("Simulation completed!")
-            except Exception as e:
-                st.error(f"An error occurred: {e}")
+              try:
+    model = MisinformationModel(
+        num_patients=st.session_state['num_agents'],
+        num_clinicians=st.session_state['num_clinicians'],  # or another control if you want
+        misinformation_exposure=st.session_state['misinfo_exposure'],
+        width=10,
+        height=10,
+    )
+    
+    # Running the simulation
+    for _ in range(30):
+        model.step()
+    
+    # Collecting results
+    df = model.datacollector.get_agent_vars_dataframe()
+    st.session_state['simulation_results'] = df
+    st.success("Simulation completed!")
 
-    # Save results in session state
-            if 'model' in locals():
-                df = model.datacollector.get_agent_vars_dataframe()
-                st.session_state['simulation_results'] = df
+except Exception as e:
+    st.error(f"An error occurred: {e}")
 
-                st.success("Simulation completed!")
-            else:
-                st.error("Model was not initialized successfully.")
-
+# Save results in session state
+if 'model' in locals():
+    df = model.datacollector.get_agent_vars_dataframe()
+    st.session_state['simulation_results'] = df
+    st.success("Simulation completed!")
+else:
+    st.error("Model was not initialized successfully.")
 
 
 # ===============================
@@ -1469,6 +1471,7 @@ if simulate_button:
 #else:
     # Show placeholder when simulation hasn't been run
 #    st.info("👆 Use the sidebar controls above to configure and run the agent-based simulation.")
+
 
 
 
