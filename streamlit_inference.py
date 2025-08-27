@@ -809,11 +809,9 @@ if texts:
             st.write(f"{sentiment_label} ({sentiment:.2f}): {text[:150]}...")
 
         #st.subheader("3⃣ Agent-Based Misinformation Simulation")
-    st.set_page_config(layout='wide')
-    with st.container():
         st.markdown("### 📊 Misinformation Analysis")
         # Data summary
-        col1, col2, col3 = st.columns([1,1])
+        col1, col2, col3 = st.columns(3)
         with col1:
             st.metric("📄 Total Texts", len(texts))
         with col2:
@@ -1136,6 +1134,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
