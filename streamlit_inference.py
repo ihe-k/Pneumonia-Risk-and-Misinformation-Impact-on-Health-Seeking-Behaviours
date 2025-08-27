@@ -794,7 +794,6 @@ terms = [
 selected_term = st.selectbox("Select a term to view its explanation:", terms)
 
 # Expander for summary of terms
-import streamlit as st
 
 # Add dropdown options for user to select terms
 terms = [
@@ -811,7 +810,24 @@ terms = [
 selected_term = st.selectbox("Select a term to view its explanation:", terms)
 
 # Expander for summary of terms
-with st.expander(f"📘 {selected_term} &#8595;", expanded=True):  # The text is inside the expander
+import streamlit as st
+
+# Add dropdown options for user to select terms
+terms = [
+    "Precision",
+    "Recall",
+    "F1-score",
+    "Supports / Refutes / Neutral",
+    "Macro avg",
+    "Weighted avg",
+    "Accuracy"
+]
+
+# Select box for term selection
+selected_term = st.selectbox("Select a term to view its explanation:", terms)
+
+# Expander for summary of terms (without the arrow)
+with st.expander(f"{selected_term}", expanded=True):  # No arrow, just the term name
     # Explanation for each term
     if selected_term == "Precision":
         st.markdown("""
@@ -841,15 +857,6 @@ with st.expander(f"📘 {selected_term} &#8595;", expanded=True):  # The text is
         st.markdown("""
         **Accuracy:** Overall correctness of the model.  
         """)
-
-# Adjusted the color of the arrow and added better contrast for readability
-st.markdown("""
-<style>
-    h3 {
-        color: #0072B2;  /* Lighter blue for the arrow and title */
-    }
-</style>
-""", unsafe_allow_html=True)
 
 
 
@@ -1450,6 +1457,7 @@ if simulate_button:
 #else:
     # Show placeholder when simulation hasn't been run
 #    st.info("👆 Use the sidebar controls above to configure and run the agent-based simulation.")
+
 
 
 
