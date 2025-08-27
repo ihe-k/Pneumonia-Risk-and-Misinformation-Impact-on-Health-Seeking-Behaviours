@@ -27,6 +27,7 @@ import statsmodels.api as sm
 import seaborn as sns
 import matplotlib.pyplot as plt
 import streamlit as st
+import str
 
 def plot_relationship(df, x_col, y_col):
     plt.figure(figsize=(8,6))
@@ -63,6 +64,38 @@ else:
     # Keep the placeholder empty to hide the button
     run_button_placeholder.empty()
 
+def plot_custom_scatter(df, category_col, value_col, category_positions):
+    # Error handling: Check if necessary columns exist
+    if not isinstance(df, pd.DataFrame):
+        st.error("Input 'df' must be a Pandas DataFrame.")
+        return
+
+    if category_column not in df.columns or value_column not in df.columns:
+        st.error(f"Column '{category_col}' or '{value_col}' not found in DataFrame.")
+        return
+
+    # Important: Check for valid category positions
+    if not all(cat in category_positions for cat in df[category_col].unique()):
+        missing_categories = set(df[category_col].unique()) - set(category_positions.keys())
+        st.error(f"The following categories in the DataFrame do not have corresponding positions in 'category_positions': {missing_categories}.")
+        return
+    # Create a dictionary mapping categories to their positions
+    category_to_position = {k: v for k, v in category_positions.items()}
+
+     # Create the plot
+    plt.figure(figsize=(10, 6))
+    sns.scatterplot(x=df[category_col].map(category_to_position), y=df[value_col])
+    plt.xlabel("Category Position")
+    plt.ylabel(value_col)
+    plt.title(f"Scatter Plot of {value_col} vs. {category_col}")
+    plt.show()
+    st.pyplot(plt)  # Display the plot in Streamlit
+
+plot_custom_scatter(df, 'Category', 'Value', category_positions)
+
+   
+    
+    
 
 # Resolve default model directories relative to this script
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -1184,6 +1217,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
