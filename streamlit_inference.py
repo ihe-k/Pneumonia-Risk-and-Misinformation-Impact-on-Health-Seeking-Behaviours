@@ -752,18 +752,16 @@ try:
             report_df[col] = report_df[col].round(3)
 
 # After code that  displays the classification report as a DataFrame:
-st.write("### Classification Metrics")
-st.dataframe(report_df.drop(columns=["support"], errors="ignore").style.format("{:.3f}"))
 
 with st.expander("Summary of Terms"):
     st.markdown("""
-    - **Precision:** Measures the number of times a model correctly predicts a class 
-    - **Recall:** The proportion of true instances of a class that the model found
+    - **Precision:** Measures the number of times a model correctly predicts a class. 
+    - **Recall:** The proportion of true instances of a class that the model found.
     - **F1-score:** The balance between precision and recall (harmonic mean).  
     - **Supports / Refutes / Neutral:** The categories being classified.  
     - **Macro avg:** Average of metrics treating all classes equally.  
     - **Weighted avg:** Average of metrics weighted by class size (support).  
-    - **Accuracy:** Overall correctness of the model .  
+    - **Accuracy:** Overall correctness of the model.  
     """)
 
     
@@ -1308,6 +1306,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
