@@ -756,17 +756,17 @@ try:
     st.dataframe(report_df.drop(columns=["support"], errors="ignore").style.format("{:.3f}"))
 
     with st.expander("Summary of Terms (Click Here)"):
-        st.markdown("""
-        <div style="background-color: #003A6B; padding: 15px; border-radius: 6px; border: 1px solid #ddd;">
-        <ul style="margin-top: 0;">
-            <li><strong>Precision:</strong> Measures how many selected items are relevant.</li>
-            <li><strong>Recall:</strong> Measures how many relevant items are selected.</li>
-            <li><strong>F1-score:</strong> Harmonic mean of precision and recall.</li>
-            <li><strong>Supports / Refutes / Neutral:</strong> The classes predicted by the model.</li>
-            <li><strong>Macro avg:</strong> Average of metrics treating all classes equally.</li>
-            <li><strong>Weighted avg:</strong> Metrics weighted by the number of true instances in each class.</li>
-            <li><strong>Accuracy:</strong> Overall proportion of correctly classified samples.</li>
-        </ul>
+    st.markdown("""
+    <div style="background-color: #003A6B; padding: 15px; border-radius: 6px; border: 1px solid #ddd;">
+    <ul style="margin-top: 0;">
+        <li><strong>Precision:</strong> Measures how many selected items are relevant.</li>
+        <li><strong>Recall:</strong> Measures how many relevant items are selected.</li>
+        <li><strong>F1-score:</strong> Harmonic mean of precision and recall.</li>
+        <li><strong>Supports / Refutes / Neutral:</strong> The categories being classified.</li>
+        <li><strong>Macro avg:</strong> Average of metrics treating all classes equally.</li>
+        <li><strong>Weighted avg:</strong> Metrics weighted by the number of true instances in each class.</li>
+        <li><strong>Accuracy:</strong> Overall proportion of correctly classified samples.</li>
+    </ul>
     </div>
     """, unsafe_allow_html=True)
 
@@ -1370,6 +1370,7 @@ class MisinformationModel(Model):
 #else:
     # Show placeholder when simulation hasn't been run
 #    st.info("👆 Use the sidebar controls above to configure and run the agent-based simulation.")
+
 
 
 
