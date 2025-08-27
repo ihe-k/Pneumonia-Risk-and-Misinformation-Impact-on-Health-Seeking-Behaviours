@@ -753,39 +753,39 @@ try:
 #y_test_pred = [0, 0, 0, 1, 1]
 
 
-def display_classification_report(report_df):
-    """
-    Displays a classification report DataFrame in a user-friendly way using Streamlit.
-    Handles data conversion, rounding, and error management.
-    """
-    try:
+#def display_classification_report(report_df):
+#    """
+#    Displays a classification report DataFrame in a user-friendly way using Streamlit.
+ #   Handles data conversion, rounding, and error management.
+ #   """
+ #   try:
         # List of columns to process
-        numeric_columns = ['precision', 'recall', 'f1-score', 'support']
-        for col in numeric_columns:
-            if col in report_df.columns:
+  #      numeric_columns = ['precision', 'recall', 'f1-score', 'support']
+   #     for col in numeric_columns:
+   #         if col in report_df.columns:
                 # Convert to numeric, handle errors, then round
-                report_df[col] = pd.to_numeric(report_df[col], errors='coerce').round(3)
+     #           report_df[col] = pd.to_numeric(report_df[col], errors='coerce').round(3)
                 # Fill NaNs resulting from coercion if necessary
-                report_df[col] = report_df[col].fillna(0)
+     #           report_df[col] = report_df[col].fillna(0)
 
         # Display the classification report table
-        st.subheader("Classification Report")
-        st.dataframe(report_df, use_container_width=True)
+      #  st.subheader("Classification Report")
+      #  st.dataframe(report_df, use_container_width=True)
 
         # Calculate overall accuracy if support column exists
-        if 'support' in report_df.columns:
-            total_support = report_df['support'].sum()
+     #   if 'support' in report_df.columns:
+     #       total_support = report_df['support'].sum()
             # For demonstration, assume total correct predictions is sum of support (simplified)
-            correct_predictions = report_df['support'].sum()
-            accuracy = round(correct_predictions / total_support, 3) if total_support > 0 else 0
-            st.markdown(f"### 📈 Overall Accuracy: {accuracy}")
-        else:
-            st.write("Support column not found; cannot compute overall accuracy.")
+     #       correct_predictions = report_df['support'].sum()
+     #       accuracy = round(correct_predictions / total_support, 3) if total_support > 0 else 0
+     #       st.markdown(f"### 📈 Overall Accuracy: {accuracy}")
+    #    else:
+   #         st.write("Support column not found; cannot compute overall accuracy.")
 
-    except KeyError as e:
-        st.warning(f"Missing expected column: {e}")
-    except Exception as e:
-        st.error(f"An unexpected error occurred: {e}")
+   # except KeyError as e:
+   #     st.warning(f"Missing expected column: {e}")
+   # except Exception as e:
+   #     st.error(f"An unexpected error occurred: {e}")
 
 # Generate classification report from dummy data
 if __name__ == "__main__":
@@ -1336,6 +1336,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
