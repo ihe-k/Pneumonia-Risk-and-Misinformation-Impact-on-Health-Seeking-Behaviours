@@ -742,11 +742,13 @@ try:
     st.markdown("### 📊 Classification Report (Test Set)")
     
     # Get the classification report as a string and parse it
-    report_str = classification_report(y_test, y_test_pred, target_names=label_map.keys(), output_dict=True)
+    report_str = classification_report(y_test, y_test_pred, target_names=list(label_map.keys()), output_dict=True)
     
     # Convert to DataFrame for better display
     report_df = pd.DataFrame(report_str).transpose()
-    
+    if 'accuracy' in report_df.index:
+    accuracy_value = report_df.loc['accuracy', 'precision']
+   
     # Round numeric values to 3 decimal places
     numeric_columns = ['precision', 'recall', 'f1-score', 'support']
     for col in numeric_columns:
@@ -1294,6 +1296,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
