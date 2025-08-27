@@ -746,8 +746,8 @@ try:
     
     # Convert to DataFrame for better display
     report_df = pd.DataFrame(report_str).transpose()
-    if 'accuracy' in report_df.index:
-    accuracy_value = report_df.loc['accuracy', 'precision']
+    #if 'accuracy' in report_df.index:
+   # accuracy_value = report_df.loc['accuracy', 'precision']
    
     # Round numeric values to 3 decimal places
     numeric_columns = ['precision', 'recall', 'f1-score', 'support']
@@ -1296,6 +1296,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
