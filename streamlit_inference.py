@@ -693,33 +693,44 @@ try:
     # Convert to DataFrame for better display
     report_df = pd.DataFrame(report_str).transpose()
     
-    # Round numeric values to 3 decimal places
-    numeric_columns = ['precision', 'recall', 'f1-score', 'support']
-    for col in numeric_columns:
-        if col in report_df.columns:
-            report_df[col] = report_df[col].round(3)
-    
-    # Display the table with better formatting
-    st.dataframe(
-        report_df,
-        use_container_width=True,
-        hide_index=False
-    )
-    
-    # Also show accuracy metrics separately for better visibility
-    st.markdown("### 📈 Overall Metrics")
-    
+   # Round numeric values to 3 decimal places
+numeric_columns = ['precision', 'recall', 'f1-score', 'support']
+for col in numeric_columns:
+    if col in report_df.columns:
+        report_df[col] = report_df[col].round(3)
+
+# Display the table with better formatting
+st.dataframe(
+    report_df,
+    use_container_width=True,
+    hide_index=False
+)
+
+# Also show accuracy metrics separately for better visibility
+st.markdown("### 📈 Overall Metrics")
+
 try:
     # Create the metrics DataFrame with actual report data
     metrics_data = {
         'Metric': ['Accuracy', 'Macro Avg F1', 'Weighted Avg F1'],
         'Value': [
-            report_df.loc['accuracy', 'precision'],
-            report_df.loc['macro avg', 'f1-score'],
-            report_df.loc['weighted avg', 'f1-score']
+            report_df['accuracy'].iloc[0],  # Access the accuracy value
+            report_df['macro avg']['f1-score'].iloc[0],  # Access Macro Avg F1
+            report_df['weighted avg']['f1-score'].iloc[0]  # Access Weighted Avg F1
         ]
     }
+
     metrics_df = pd.DataFrame(metrics_data)
+
+    # Display the metrics DataFrame
+    st.dataframe(metrics_df, use_container_width=True, hide_index=True)
+
+except (KeyError, AttributeError, IndexError) as e:
+    st.error(f"Error retrieving metrics: {e}")
+    #  Consider logging the error for debugging
+    #  Example:
+    #  import logging
+    #  logging.error(f"Error retrieving metrics: {e}")
 
     # Style with right alignment and format to 3 decimal places
     styled_metrics_df = metrics_df.style.format({'Value': '{:>10.3f}'})
@@ -1243,6 +1254,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
