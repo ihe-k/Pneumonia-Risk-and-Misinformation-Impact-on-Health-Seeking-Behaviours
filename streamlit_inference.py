@@ -805,26 +805,26 @@ if __name__ == "__main__":
 
 
 # Example usage (replace with your data loading)
-data = {
-    'label': ['A', 'B', 'C'],
-    'precision': [0.95, 0.82, 0.78],
-    'recall': [0.92, 0.85, 0.80],
-    'f1-score': [0.93, 0.84, 0.79],
-    'support': [100, 80, 60]
-}
-report_df = pd.DataFrame(data)
+#data = {
+#    'label': ['A', 'B', 'C'],
+ #   'precision': [0.95, 0.82, 0.78],
+  #  'recall': [0.92, 0.85, 0.80],
+   # 'f1-score': [0.93, 0.84, 0.79],
+    #'support': [100, 80, 60]
+#}
+#report_df = pd.DataFrame(data)
 
 # --- Streamlit App ---
 if __name__ == "__main__":
     # Example usage (replace with your data loading).
     # Important:  Replace this with your actual report_df
-    report_df_example = pd.DataFrame({
-        'class': ['class_1', 'class_2'],
-        'precision': [0.857, 0.789],
-        'recall': [0.912, 0.833],
-        'f1-score': [0.884, 0.810],
-        'support': [10, 20]
-    })
+    #report_df_example = pd.DataFrame({
+    #    'class': ['class_1', 'class_2'],
+     #   'precision': [0.857, 0.789],
+      #  'recall': [0.912, 0.833],
+      #  'f1-score': [0.884, 0.810],
+       # 'support': [10, 20]
+   # })
     
     display_classification_report(report_df)
 
@@ -1336,6 +1336,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
