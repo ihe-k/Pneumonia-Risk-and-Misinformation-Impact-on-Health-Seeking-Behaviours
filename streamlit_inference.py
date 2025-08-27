@@ -751,6 +751,9 @@ try:
         if col in report_df.columns:
             report_df[col] = report_df[col].round(3)
 
+# Remove try/except/finally if not needed
+# Ensure everything is properly indented and no incomplete code.
+
 with st.expander("Summary of Terms (Click Here)"):
     st.markdown("""
     <div style="background-color: #003A6B; padding: 15px; border-radius: 6px; border: 1px solid #ddd;">
@@ -766,7 +769,7 @@ with st.expander("Summary of Terms (Click Here)"):
     </div>
     """, unsafe_allow_html=True)
 
-# This part should be outside the 'with' block, so no indentation needed here
+# Continue with other markdown content if necessary
 st.markdown("""
 - **Precision:** Measures the number of times a model correctly predicts a class.  
 - **Recall:** The proportion of true instances of a class that the model found.  
@@ -1410,6 +1413,7 @@ if simulate_button:
 #else:
     # Show placeholder when simulation hasn't been run
 #    st.info("👆 Use the sidebar controls above to configure and run the agent-based simulation.")
+
 
 
 
