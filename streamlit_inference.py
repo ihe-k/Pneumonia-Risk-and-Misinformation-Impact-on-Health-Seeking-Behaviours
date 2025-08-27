@@ -1143,11 +1143,11 @@ def run_simulation(num_agents):
     return df
 
 def display_simulation_results(df):
-    """Displays the simulation results in a user-friendly format using Streamlit.
+   # """Displays the simulation results in a user-friendly format using Streamlit.
 
-    Args:
-        df: The DataFrame containing the simulation results.
-    """
+   # Args:
+   #     df: The DataFrame containing the simulation results.
+  #  """
     if df is None:
         return  # Handle the case where run_simulation returned None
 
@@ -1370,6 +1370,7 @@ class MisinformationModel(Model):
 #else:
     # Show placeholder when simulation hasn't been run
 #    st.info("👆 Use the sidebar controls above to configure and run the agent-based simulation.")
+
 
 
 
