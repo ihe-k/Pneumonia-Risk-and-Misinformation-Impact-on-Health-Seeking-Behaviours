@@ -749,25 +749,12 @@ try:
 # (Replace these with your actual predictions and labels)
 # y_dev, y_dev_pred, y_test, y_test_pred should be defined in your code
 
-dev_acc = accuracy_score(y_dev, y_dev_pred)
-test_acc = accuracy_score(y_test, y_test_pred)
-
-st.markdown(f"**✅ Dev Accuracy:** {dev_acc:.3f}")
-st.markdown(f"**✅ Test Accuracy:** {test_acc:.3f}")
-
 # Example true labels and predictions - replace these with your actual data
-y_dev = [0, 1, 0, 1, 1, 0]
-y_dev_pred = [0, 1, 1, 1, 0, 0]
-y_test = [0, 1, 0, 1, 1]
-y_test_pred = [0, 0, 0, 1, 1]
+#y_dev = [0, 1, 0, 1, 1, 0]
+#y_dev_pred = [0, 1, 1, 1, 0, 0]
+#y_test = [0, 1, 0, 1, 1]
+#y_test_pred = [0, 0, 0, 1, 1]
 
-# Calculate accuracy scores
-dev_acc = accuracy_score(y_dev, y_dev_pred)
-test_acc = accuracy_score(y_test, y_test_pred)
-
-# Display accuracy scores
-st.markdown(f"**✅ Dev Accuracy:** {dev_acc:.3f}")
-st.markdown(f"**✅ Test Accuracy:** {test_acc:.3f}")
 
 def display_classification_report(report_df):
     """
@@ -1352,6 +1339,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
