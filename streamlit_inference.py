@@ -788,20 +788,20 @@ try:
    #     st.error(f"An unexpected error occurred: {e}")
 
 # Generate classification report from dummy data
-if __name__ == "__main__":
+#if __name__ == "__main__":
     # Replace with your actual true labels and predictions
-    y_true = [0, 1, 0, 1]
-    y_pred = [0, 0, 0, 1]
-    label_names = ['Class 0', 'Class 1']
+ #   y_true = [0, 1, 0, 1]
+ #   y_pred = [0, 0, 0, 1]
+ #   label_names = ['Class 0', 'Class 1']
 
     # Generate report as dict
-    report_dict = classification_report(y_true, y_pred, target_names=label_names, output_dict=True)
+  #  report_dict = classification_report(y_true, y_pred, target_names=label_names, output_dict=True)
 
     # Convert to DataFrame
-    report_df = pd.DataFrame(report_dict).transpose()
+   # report_df = pd.DataFrame(report_dict).transpose()
 
     # Display the report
-    display_classification_report(report_df)
+  #  display_classification_report(report_df)
 
 
 # Example usage (replace with your data loading)
@@ -815,7 +815,7 @@ if __name__ == "__main__":
 #report_df = pd.DataFrame(data)
 
 # --- Streamlit App ---
-if __name__ == "__main__":
+#if __name__ == "__main__":
     # Example usage (replace with your data loading).
     # Important:  Replace this with your actual report_df
     #report_df_example = pd.DataFrame({
@@ -826,7 +826,7 @@ if __name__ == "__main__":
        # 'support': [10, 20]
    # })
     
-    display_classification_report(report_df)
+   # display_classification_report(report_df)
 
 # =======================
 # LOAD MODELS (replaces training)
@@ -1336,6 +1336,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
