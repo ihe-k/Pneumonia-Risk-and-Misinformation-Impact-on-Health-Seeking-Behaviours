@@ -916,6 +916,8 @@ def display_simulation_results(df):
 #results = calculate_something(num_agents)  # Assuming this is not needed
 #st.write("Results:", results) # Remove this line if not needed
 
+st.subheader("3⃣ Agent-Based Misinformation Simulation")
+
 if st.sidebar.button("Run Simulation"):
     df = run_simulation(num_agents)
     if df is not None:
@@ -923,7 +925,6 @@ if st.sidebar.button("Run Simulation"):
         df.index = df.index + 1  # Shift index to start at 1  (Correcting the indentation here)
         st.dataframe(df)
 
-st.subheader("3⃣ Agent-Based Misinformation Simulation")
     display_simulation_results(df)  # Remove or adjust if needed
     
     # This section appears to be attempting to create a DataFrame from 'data'
@@ -1117,6 +1118,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
