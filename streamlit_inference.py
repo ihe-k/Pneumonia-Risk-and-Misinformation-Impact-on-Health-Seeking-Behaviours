@@ -742,18 +742,20 @@ try:
     
     # Convert to DataFrame for better display
     report_df = pd.DataFrame(report_str).transpose()
-    #if 'accuracy' in report_df.index:
-   # accuracy_value = report_df.loc['accuracy', 'precision']
-   
+    
     # Round numeric values to 3 decimal places
     numeric_columns = ['precision', 'recall', 'f1-score']
     for col in numeric_columns:
         if col in report_df.columns:
             report_df[col] = report_df[col].round(3)
 
-# Remove try/except/finally if not needed
-# Ensure everything is properly indented and no incomplete code.
+    # Show report as a DataFrame
+    st.dataframe(report_df)
 
+except Exception as e:
+    st.error(f"An error occurred: {e}")
+
+# Expander for summary of terms
 with st.expander("Summary of Terms (Click Here)"):
     st.markdown("""
     <div style="background-color: #003A6B; padding: 15px; border-radius: 6px; border: 1px solid #ddd;">
@@ -769,14 +771,14 @@ with st.expander("Summary of Terms (Click Here)"):
     </div>
     """, unsafe_allow_html=True)
 
-# Continue with other markdown content if necessary
+# Additional markdown for terms explanation
 st.markdown("""
 - **Precision:** Measures the number of times a model correctly predicts a class.  
-- **Recall:** The proportion of true instances of a class that the model found.  
-- **F1-score:** The balance between precision and recall (harmonic mean).  
+- **Recall:** Measures how many relevant items are selected by the model.  
+- **F1-score:** The harmonic mean of precision and recall.  
 - **Supports / Refutes / Neutral:** The categories being classified.  
 - **Macro avg:** Average of metrics treating all classes equally.  
-- **Weighted avg:** Average of metrics weighted by class size (support).  
+- **Weighted avg:** Metrics weighted by the number of true instances in each class.  
 - **Accuracy:** Overall correctness of the model.  
 """)
 
@@ -1413,6 +1415,7 @@ if simulate_button:
 #else:
     # Show placeholder when simulation hasn't been run
 #    st.info("👆 Use the sidebar controls above to configure and run the agent-based simulation.")
+
 
 
 
