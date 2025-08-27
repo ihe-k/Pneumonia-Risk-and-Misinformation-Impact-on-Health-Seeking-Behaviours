@@ -27,26 +27,26 @@ from mesa.time import RandomActivation
 from mesa.space import MultiGrid
 from mesa.datacollection import DataCollector
 
-def plot_relationship(df, x_col, y_col):
-    plt.figure(figsize=(8,6))
-    jitter_strength = 0.2  # You can adjust this value
-    x_jittered = df[x_col] + np.random.uniform(-jitter_strength, jitter_strength, size=len(df))
-    sns.scatterplot(x=x_jittered, y=y_col, data=df)
+#def plot_relationship(df, x_col, y_col):
+#    plt.figure(figsize=(8,6))
+  #  jitter_strength = 0.2  # You can adjust this value
+ #   x_jittered = df[x_col] + np.random.uniform(-jitter_strength, jitter_strength, size=len(df))
+ #   sns.scatterplot(x=x_jittered, y=y_col, data=df)
 
-    X = sm.add_constant(df[x_col])
-    model = sm.OLS(df[y_col], X).fit()
-    p_value = model.pvalues[1]
-    pred = model.predict(X)
+#    X = sm.add_constant(df[x_col])
+ #   model = sm.OLS(df[y_col], X).fit()
+ #   p_value = model.pvalues[1]
+  #  pred = model.predict(X)
 
-    sns.lineplot(x=df[x_col], y=pred, color='red')
-    plt.xlabel(x_col)
-    plt.ylabel(y_col)
-    plt.title(f"{y_col} vs {x_col}\nP-value: {p_value:.3f}")
-    if p_value < 0.05:
-        st.success("Trend is statistically significant.")
-    else:
-        st.info("Trend is not statistically significant.")
-    st.pyplot(plt)
+  #  sns.lineplot(x=df[x_col], y=pred, color='red')
+  #  plt.xlabel(x_col)
+  #  plt.ylabel(y_col)
+  #  plt.title(f"{y_col} vs {x_col}\nP-value: {p_value:.3f}")
+  #  if p_value < 0.05:
+  #      st.success("Trend is statistically significant.")
+  #  else:
+  #      st.info("Trend is not statistically significant.")
+  #  st.pyplot(plt)
 
 # Create a placeholder in the sidebar
 run_button_placeholder = st.sidebar.empty()
@@ -1098,8 +1098,8 @@ if st.sidebar.button("Run Simulation"):
        # st.dataframe(metrics_df.style.set_properties(subset=["Value"], **{'text-align': 'right'}))
         
         st.markdown("## Agent Data Relationship & Significance")
-        plot_relationship(df, 'misinformation_exposure', 'trust_in_clinician')
-    display_simulation_results(df)  # Remove or adjust if needed
+      #  plot_relationship(df, 'misinformation_exposure', 'trust_in_clinician')
+    #display_simulation_results(df)  # Remove or adjust if needed
     
     # This section appears to be attempting to create a DataFrame from 'data'
     # but 'data' isn't defined in the snippet.  
@@ -1292,6 +1292,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
