@@ -32,8 +32,6 @@ import traceback
 import logging
 from sklearn.metrics import accuracy_score, classification_report
 import time
-import requests
-from urllib.parse import quote_plus
 
 def plot_relationship(df, x_col, y_col):
     plt.figure(figsize=(8,6))
@@ -1300,6 +1298,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
