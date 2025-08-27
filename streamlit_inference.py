@@ -896,7 +896,7 @@ def display_simulation_results(df):
 
     # st.dataframe(df)  # Display the full DataFrame
 
-st.subheader("3⃣ Agent-Based Misinformation Simulation")
+    st.subheader("3⃣ Agent-Based Misinformation Simulation")
     st.write("Number of agents:", len(df))
     st.write("Average symptom severity:", df['symptom_severity'].mean())
     st.write("Distribution of care-seeking behavior:")
@@ -1116,6 +1116,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
