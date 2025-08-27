@@ -739,94 +739,53 @@ try:
     st.markdown(f"**✅ Dev Accuracy:** {dev_acc:.3f}")
     st.markdown(f"**✅ Test Accuracy:** {test_acc:.3f}")
 
-
-
-
-# Example accuracy calculations
-# (Replace these with your actual predictions and labels)
-# y_dev, y_dev_pred, y_test, y_test_pred should be defined in your code
-
-# Example true labels and predictions - replace these with your actual data
-#y_dev = [0, 1, 0, 1, 1, 0]
-#y_dev_pred = [0, 1, 1, 1, 0, 0]
-#y_test = [0, 1, 0, 1, 1]
-#y_test_pred = [0, 0, 0, 1, 1]
-
-
-#def display_classification_report(report_df):
-#    """
-#    Displays a classification report DataFrame in a user-friendly way using Streamlit.
- #   Handles data conversion, rounding, and error management.
- #   """
- #   try:
-        # List of columns to process
-  #      numeric_columns = ['precision', 'recall', 'f1-score', 'support']
-   #     for col in numeric_columns:
-   #         if col in report_df.columns:
-                # Convert to numeric, handle errors, then round
-     #           report_df[col] = pd.to_numeric(report_df[col], errors='coerce').round(3)
-                # Fill NaNs resulting from coercion if necessary
-     #           report_df[col] = report_df[col].fillna(0)
-
-        # Display the classification report table
-      #  st.subheader("Classification Report")
-      #  st.dataframe(report_df, use_container_width=True)
-
-        # Calculate overall accuracy if support column exists
-     #   if 'support' in report_df.columns:
-     #       total_support = report_df['support'].sum()
-            # For demonstration, assume total correct predictions is sum of support (simplified)
-     #       correct_predictions = report_df['support'].sum()
-     #       accuracy = round(correct_predictions / total_support, 3) if total_support > 0 else 0
-     #       st.markdown(f"### 📈 Overall Accuracy: {accuracy}")
-    #    else:
-   #         st.write("Support column not found; cannot compute overall accuracy.")
-
-   # except KeyError as e:
-   #     st.warning(f"Missing expected column: {e}")
-   # except Exception as e:
-   #     st.error(f"An unexpected error occurred: {e}")
-
-# Generate classification report from dummy data
-#if __name__ == "__main__":
-    # Replace with your actual true labels and predictions
- #   y_true = [0, 1, 0, 1]
- #   y_pred = [0, 0, 0, 1]
- #   label_names = ['Class 0', 'Class 1']
-
-    # Generate report as dict
-  #  report_dict = classification_report(y_true, y_pred, target_names=label_names, output_dict=True)
-
-    # Convert to DataFrame
-   # report_df = pd.DataFrame(report_dict).transpose()
-
-    # Display the report
-  #  display_classification_report(report_df)
-
-
-# Example usage (replace with your data loading)
-#data = {
-#    'label': ['A', 'B', 'C'],
- #   'precision': [0.95, 0.82, 0.78],
-  #  'recall': [0.92, 0.85, 0.80],
-   # 'f1-score': [0.93, 0.84, 0.79],
-    #'support': [100, 80, 60]
-#}
-#report_df = pd.DataFrame(data)
-
-# --- Streamlit App ---
-#if __name__ == "__main__":
-    # Example usage (replace with your data loading).
-    # Important:  Replace this with your actual report_df
-    #report_df_example = pd.DataFrame({
-    #    'class': ['class_1', 'class_2'],
-     #   'precision': [0.857, 0.789],
-      #  'recall': [0.912, 0.833],
-      #  'f1-score': [0.884, 0.810],
-       # 'support': [10, 20]
-   # })
+    # Classification Report
+    st.markdown("### 📊 Classification Report (Test Set)")
     
-   # display_classification_report(report_df)
+    # Get the classification report as a string and parse it
+    report_str = classification_report(y_test, y_test_pred, target_names=label_map.keys(), output_dict=True)
+    
+    # Convert to DataFrame for better display
+    report_df = pd.DataFrame(report_str).transpose()
+    
+    # Round numeric values to 3 decimal places
+    numeric_columns = ['precision', 'recall', 'f1-score', 'support']
+    for col in numeric_columns:
+        if col in report_df.columns:
+            report_df[col] = report_df[col].round(3)
+    
+    # Display the table with better formatting
+    st.dataframe(
+        report_df,
+        use_container_width=True,
+        hide_index=False
+    )
+    
+    # Also show accuracy metrics separately for better visibility
+    st.markdown("### 📈 Overall Metrics")
+    
+    # Create a summary metrics table
+    metrics_data = {
+        'Metric': ['Accuracy', 'Macro Avg F1', 'Weighted Avg F1'],
+        'Value': [
+            f"{report_df.loc['accuracy', 'precision']:.3f}",
+            f"{report_df.loc['macro avg', 'f1-score']:.3f}",
+            f"{report_df.loc['weighted avg', 'f1-score']:.3f}"
+        ]
+    }
+    
+    metrics_df = pd.DataFrame(metrics_data)
+    
+    # Display the metrics table
+    st.dataframe(
+        metrics_df,
+        use_container_width=True,
+        hide_index=True
+    )
+
+except Exception as e:
+    st.error(f"⚠️ Could not evaluate HealthVer dataset: {e}")
+
 
 # =======================
 # LOAD MODELS (replaces training)
@@ -1336,6 +1295,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
