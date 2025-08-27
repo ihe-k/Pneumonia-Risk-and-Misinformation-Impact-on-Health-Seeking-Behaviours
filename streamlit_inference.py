@@ -27,149 +27,11 @@ from mesa.time import RandomActivation
 from mesa.space import MultiGrid
 from mesa.datacollection import DataCollector
 
-#def plot_relationship(df, x_col, y_col):
-#    plt.figure(figsize=(8,6))
-  #  jitter_strength = 0.2  # You can adjust this value
- #   x_jittered = df[x_col] + np.random.uniform(-jitter_strength, jitter_strength, size=len(df))
- #   sns.scatterplot(x=x_jittered, y=y_col, data=df)
-
-#    X = sm.add_constant(df[x_col])
- #   model = sm.OLS(df[y_col], X).fit()
- #   p_value = model.pvalues[1]
-  #  pred = model.predict(X)
-
-  #  sns.lineplot(x=df[x_col], y=pred, color='red')
-  #  plt.xlabel(x_col)
-  #  plt.ylabel(y_col)
-  #  plt.title(f"{y_col} vs {x_col}\nP-value: {p_value:.3f}")
-  #  if p_value < 0.05:
-  #      st.success("Trend is statistically significant.")
-  #  else:
-  #      st.info("Trend is not statistically significant.")
-  #  st.pyplot(plt)
-
 # Create a placeholder in the sidebar
 run_button_placeholder = st.sidebar.empty()
 
 # Control whether to show the button
 show_button = False  # Set to True to display the button
-
-if show_button:
-    if run_button_placeholder.button("Run Simulation_2"):
-        # Your code to run the simulation
-        st.write("Simulation started")
-else:
-    # Keep the placeholder empty to hide the button
-    run_button_placeholder.empty()
-
-#def plot_custom_scatter(df, category_col, value_col, category_positions):
-    # Error handling: Check if necessary columns exist
-  #  if not isinstance(df, pd.DataFrame):
-  #      st.error("Input 'df' must be a Pandas DataFrame.")
-  #      return
-
-   # if category_column not in df.columns or value_column not in df.columns:
-    #    st.error(f"Column '{category_col}' or '{value_col}' not found in DataFrame.")
-    #    return
-
-    # Important: Check for valid category positions
-    #if not all(cat in category_positions for cat in df[category_col].unique()):
-    #    missing_categories = set(df[category_col].unique()) - set(category_positions.keys())
-    #    st.error(f"The following categories in your DataFrame are not found in 'category_positions': {', '.join(missing_categories)}")
-    #    return
-    # Create a dictionary mapping categories to their positions
-   # category_to_position = {k: v for k, v in category_positions.items()}
-
-     # Create the plot
-    #plt.figure(figsize=(10, 6))
-    #sns.scatterplot(x=df[category_col].map(category_to_position), y=df[value_col])
-    #plt.xlabel("Category Position")
-    #plt.ylabel(value_col)
-    #plt.title(f"Scatter Plot of {value_col} vs. {category_col}")
-    #plt.show()
-    #st.pyplot(plt)  # Display the plot in Streamlit
-
-    # Create the figure and axes
-   # fig, ax = plt.subplots()
-
-    # Map category values to x-axis positions
-   # x_coords = [category_positions[cat] for cat in df[category_col]]
-
-    # Plot the scatter points
-   # ax.scatter(x_coords, df[value_col])
-
-    # Customize the plot (optional)
-   # ax.set_xlabel(category_col)
-   # ax.set_ylabel(value_col)
-   # ax.set_title(f"Scatter Plot of {value_col} by {category_col}")
-    
-    # Set x-axis ticks and labels for better readability
-   # ax.set_xticks(list(category_positions.values()))
-   # ax.set_xticklabels(list(category_positions.keys()))
-
-   # st.pyplot(fig)
-
-    # Example data
-   # data = {'Category': ['A', 'B', 'C', 'A', 'B', 'C'], 'Value': [1, 3, 2, 2, 4, 3]}
-    #df = pd.DataFrame(data)
-
-   # category_positions = {'A': 0.05, 'B': 0.1, 'C': 0.15}  # Example positions
-
-
-    # Call the function to plot
-   # plot_custom_scatter(df, 'Category', 'Value', category_positions)
-
-
-#def display_classification_report(report_df):
-    """
-    Displays a classification report DataFrame in a user-friendly way using Streamlit.
-
-    Args:
-        report_df: A pandas DataFrame containing the classification report.
-    """
-
-  #  try:
-   #     numeric_columns = ['precision', 'recall', 'f1-score', 'support']
-      #  for col in numeric_columns:
-        #    if col in report_df.columns:
-                # Crucial: Convert to float *before* rounding.  Avoid errors if the column isn't numeric.
-            #    report_df[col] = pd.to_numeric(report_df[col], errors='coerce').round(3)
-                # Handle potential NaN values after conversion - crucial!
-     #           report_df[col] = report_df[col].fillna(0)  # Or another appropriate value (e.g., report_df[col].mean())
-
-        # Calculate and display overall accuracy (if applicable)
-        #if 'accuracy' in report_df.columns:
-        #    overall_accuracy = report_df['accuracy'].iloc[0]  # Assuming accuracy is in the first row
-         #   st.write(f"**Overall Accuracy:** {overall_accuracy:.3f}")
-      #  else:
-      #      st.write("Overall accuracy not found in the report.")
-
-        # Display the table with better formatting
-       # st.dataframe(
-        #    report_df,
-         #   use_container_width=True,
-          #  hide_index=False,  # Show row numbers
-           # )
-
-  #  except KeyError as e:
-  #      print(f"Error: Column '{e}' not found in report_df. Skipping rounding and accuracy calculation.")
-  #      st.write("Error: Column not found in report.")  # Inform the user
-  #  except Exception as e:
-  #      print(f"An unexpected error occurred: {e}")
-   #     st.error("An unexpected error occurred.")  # Display an error message in Streamlit
-
-
-# Example usage (replace with your actual data loading)
-#  This is a placeholder – replace with your actual data loading code
-#try:
-    # Example DataFrame (replace with your actual report_df)
- #   data = {'precision': [0.9, 0.8, 0.7, 0.8], 'recall': [0.95, 0.78, 0.65, 0.92], 'f1-score': [0.92, 0.82, 0.69, 0.87], 'support': [100, 50, 25, 75], 'accuracy': [0.85]}
-  #  report_df = pd.DataFrame(data)
-   # display_classification_report(report_df)
-
-#except Exception as e:
- #   st.error(f"An error occurred: {e}")
-    
 
 # Resolve default model directories relative to this script
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -311,7 +173,6 @@ def load_pretrained_models(model_dir):
     except Exception as e:
         st.error(f"❌ Unexpected error loading models: {e}")
         return None
-
 # =======================
 # 2) IMAGE PREPROCESSING (unchanged)
 # =======================
@@ -426,27 +287,19 @@ def get_wikipedia_results(query='pneumonia', size=20):
 def get_hackernews_results(query='pneumonia', size=20):
     """Get Hacker News search results (free via Algolia API)"""
     try:
-        # Construct the URL for the Hacker News API
         hn_url = f"https://hn.algolia.com/api/v1/search?query={quote_plus(query)}&tags=story&hitsPerPage={size}"
-        
-        # Make the request to the API
         response = requests.get(hn_url, timeout=20)
-        
-        # Check if the status code is 200 (success)
         if response.status_code == 200:
             data = response.json()
             hits = data.get("hits", [])
             texts = []
-            
-            # Process the returned hits
             for hit in hits:
-                title = hit.get("title", "")
-                story_text = hit.get("story_text", "") or hit.get("_highlightResult", {}).get("title", {}).get("value", "")
+                title = hit.get("title") or ""
+                story_text = hit.get("story_text") or hit.get("_highlightResult", {}).get("title", {}).get("value", "") or ""
                 story_text_clean = re.sub(r"<[^>]+>", " ", str(story_text))
                 text = f"{title} {story_text_clean}".strip()
                 if text:
                     texts.append(text)
-            
             return texts
         else:
             st.warning(f"⚠️ Hacker News search returned status {response.status_code}.")
@@ -478,10 +331,13 @@ def get_data_source_info(source):
         "FullFact (local JSON)": "Fact-checking dataset"
     }
     return info.get(source, "Unknown source")
-
 # =======================
 # 4) AGENT-BASED SIMULATION (unchanged)
 # =======================
+
+# =======================
+# Always show the subheader at the end of the page
+#st.subheader("3⃣ Agent-Based Misinformation Simulation")
 
 class Patient(Agent):
     def __init__(self, unique_id, model, misinformation_score=0.5):
@@ -522,7 +378,7 @@ class Clinician(Agent):
 
 class MisinformationModel(Model):
     def __init__(self, num_patients, num_clinicians, width, height, misinformation_exposure):
-        self.grid = MultiGrid(width, height, True)
+        self.grid = MultiGrid(width, height, torus=True)
         self.schedule = RandomActivation(self)
         self.datacollector = DataCollector(
             agent_reporters={
@@ -550,7 +406,6 @@ class MisinformationModel(Model):
     def step(self):
         self.datacollector.collect(self)
         self.schedule.step()
-
 # =======================
 # 5) STREAMLIT UI
 # =======================
@@ -630,11 +485,11 @@ model_choice = st.sidebar.radio("Choose X-ray Model for Prediction", ("Logistic 
 uploaded_file = st.sidebar.file_uploader("Upload Chest X-Ray Image", type=["jpg", "jpeg", "png"])
 
 # Agent-Based Simulation Controls (unchanged)
-num_agents = st.sidebar.slider("Number of Patient Agents", 5, 100, 10, key="num_agents_slider")
-num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 3,key="num_clinicians_slider")
-misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.5, 0.05, key="misinfo_slider")
-# simulate_button = st.sidebar.button("Run Agent-Based Simulation_3")
-simulate_button = st.sidebar.button("Run Simulation")
+# st.subheader("3⃣ Agent-Based Misinformation Simulation")
+num_agents = st.sidebar.slider("Number of Patient Agents", 5, 200, 50)
+num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 3)
+misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.5, 0.05)
+# simulate_button = st.sidebar.button("Run Simulation")
 # Place in sidebar
 
 if 'num_agents' not in st.session_state:
@@ -646,50 +501,45 @@ width = 200  # Set width for layout
 
 col1, col2 = st.columns(2)  # Create two columns
 
-#if False:
-#    with col1:
-  #      if st.sidebar.button("Run Simulation_2", width=width):
+if False:
+    with col1:
+        if st.sidebar.button("Run Simulation_2", width=width):
     # Run simulation code here
-         #   try:
+            try:
             # Update session state with new values
-            #    st.session_state['num_agents'] = num_agents
-             #   st.session_state['num_clinicians'] = num_clinicians
-              #  st.session_state['misinfo_exposure'] = misinfo_exposure
+                st.session_state['num_agents'] = num_agents
+                st.session_state['num_clinicians'] = num_clinicians
+                st.session_state['misinfo_exposure'] = misinfo_exposure
 
-try:
-    model = MisinformationModel(
-    num_patients=st.session_state['num_agents'],
-    num_clinicians=st.session_state['num_clinicians'],  # or another control if you want
-    misinformation_exposure=st.session_state['misinfo_exposure'],
-    width=10,
-    height=10,
-    )
-    
-    # Running the simulation
-    for _ in range(30):
-        model.step()
-    
-    # Collecting results
-    df = model.datacollector.get_agent_vars_dataframe()
-    st.session_state['simulation_results'] = df
-    st.success("Simulation completed!")
+                model = MisinformationModel(
+                    num_patients=st.session_state['num_agents'],
+                    #num_patients=num_patients,
+                    num_clinicians=st.session_state['num_clinicians'],   # or another control if you want
+                    misinformation_exposure=st.session_state['misinfo_exposure'],
+                    width=10,
+                    height=10,
+                
+                )
+                for _ in range(30):
+                    model.step()
+                df = model.datacollector.get_agent_vars_dataframe()
+                st.session_state['simulation_results'] = df
+                st.success("Simulation completed!")
+            except Exception as e:
+                st.error(f"An error occurred: {e}")
 
-except Exception as e:
-    st.error(f"An error occurred: {e}")
+    # Save results in session state
+            if 'model' in locals():
+                df = model.datacollector.get_agent_vars_dataframe()
+                st.session_state['simulation_results'] = df
 
-# Save results in session state
-if 'model' in locals():
-    df = model.datacollector.get_agent_vars_dataframe()
-    st.session_state['simulation_results'] = df
-    st.success("Simulation completed!")
-else:
-    st.error("Model was not initialized successfully.")
-
+                st.success("Simulation completed!")
+            else:
+                st.error("Model was not initialized successfully.")
 
 # ===============================
 # 6. HealthVer Dataset Evaluation (unchanged)
 # ===============================
-
 @st.cache_data
 def load_healthver_data():
     # train_df = pd.read_csv("data/healthver_train.csv", sep="\t")
@@ -788,94 +638,6 @@ try:
 except Exception as e:
     st.error(f"⚠️ Could not evaluate HealthVer dataset: {e}")
 
-
-# Add dropdown options for user to select terms
-terms = [
-    "Precision",
-    "Recall",
-    "F1-score",
-    "Supports / Refutes / Neutral",
-    "Macro avg",
-    "Weighted avg",
-    "Accuracy"
-]
-
-# Select box for term selection
-selected_term = st.selectbox("Select a term to view its explanation:", terms)
-
-# Expander for summary of terms
-
-# Add dropdown options for user to select terms
-terms = [
-    "Precision",
-    "Recall",
-    "F1-score",
-    "Supports / Refutes / Neutral",
-    "Macro avg",
-    "Weighted avg",
-    "Accuracy"
-]
-
-# Select box for term selection
-selected_term = st.selectbox("Select a term to view its explanation:", terms)
-
-# Expander for summary of terms
-import streamlit as st
-
-# Define the terms to be displayed in the selectbox
-terms = [
-    "Precision",
-    "Recall",
-    "F1-score",
-    "Supports / Refutes / Neutral",
-    "Macro avg",
-    "Weighted avg",
-    "Accuracy"
-]
-
-# Add a unique key for each selectbox
-# You could either use a custom string as key or use the term itself as the key.
-
-# Select box for term selection with a unique key (using term as part of the key)
-selected_term = st.selectbox(
-    "Select a term to view its explanation:", 
-    terms, 
-    key="selectbox_term"  # You can adjust the key to be more dynamic if you need multiple selectboxes
-)
-
-# Expander for summary of terms (without the arrow)
-with st.expander(f"{selected_term}", expanded=True):  # The expander opens based on the selected term
-    # Explanation for each term
-    if selected_term == "Precision":
-        st.markdown("""
-        **Precision:** Measures how many selected items are relevant.  
-        """)
-    elif selected_term == "Recall":
-        st.markdown("""
-        **Recall:** Measures how many relevant items are selected by the model.  
-        """)
-    elif selected_term == "F1-score":
-        st.markdown("""
-        **F1-score:** The harmonic mean of precision and recall.  
-        """)
-    elif selected_term == "Supports / Refutes / Neutral":
-        st.markdown("""
-        **Supports / Refutes / Neutral:** The categories being classified.  
-        """)
-    elif selected_term == "Macro avg":
-        st.markdown("""
-        **Macro avg:** Average of metrics treating all classes equally.  
-        """)
-    elif selected_term == "Weighted avg":
-        st.markdown("""
-        **Weighted avg:** Metrics weighted by the number of true instances in each class.  
-        """)
-    elif selected_term == "Accuracy":
-        st.markdown("""
-        **Accuracy:** Overall correctness of the model.  
-        """)
-
-
 # =======================
 # LOAD MODELS (replaces training)
 # =======================
@@ -894,8 +656,6 @@ if load_models_button:
             st.success(f"✅ Models loaded successfully from {model_dir}")
         else:
             st.error("Failed to load models. Please check the model directory.")
-
-
 # =======================
 # X-RAY CLASSIFICATION (uses loaded models)
 # =======================
@@ -949,7 +709,7 @@ elif dataset_source == "Wikipedia (Free)":
 
 elif dataset_source == "Hacker News (Free)":
     with st.spinner("Searching Hacker News..."):
-        texts = get_hackernews_results(query="pneumonia", size=search_count)
+        texts = get_hackernews_results(search_query, size=search_count)
     if texts:
         st.session_state.data_collected = True
         
@@ -1103,75 +863,8 @@ if texts:
             # st.subheader("3⃣ Agent-Based Misinformation Simulation")   
 
 
-            # Sentiment statistics
-#st.markdown("### 📈 Sentiment Statistics")
-#col1, col2, col3, col4 = st.columns(4)
-#with col1:
-#    st.metric("😊 Positive", f"{sum(1 for s in sentiment_scores if s > 0)}")
-#with col2:
-#    st.metric("😐 Neutral", f"{sum(1 for s in sentiment_scores if s == 0)}")
-#with col3:
-#    st.metric("😞 Negative", f"{sum(1 for s in sentiment_scores if s < 0)}")
-#with col4:
- #   st.metric("📊 Mean", f"{np.mean(sentiment_scores):.3f}")
-
-# === RAG Color Logic for Misinformation Rate ===
-def get_misinfo_rag(misinfo_rate):
-    if misinfo_rate < 0.1:
-        return "🟢 Low", "#d4edda"  # Green
-    elif misinfo_rate < 0.3:
-        return "🟡 Medium", "#fff3cd"  # Yellow
-    else:
-        return "🔴 High", "#f8d7da"  # Red
-
-# === RAG Color Logic for Sentiment Mean ===
-def get_sentiment_rag(mean_score):
-    if mean_score > 0.2:
-        return "🟢 Positive", "#d4edda"  # Green
-    elif mean_score > -0.1:
-        return "🟡 Neutral", "#fff3cd"  # Yellow
-    else:
-        return "🔴 Negative", "#f8d7da"  # Red
-
-# --- Streamlit Display Section ---
-
-# Sample Data (you can replace these with your actual data)
-#misinfo_rate = 0.25  # Example misinformation rate
-#mean_sentiment = -0.052  # Example sentiment mean
-
-# Get RAG labels and colors
-misinfo_label, misinfo_color = get_misinfo_rag(misinfo_rate)
-sentiment_label, sentiment_color = get_sentiment_rag(mean_sentiment)
-
-# Create columns for displaying the progress bars side-by-side
-col1, col2 = st.columns(2)
-
-# Misinformation Rate with Progress Bar
-#with col1:
- #   st.markdown(f"### 💬 Misinformation Rate: {misinfo_rate:.2f} — {misinfo_label}")
-    # Displaying the horizontal progress bar with color
-  #  st.markdown(f"""
-   # <div style="background-color:{misinfo_color}; padding: 5px; border-radius: 10px;">
-   #     <p style="font-size:20px; font-weight:bold; color: #000;">{misinfo_label}</p>
-   #     <div style="height: 25px; background-color: #e9ecef; border-radius: 5px;">
-   #         <div style="width: {misinfo_rate * 100}%; height: 100%; background-color: {misinfo_color}; border-radius: 5px;"></div>
-   #     </div>
-    #</div>
-    #""", unsafe_allow_html=True)
-
-# Sentiment Mean with Progress Bar
-#with col2:
- #   st.markdown(f"### 📊 Sentiment Mean: {mean_sentiment:.3f} — {sentiment_label}")
-    # Displaying the horizontal progress bar with color
- #   st.markdown(f"""
- #   <div style="background-color:{sentiment_color}; padding: 5px; border-radius: 10px;">
- #       <p style="font-size:20px; font-weight:bold; color: #000;">{sentiment_label}</p>
-  #      <div style="height: 25px; background-color: #e9ecef; border-radius: 5px;">
-   #         <div style="width: {((mean_sentiment + 1) / 2) * 100}%; height: 100%; background-color: {sentiment_color}; border-radius: 5px;"></div>
-   #     </div>
-   # </div>
-   # """, unsafe_allow_html=True)
-
+else:
+    st.info("No text data loaded from selected dataset.")
 # =======================
 # AGENT-BASED SIMULATION (unchanged)
 # =======================
@@ -1207,11 +900,11 @@ def run_simulation(num_agents):
     return df
 
 def display_simulation_results(df):
-   # """Displays the simulation results in a user-friendly format using Streamlit.
+    """Displays the simulation results in a user-friendly format using Streamlit.
 
-   # Args:
-   #     df: The DataFrame containing the simulation results.
-  #  """
+    Args:
+        df: The DataFrame containing the simulation results.
+    """
     if df is None:
         return  # Handle the case where run_simulation returned None
 
@@ -1247,18 +940,7 @@ if st.sidebar.button("Run Simulation"):
         df.index = df.index + 1  # Shift index to start at 1  (Correcting the indentation here)
         st.dataframe(df)
 
-        # Display metrics table with right-aligned 'Value' column
-       # metrics_data = {
-       #     'Metric': ['Accuracy', 'Macro Avg F1', 'Weighted Avg F1'],
-       #     'Value': [0.85, 0.80, 0.83]
-      #  }
-       # metrics_df = pd.DataFrame(metrics_data)
-       # st.markdown("### Model Performance Metrics")
-       # st.dataframe(metrics_df.style.set_properties(subset=["Value"], **{'text-align': 'right'}))
-        
-        st.markdown("## Agent Data Relationship & Significance")
-      #  plot_relationship(df, 'misinformation_exposure', 'trust_in_clinician')
-    #display_simulation_results(df)  # Remove or adjust if needed
+    display_simulation_results(df)  # Remove or adjust if needed
     
     # This section appears to be attempting to create a DataFrame from 'data'
     # but 'data' isn't defined in the snippet.  
@@ -1359,59 +1041,19 @@ class MisinformationModel(Model):
 #st.subheader("3⃣ Agent-Based Misinformation Simulation")
 
 # Show simulation results only when button is clicked
-if simulate_button:
-    st.session_state.simulation_run = True
+#if simulate_button:
+#    st.session_state.simulation_run = True
     
-    model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinfo_exposure)
-    for _ in range(30):
-        model.step()
+#    model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinfo_exposure)
+ #   for _ in range(30):
+ #       model.step()
 
-    df_sim = model.datacollector.get_agent_vars_dataframe()
-    sample_df = df_sim.sample(n=500)  # or any number <= total points
-    st.write(f"Number of data points for plotting: {len(df_sim)}")
-    st.write(f"Total data points collected: {len(df_sim)}")
-    st.write("### 📈 Simulation Results & Analysis")
-    st.markdown("### Behavioural Trends Over Time")
-    df_time_trends = df_reset.groupby('Step')[["Symptom Severity", "Care Seeking Behavior", "Misinformation Exposure"]].mean().reset_index()
+ #   df_sim = model.datacollector.get_agent_vars_dataframe()
+#    sample_df = df_sim.sample(n=500)  # or any number <= total points
+ #   st.write(f"Number of data points for plotting: {len(df_sim)}")
+ #   st.write(f"Total data points collected: {len(df_sim)}")
+#    st.write("### 📈 Simulation Results & Analysis")
 
-    fig4, ax4 = plt.subplots(figsize=(10, 6))
-    ax4.plot(df_time_trends['Step'], df_time_trends['Symptom Severity'], label="Symptom Severity", color='tab:blue')
-    ax4.plot(df_time_trends['Step'], df_time_trends['Care Seeking Behaviour'], label="Care Seeking Behaviour", color='tab:orange')
-    ax4.plot(df_time_trends['Step'], df_time_trends['Misinformation Exposure'], label="Misinformation Exposure", color='tab:green')
-
-    ax4.set_title("Behavioural Trends Over Time")
-    ax4.set_xlabel("Time Step")
-    ax4.set_ylabel("Average Value")
-    ax4.legend()
-    st.pyplot(fig4)
-
-    # Display the 2D Relationship Analysis Scatter Plots
-    st.markdown("### 🎯 2D Relationship Analysis")
-    fig3, (ax3a, ax3b) = plt.subplots(1, 2, figsize=(15, 6))
-
-    # First 2D plot: Symptom Severity vs Care Seeking Behavior
-    scatter1 = ax3a.scatter(df_reset['Symptom Severity'], 
-                             df_reset['Care Seeking Behaviour'],
-                             c=df_reset['Misinformation Exposure'],
-                             cmap='viridis', alpha=0.6, s=50)
-    ax3a.set_xlabel('Symptom Severity')
-    ax3a.set_ylabel('Care Seeking Behaviour')
-    ax3a.set_title('Symptoms vs Care-Seeking\n(Color = Misinformation Level)')
-    plt.colorbar(scatter1, ax=ax3a, label='Misinformation Exposure', shrink=0.8)
-
-    # Second 2D plot: Trust vs Care Seeking Behaviour
-    scatter2 = ax3b.scatter(df_reset['Trust in Clinician'], 
-                             df_reset['Care Seeking Behaviour'],
-                             c=df_reset['Misinformation Exposure'],
-                             cmap='viridis', alpha=0.6, s=50)
-    ax3b.set_xlabel('Trust in Clinician')
-    ax3b.set_ylabel('Care Seeking Behaviour')
-    ax3b.set_title('Trust vs Care-Seeking\n(Color = Misinformation Level)')
-    plt.colorbar(scatter2, ax=ax3b, label='Misinformation Exposure', shrink=0.8)
-
-    plt.tight_layout()
-    st.pyplot(fig3)
-   
     # Reset index for easier plotting
 #    df_reset = df_sim.reset_index()
     
@@ -1476,6 +1118,21 @@ if simulate_button:
 #    st.info("👆 Use the sidebar controls above to configure and run the agent-based simulation.")
 
 
+# =======================
+# FOOTER
+# =======================
+
+st.markdown("---")
+st.markdown(
+    """
+    💡 This app integrates:
+    - Real Chest X-ray pneumonia classification with pretrained Logistic Regression and XGBoost models
+    - Multi-source misinformation detection: Reddit (free API), Tavily web search, Wikipedia, Hacker News, HealthVer, FullFact
+    - RAPHAEL-style claim scoring for health claims with sentiment analysis
+    - Agent-based simulation modeling misinformation's impact on care-seeking behavior, with clinician interaction
+    - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
+    """
+)
 
 
 
