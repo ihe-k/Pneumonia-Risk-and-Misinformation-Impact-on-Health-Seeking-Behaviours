@@ -827,7 +827,24 @@ terms = [
 selected_term = st.selectbox("Select a term to view its explanation:", terms)
 
 # Expander for summary of terms (without the arrow)
-with st.expander(f"{selected_term}", expanded=True):  # No arrow, just the term name
+import streamlit as st
+
+# Add dropdown options for user to select terms
+terms = [
+    "Precision",
+    "Recall",
+    "F1-score",
+    "Supports / Refutes / Neutral",
+    "Macro avg",
+    "Weighted avg",
+    "Accuracy"
+]
+
+# Select box for term selection
+selected_term = st.selectbox("Select a term to view its explanation:", terms)
+
+# Expander for summary of terms (without the arrow)
+with st.expander(f"{selected_term}", expanded=True):  # The expander opens based on the selected term
     # Explanation for each term
     if selected_term == "Precision":
         st.markdown("""
@@ -857,7 +874,6 @@ with st.expander(f"{selected_term}", expanded=True):  # No arrow, just the term 
         st.markdown("""
         **Accuracy:** Overall correctness of the model.  
         """)
-
 
 
 # =======================
@@ -1457,6 +1473,7 @@ if simulate_button:
 #else:
     # Show placeholder when simulation hasn't been run
 #    st.info("👆 Use the sidebar controls above to configure and run the agent-based simulation.")
+
 
 
 
