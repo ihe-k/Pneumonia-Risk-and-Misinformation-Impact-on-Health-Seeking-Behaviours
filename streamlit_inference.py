@@ -24,6 +24,21 @@ from mesa.space import MultiGrid
 from mesa.datacollection import DataCollector
 import random
 
+# Create a placeholder in the sidebar
+run_button_placeholder = st.sidebar.empty()
+
+# Control whether to show the button
+show_button = False  # Set to True to display the button
+
+if show_button:
+    if run_button_placeholder.button("Run Simulation_2"):
+        # Your code to run the simulation
+        st.write("Simulation started")
+else:
+    # Keep the placeholder empty to hide the button
+    run_button_placeholder.empty()
+
+
 # Resolve default model directories relative to this script
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_MODEL_DIR = os.path.join(SCRIPT_DIR, "saved_trained_model")
@@ -1130,6 +1145,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
