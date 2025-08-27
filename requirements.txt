@@ -154,6 +154,7 @@ widgetsnbextension
 wrapt
 xgboost
 kaggle
+statsmodels
 
 
 
