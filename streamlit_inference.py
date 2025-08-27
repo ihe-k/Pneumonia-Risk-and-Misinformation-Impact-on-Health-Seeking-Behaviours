@@ -145,11 +145,11 @@ def plot_custom_scatter(df, category_col, value_col, category_positions):
       #      st.write("Overall accuracy not found in the report.")
 
         # Display the table with better formatting
-        st.dataframe(
-            report_df,
-            use_container_width=True,
-            hide_index=False,  # Show row numbers
-            )
+       # st.dataframe(
+        #    report_df,
+         #   use_container_width=True,
+          #  hide_index=False,  # Show row numbers
+           # )
 
   #  except KeyError as e:
   #      print(f"Error: Column '{e}' not found in report_df. Skipping rounding and accuracy calculation.")
@@ -818,21 +818,6 @@ selected_term = st.selectbox("Select a term to view its explanation:", terms)
 # Expander for summary of terms
 import streamlit as st
 
-# Add dropdown options for user to select terms
-terms = [
-    "Precision",
-    "Recall",
-    "F1-score",
-    "Supports / Refutes / Neutral",
-    "Macro avg",
-    "Weighted avg",
-    "Accuracy"
-]
-
-# Select box for term selection
-selected_term = st.selectbox("Select a term to view its explanation:", terms)
-import streamlit as st
-
 # Define the terms to be displayed in the selectbox
 terms = [
     "Precision",
@@ -844,8 +829,15 @@ terms = [
     "Accuracy"
 ]
 
-# Select box for term selection with a unique key
-selected_term = st.selectbox("Select a term to view its explanation:", terms, key="select_term")
+# Add a unique key for each selectbox
+# You could either use a custom string as key or use the term itself as the key.
+
+# Select box for term selection with a unique key (using term as part of the key)
+selected_term = st.selectbox(
+    "Select a term to view its explanation:", 
+    terms, 
+    key="selectbox_term"  # You can adjust the key to be more dynamic if you need multiple selectboxes
+)
 
 # Expander for summary of terms (without the arrow)
 with st.expander(f"{selected_term}", expanded=True):  # The expander opens based on the selected term
@@ -878,6 +870,8 @@ with st.expander(f"{selected_term}", expanded=True):  # The expander opens based
         st.markdown("""
         **Accuracy:** Overall correctness of the model.  
         """)
+
+
 # =======================
 # LOAD MODELS (replaces training)
 # =======================
@@ -1475,6 +1469,7 @@ if simulate_button:
 #else:
     # Show placeholder when simulation hasn't been run
 #    st.info("👆 Use the sidebar controls above to configure and run the agent-based simulation.")
+
 
 
 
