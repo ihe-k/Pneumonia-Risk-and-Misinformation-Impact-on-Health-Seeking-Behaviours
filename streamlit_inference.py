@@ -23,26 +23,29 @@ from mesa.time import RandomActivation
 from mesa.space import MultiGrid
 from mesa.datacollection import DataCollector
 import random
+import statsmodels.api as sm
+import seaborn as sns
+import matplotlib.pyplot as plt
+import streamlit as st
+
 def plot_relationship(df, x_col, y_col):
-    # Scatter plot
     plt.figure(figsize=(8,6))
     sns.scatterplot(x=x_col, y=y_col, data=df)
 
-    # Fit regression
     X = sm.add_constant(df[x_col])
     model = sm.OLS(df[y_col], X).fit()
     p_value = model.pvalues[1]
     pred = model.predict(X)
 
-if p_value < 0.05:
-    st.success("Trend is statistically significant.")
-else:
-    st.info("Trend is not statistically significant.")
-sns.lineplot(x=df[x_col], y=pred, color='red')
-plt.xlabel(x_col)
-plt.ylabel(y_col)
-plt.title(f"{y_col} vs {x_col}\nP-value: {p_value:.3f}")
-st.pyplot(plt)
+    sns.lineplot(x=df[x_col], y=pred, color='red')
+    plt.xlabel(x_col)
+    plt.ylabel(y_col)
+    plt.title(f"{y_col} vs {x_col}\nP-value: {p_value:.3f}")
+    if p_value < 0.05:
+        st.success("Trend is statistically significant.")
+    else:
+        st.info("Trend is not statistically significant.")
+    st.pyplot(plt)
 
 # Create a placeholder in the sidebar
 run_button_placeholder = st.sidebar.empty()
@@ -1166,6 +1169,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
