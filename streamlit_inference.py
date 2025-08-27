@@ -28,7 +28,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import streamlit as st
 import str
-
+import traceback
 def plot_relationship(df, x_col, y_col):
     plt.figure(figsize=(8,6))
     jitter_strength = 0.2  # You can adjust this value
@@ -709,41 +709,42 @@ st.dataframe(
 # Also show accuracy metrics separately for better visibility
 st.markdown("### 📈 Overall Metrics")
 
+import pandas as pd
+import streamlit as st
+
 try:
     # Create the metrics DataFrame with actual report data
     metrics_data = {
         'Metric': ['Accuracy', 'Macro Avg F1', 'Weighted Avg F1'],
         'Value': [
-            report_df['accuracy'].iloc[0],  # Access the accuracy value
-            report_df['macro avg']['f1-score'].iloc[0],  # Access Macro Avg F1
-            report_df['weighted avg']['f1-score'].iloc[0]  # Access Weighted Avg F1
+            report_df['accuracy'].iloc[0] if 'accuracy' in report_df and not report_df['accuracy'].empty else None,  # Check for existence and avoid errors
+            report_df['macro avg']['f1-score'].iloc[0] if 'macro avg' in report_df and 'f1-score' in report_df['macro avg'] and not report_df['macro avg']['f1-score'].empty else None,
+            report_df['weighted avg']['f1-score'].iloc[0] if 'weighted avg' in report_df and 'f1-score' in report_df['weighted avg'] and not report_df['weighted avg']['f1-score'].empty else None
         ]
     }
 
+    # Handle potential missing data gracefully
     metrics_df = pd.DataFrame(metrics_data)
+    metrics_df = metrics_df.dropna() # Remove rows with missing values.
+
+
+    if metrics_df.empty:
+        st.warning("No metrics data available.")  # Inform the user if no valid data exists
+        return
 
     # Display the metrics DataFrame
     st.dataframe(metrics_df, use_container_width=True, hide_index=True)
 
-except (KeyError, AttributeError, IndexError) as e:
+except (KeyError, AttributeError, IndexError, TypeError) as e:
     st.error(f"Error retrieving metrics: {e}")
-    #  Consider logging the error for debugging
-    #  Example:
-    #  import logging
-    #  logging.error(f"Error retrieving metrics: {e}")
+    #  Consider logging the error for debugging purposes
+    # ... error handling logic ...
+    # This is crucial for debugging.  
+    import traceback
+    traceback.print_exc()  # Print the full traceback for detailed error information
 
-    # Style with right alignment and format to 3 decimal places
-    styled_metrics_df = metrics_df.style.format({'Value': '{:>10.3f}'})
-
-    # Show in Streamlit with styling, container width, and no index
-    st.dataframe(
-        styled_metrics_df,
-        use_container_width=True,
-        hide_index=True
-    )
-
-except Exception as e:
-    st.error(f"⚠️ Could not evaluate HealthVer dataset: {e}")
+    # Add a placeholder or a generic message to the app
+    st.error("An error occurred while displaying metrics. Please check the logs.")
 
 
 # =======================
@@ -1254,6 +1255,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
