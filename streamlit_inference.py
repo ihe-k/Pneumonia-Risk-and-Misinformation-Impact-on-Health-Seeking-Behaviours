@@ -742,7 +742,7 @@ try:
     
     # Convert to DataFrame for better display
     report_df = pd.DataFrame(report_str).transpose()
-    
+
     # Round numeric values to 3 decimal places
     numeric_columns = ['precision', 'recall', 'f1-score']
     for col in numeric_columns:
@@ -752,8 +752,30 @@ try:
     # Show report as a DataFrame
     st.dataframe(report_df)
 
+    # Also show accuracy metrics separately for better visibility
+    st.markdown("### 📈 Overall Metrics")
+    
+    # Create a summary metrics table
+    metrics_data = {
+        'Metric': ['Accuracy', 'Macro Avg F1', 'Weighted Avg F1'],
+        'Value': [
+            f"{report_df.loc['accuracy', 'precision']:.3f}",
+            f"{report_df.loc['macro avg', 'f1-score']:.3f}",
+            f"{report_df.loc['weighted avg', 'f1-score']:.3f}"
+        ]
+    }
+    
+    metrics_df = pd.DataFrame(metrics_data)
+    
+    # Display the metrics table
+    st.dataframe(
+        metrics_df,
+        use_container_width=True,
+        hide_index=True
+    )
+
 except Exception as e:
-    st.error(f"An error occurred: {e}")
+    st.error(f"⚠️ Could not evaluate HealthVer dataset: {e}")
 
 # Expander for summary of terms
 with st.expander("Summary of Terms (Click Here)"):
@@ -1415,6 +1437,7 @@ if simulate_button:
 #else:
     # Show placeholder when simulation hasn't been run
 #    st.info("👆 Use the sidebar controls above to configure and run the agent-based simulation.")
+
 
 
 
