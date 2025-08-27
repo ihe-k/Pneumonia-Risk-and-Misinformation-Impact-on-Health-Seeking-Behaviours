@@ -793,7 +793,7 @@ if texts:
             cleaned_texts = texts  # Fallback to original texts
 
                # Show sample texts with their sentiment scores
-        #    st.markdown("### 📝 Sample Texts with Sentiment Scores")
+            st.markdown("### 📝 Sample Texts with Sentiment Scores")
         sentiment_scores = [TextBlob(text).sentiment.polarity for text in cleaned_texts[:5]]
         sample_data = list(zip(cleaned_texts[:5], sentiment_scores))
         # sample_data = list(zip(cleaned_texts[:5], sentiment_scores[:5]))
@@ -1126,6 +1126,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
