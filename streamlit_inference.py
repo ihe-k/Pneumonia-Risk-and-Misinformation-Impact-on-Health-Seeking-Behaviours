@@ -352,10 +352,6 @@ def raphael_score_claim(claim_text):
         "confidence": 0.85 if harmful else 0.5
     }
 
-import requests
-from urllib.parse import quote_plus
-import time
-
 def get_reddit_posts(query='pneumonia', size=50):
     """Get Reddit posts using Reddit's search API (free, no auth required)"""
     try:
@@ -379,14 +375,6 @@ def get_reddit_posts(query='pneumonia', size=50):
     except Exception as e:
         st.error(f"Error fetching Reddit data: {e}")
         return []
-
-def get_tavily_results(query='pneumonia', size=20, api_key=None):
-    """Get web search results using Tavily API"""
-    if not api_key:
-        return []
-
-
-
 
 def get_tavily_results(query='pneumonia', size=20, api_key=None):
     """Get web search results using Tavily API"""
@@ -417,7 +405,6 @@ def get_tavily_results(query='pneumonia', size=20, api_key=None):
     except Exception as e:
         st.error(f"Error fetching Tavily results: {e}")
         return []
-
 
 def get_wikipedia_results(query='pneumonia', size=20):
     """Get Wikipedia search results (free, no auth required)"""
@@ -1313,6 +1300,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
