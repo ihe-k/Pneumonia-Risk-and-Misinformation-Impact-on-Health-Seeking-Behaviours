@@ -122,6 +122,60 @@ def plot_custom_scatter(df, category_col, value_col, category_positions):
     # Call the function to plot
     plot_custom_scatter(df, 'Category', 'Value', category_positions)
 
+import pandas as pd
+import streamlit as st
+from sklearn.metrics
+import classification_report
+
+def display_classification_report(report_df):
+    """
+    Displays a classification report DataFrame in a user-friendly way using Streamlit.
+
+    Args:
+        report_df: A pandas DataFrame containing the classification report.
+    """
+
+    try:
+        numeric_columns = ['precision', 'recall', 'f1-score', 'support']
+        for col in numeric_columns:
+            if col in report_df.columns:
+                # Crucial: Convert to float *before* rounding.  Avoid errors if the column isn't numeric.
+                report_df[col] = pd.to_numeric(report_df[col], errors='coerce').round(3)
+                # Handle potential NaN values after conversion - crucial!
+                report_df[col] = report_df[col].fillna(0)  # Or another appropriate value (e.g., report_df[col].mean())
+
+        # Calculate and display overall accuracy (if applicable)
+        if 'accuracy' in report_df.columns:
+            overall_accuracy = report_df['accuracy'].iloc[0]  # Assuming accuracy is in the first row
+            st.write(f"**Overall Accuracy:** {overall_accuracy:.3f}")
+        else:
+            st.write("Overall accuracy not found in the report.")
+
+        # Display the table with better formatting
+        st.dataframe(
+            report_df,
+            use_container_width=True,
+            hide_index=False,  # Show row numbers
+            )
+
+    except KeyError as e:
+        print(f"Error: Column '{e}' not found in report_df. Skipping rounding and accuracy calculation.")
+        st.write("Error: Column not found in report.")  # Inform the user
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        st.error("An unexpected error occurred.")  # Display an error message in Streamlit
+
+
+# Example usage (replace with your actual data loading)
+#  This is a placeholder – replace with your actual data loading code
+try:
+    # Example DataFrame (replace with your actual report_df)
+    data = {'precision': [0.9, 0.8, 0.7, 0.8], 'recall': [0.95, 0.78, 0.65, 0.92], 'f1-score': [0.92, 0.82, 0.69, 0.87], 'support': [100, 50, 25, 75], 'accuracy': [0.85]}
+    report_df = pd.DataFrame(data)
+    display_classification_report(report_df)
+
+except Exception as e:
+    st.error(f"An error occurred: {e}")
     
 
 # Resolve default model directories relative to this script
@@ -685,44 +739,55 @@ try:
     st.markdown(f"**✅ Dev Accuracy:** {dev_acc:.3f}")
     st.markdown(f"**✅ Test Accuracy:** {test_acc:.3f}")
 
-    # Classification Report
-    st.markdown("### 📊 Classification Report (Test Set)")
-    
-    # Get the classification report as a string and parse it
-    report_str = classification_report(y_test, y_test_pred, target_names=label_map.keys(), output_dict=True)
-    
-    # Convert to DataFrame for better display
-    report_df = pd.DataFrame(report_str).transpose()
-    
- # ... (previous code)
 
-# Round numeric values to 3 decimal places
-      try:
+def display_classification_report(report_df):
+    """
+    Displays a classification report DataFrame in a user-friendly way using Streamlit.
+    Handles data conversion, rounding, and error management.
+    """
+    try:
+        # List of columns to process
         numeric_columns = ['precision', 'recall', 'f1-score', 'support']
         for col in numeric_columns:
             if col in report_df.columns:
-                report_df[col] = report_df[col].astype(float).round(3)  # Crucial: Convert to float
+                # Convert to numeric, handle errors, then round
+                report_df[col] = pd.to_numeric(report_df[col], errors='coerce').round(3)
+                # Fill NaNs resulting from coercion if necessary
+                report_df[col] = report_df[col].fillna(0)
+
+        # Display the classification report table
+        st.subheader("Classification Report")
+        st.dataframe(report_df, use_container_width=True)
+
+        # Calculate overall accuracy if available
+        if 'support' in report_df.columns:
+            total_support = report_df['support'].sum()
+            # Assuming support sums correspond to total correct predictions
+            correct_predictions = report_df['support'].sum()
+            accuracy = round(correct_predictions / total_support, 3) if total_support > 0 else 0
+            st.markdown(f"### 📈 Overall Accuracy: {accuracy}")
+        else:
+            st.write("Support column not found; cannot compute overall accuracy.")
+
     except KeyError as e:
-        print(f"Error: Column '{e}' not found in report_df. Skipping rounding.")
+        st.warning(f"Missing expected column: {e}")
     except Exception as e:
-        print(f"An unexpected error occurred during rounding: {e}")
+        st.error(f"An unexpected error occurred: {e}")
 
-    # Display the table with better formatting
-    st.dataframe(
-        report_df,
-        use_container_width=True,
-        hide_index=False
-    )
+# Example usage:
+if __name__ == "__main__":
+    # Replace with your actual data: simulate a classification report
+    y_true = [0, 1, 0, 1, 0, 1]
+    y_pred = [0, 0, 0, 1, 1, 1]
+    label_names = ['Class 0', 'Class 1']
 
-    # Calculate and display overall accuracy (example)
-    try:
-        total_support = report_df['support'].sum()
-        correct_predictions = report_df['support'].sum()
-        accuracy = round(correct_predictions / total_support, 3) if total_support >0 else 0
-        st.markdown("### 📈 Overall Metrics")
-        st.write(f"**Accuracy:** {accuracy}")  # More user-friendly display
-    except (KeyError, TypeError) as e:
-        st.error(f"Error calculating accuracy: {e}.  Ensure 'support' column exists and contains numeric values.")
+    # Generate classification report as dict
+    report_dict = classification_report(y_true, y_pred, target_names=label_names, output_dict=True)
+    # Convert to DataFrame
+    report_df = pd.DataFrame(report_dict).transpose()
+
+    # Call the display function
+    display_classification_report(report_df)
 
 
 # Example usage (replace with your data loading)
@@ -1258,6 +1323,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
