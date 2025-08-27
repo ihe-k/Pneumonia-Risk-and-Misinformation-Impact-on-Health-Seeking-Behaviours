@@ -329,7 +329,7 @@ def get_data_source_info(source):
 # 4) AGENT-BASED SIMULATION (unchanged)
 # =======================
 # Always show the subheader at the end of the page
-# st.subheader("3⃣ Agent-Based Misinformation Simulation")
+#st.subheader("3⃣ Agent-Based Misinformation Simulation")
 
 class Patient(Agent):
     def __init__(self, unique_id, model, misinformation_score=0.5):
@@ -477,6 +477,7 @@ model_choice = st.sidebar.radio("Choose X-ray Model for Prediction", ("Logistic 
 uploaded_file = st.sidebar.file_uploader("Upload Chest X-Ray Image", type=["jpg", "jpeg", "png"])
 
 # Agent-Based Simulation Controls (unchanged)
+st.subheader("3⃣ Agent-Based Misinformation Simulation")
 num_agents = st.sidebar.slider("Number of Patient Agents", 5, 200, 50)
 num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 3)
 misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.5, 0.05)
@@ -895,7 +896,6 @@ def display_simulation_results(df):
     # st.header("Simulation Results")
 
     # st.dataframe(df)  # Display the full DataFrame
-st.subheader("3⃣ Agent-Based Misinformation Simulation")
     st.write("Number of agents:", len(df))
     st.write("Average symptom severity:", df['symptom_severity'].mean())
     st.write("Distribution of care-seeking behavior:")
@@ -1117,6 +1117,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
