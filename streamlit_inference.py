@@ -838,9 +838,10 @@ if texts:
             sample_data = list(zip(cleaned_texts[:5], sentiment_scores[:5]))
             for text, sentiment in sample_data:
                 sentiment_label = "❌ Negative" if sentiment < 0 else "✅ Positive" if sentiment > 0 else "⚪ Neutral"
-                st.subheader("3⃣ Agent-Based Misinformation Simulation")
+             
                 st.write(f"{sentiment_label} ({sentiment:.2f}): {text[:150]}...")
-            
+
+                st.subheader("3⃣ Agent-Based Misinformation Simulation")
 
 
 else:
@@ -1116,6 +1117,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
