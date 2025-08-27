@@ -509,7 +509,7 @@ width = 200  # Set width for layout
 col1, col2 = st.columns(2)  # Create two columns
 
 with col1:
-    if st.sidebar.button("Run Simulation_2", width=width):
+    if st.sidebar.button("Run Simulation", width=width):
     # Run simulation code here
         try:
             # Update session state with new values
@@ -1145,6 +1145,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
