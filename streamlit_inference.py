@@ -62,62 +62,62 @@ else:
     # Keep the placeholder empty to hide the button
     run_button_placeholder.empty()
 
-def plot_custom_scatter(df, category_col, value_col, category_positions):
+3def plot_custom_scatter(df, category_col, value_col, category_positions):
     # Error handling: Check if necessary columns exist
-    if not isinstance(df, pd.DataFrame):
-        st.error("Input 'df' must be a Pandas DataFrame.")
-        return
+  3  if not isinstance(df, pd.DataFrame):
+  #      st.error("Input 'df' must be a Pandas DataFrame.")
+  #      return
 
-    if category_column not in df.columns or value_column not in df.columns:
-        st.error(f"Column '{category_col}' or '{value_col}' not found in DataFrame.")
-        return
+   # if category_column not in df.columns or value_column not in df.columns:
+    #    st.error(f"Column '{category_col}' or '{value_col}' not found in DataFrame.")
+    #    return
 
     # Important: Check for valid category positions
-    if not all(cat in category_positions for cat in df[category_col].unique()):
-        missing_categories = set(df[category_col].unique()) - set(category_positions.keys())
-        st.error(f"The following categories in your DataFrame are not found in 'category_positions': {', '.join(missing_categories)}")
-        return
+    #if not all(cat in category_positions for cat in df[category_col].unique()):
+    #    missing_categories = set(df[category_col].unique()) - set(category_positions.keys())
+    #    st.error(f"The following categories in your DataFrame are not found in 'category_positions': {', '.join(missing_categories)}")
+    #    return
     # Create a dictionary mapping categories to their positions
-    category_to_position = {k: v for k, v in category_positions.items()}
+   # category_to_position = {k: v for k, v in category_positions.items()}
 
      # Create the plot
-    plt.figure(figsize=(10, 6))
-    sns.scatterplot(x=df[category_col].map(category_to_position), y=df[value_col])
-    plt.xlabel("Category Position")
-    plt.ylabel(value_col)
-    plt.title(f"Scatter Plot of {value_col} vs. {category_col}")
-    plt.show()
-    st.pyplot(plt)  # Display the plot in Streamlit
+    #plt.figure(figsize=(10, 6))
+    #sns.scatterplot(x=df[category_col].map(category_to_position), y=df[value_col])
+    #plt.xlabel("Category Position")
+    #plt.ylabel(value_col)
+    #plt.title(f"Scatter Plot of {value_col} vs. {category_col}")
+    #plt.show()
+    #st.pyplot(plt)  # Display the plot in Streamlit
 
     # Create the figure and axes
-    fig, ax = plt.subplots()
+   # fig, ax = plt.subplots()
 
     # Map category values to x-axis positions
-    x_coords = [category_positions[cat] for cat in df[category_col]]
+   # x_coords = [category_positions[cat] for cat in df[category_col]]
 
     # Plot the scatter points
-    ax.scatter(x_coords, df[value_col])
+   # ax.scatter(x_coords, df[value_col])
 
     # Customize the plot (optional)
-    ax.set_xlabel(category_col)
-    ax.set_ylabel(value_col)
-    ax.set_title(f"Scatter Plot of {value_col} by {category_col}")
+   # ax.set_xlabel(category_col)
+   # ax.set_ylabel(value_col)
+   # ax.set_title(f"Scatter Plot of {value_col} by {category_col}")
     
     # Set x-axis ticks and labels for better readability
-    ax.set_xticks(list(category_positions.values()))
-    ax.set_xticklabels(list(category_positions.keys()))
+   # ax.set_xticks(list(category_positions.values()))
+   # ax.set_xticklabels(list(category_positions.keys()))
 
-    st.pyplot(fig)
+   # st.pyplot(fig)
 
     # Example data
-    data = {'Category': ['A', 'B', 'C', 'A', 'B', 'C'], 'Value': [1, 3, 2, 2, 4, 3]}
-    df = pd.DataFrame(data)
+   # data = {'Category': ['A', 'B', 'C', 'A', 'B', 'C'], 'Value': [1, 3, 2, 2, 4, 3]}
+    #df = pd.DataFrame(data)
 
-    category_positions = {'A': 0.05, 'B': 0.1, 'C': 0.15}  # Example positions
+   # category_positions = {'A': 0.05, 'B': 0.1, 'C': 0.15}  # Example positions
 
 
     # Call the function to plot
-    plot_custom_scatter(df, 'Category', 'Value', category_positions)
+   # plot_custom_scatter(df, 'Category', 'Value', category_positions)
 
 
 #def display_classification_report(report_df):
@@ -182,7 +182,7 @@ from sklearn.metrics import accuracy_score, confusion_matrix, classification_rep
 from keras.preprocessing import image
 
 # for local
-# from keras.preprocessing.image import ImageDataGenerator
+from keras.preprocessing.image import ImageDataGenerator
 
 # for streamlit
 from keras.src.legacy.preprocessing.image import ImageDataGenerator
@@ -482,8 +482,6 @@ def get_data_source_info(source):
 # =======================
 # 4) AGENT-BASED SIMULATION (unchanged)
 # =======================
-# Always show the subheader at the end of the page
-#st.subheader("3⃣ Agent-Based Misinformation Simulation")
 
 class Patient(Agent):
     def __init__(self, unique_id, model, misinformation_score=0.5):
@@ -524,7 +522,7 @@ class Clinician(Agent):
 
 class MisinformationModel(Model):
     def __init__(self, num_patients, num_clinicians, width, height, misinformation_exposure):
-        self.grid = MultiGrid(width, height, torus=True)
+        self.grid = MultiGrid(width, height, True)
         self.schedule = RandomActivation(self)
         self.datacollector = DataCollector(
             agent_reporters={
@@ -573,6 +571,7 @@ st.markdown("""
     </ul>
 </div>
 """, unsafe_allow_html=True)
+
 
 # Sidebar — model loading controls (replaces training controls)
 st.sidebar.header("Model Loading & Configuration")
@@ -631,10 +630,10 @@ model_choice = st.sidebar.radio("Choose X-ray Model for Prediction", ("Logistic 
 uploaded_file = st.sidebar.file_uploader("Upload Chest X-Ray Image", type=["jpg", "jpeg", "png"])
 
 # Agent-Based Simulation Controls (unchanged)
-# st.subheader("3⃣ Agent-Based Misinformation Simulation")
-num_agents = st.sidebar.slider("Number of Patient Agents", 5, 200, 50)
-num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 3)
-misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.5, 0.05)
+num_agents = st.sidebar.slider("Number of Patient Agents", 5, 100, 10, key="num_agents_slider")
+num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 3,key="num_clinicians_slider")
+misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.5, 0.05,, key="misinfo_slider")
+# simulate_button = st.sidebar.button("Run Agent-Based Simulation_3")
 simulate_button = st.sidebar.button("Run Simulation")
 # Place in sidebar
 
@@ -746,20 +745,24 @@ try:
     st.markdown("### 📊 Classification Report (Test Set)")
     
     # Get the classification report as a string and parse it
-    report_str = classification_report(y_test, y_test_pred, target_names=list(label_map.keys()), output_dict=True)
+    report_str = classification_report(y_test, y_test_pred, target_names=label_map.keys(), output_dict=True)
     
     # Convert to DataFrame for better display
     report_df = pd.DataFrame(report_str).transpose()
-
+    
     # Round numeric values to 3 decimal places
-    numeric_columns = ['precision', 'recall', 'f1-score']
+    numeric_columns = ['precision', 'recall', 'f1-score', 'support']
     for col in numeric_columns:
         if col in report_df.columns:
             report_df[col] = report_df[col].round(3)
-
-    # Show report as a DataFrame
-    st.dataframe(report_df)
-
+    
+    # Display the table with better formatting
+    st.dataframe(
+        report_df,
+        use_container_width=True,
+        hide_index=False
+    )
+    
     # Also show accuracy metrics separately for better visibility
     st.markdown("### 📈 Overall Metrics")
     
@@ -785,7 +788,6 @@ try:
 except Exception as e:
     st.error(f"⚠️ Could not evaluate HealthVer dataset: {e}")
 
-import streamlit as st
 
 # Add dropdown options for user to select terms
 terms = [
@@ -892,6 +894,7 @@ if load_models_button:
             st.success(f"✅ Models loaded successfully from {model_dir}")
         else:
             st.error("Failed to load models. Please check the model directory.")
+
 
 # =======================
 # X-RAY CLASSIFICATION (uses loaded models)
@@ -1077,16 +1080,16 @@ if texts:
 
             
             # Sentiment statistics
-         #   st.markdown("### 📈 Sentiment Statistics")
-         #   col1, col2, col3, col4 = st.columns(4)
-         #   with col1:
-         #       st.metric("😊 Positive", f"{sum(1 for s in sentiment_scores if s > 0)}")
-         #   with col2:
-         #       st.metric("😐 Neutral", f"{sum(1 for s in sentiment_scores if s == 0)}")
-          #  with col3:
-          #      st.metric("😞 Negative", f"{sum(1 for s in sentiment_scores if s < 0)}")
-          #  with col4:
-             #   st.metric("📊 Mean", f"{np.mean(sentiment_scores):.3f}")
+            st.markdown("### 📈 Sentiment Statistics")
+            col1, col2, col3, col4 = st.columns(4)
+            with col1:
+                st.metric("😊 Positive", f"{sum(1 for s in sentiment_scores if s > 0)}")
+            with col2:
+                st.metric("😐 Neutral", f"{sum(1 for s in sentiment_scores if s == 0)}")
+            with col3:
+                st.metric("😞 Negative", f"{sum(1 for s in sentiment_scores if s < 0)}")
+            with col4:
+                st.metric("📊 Mean", f"{np.mean(sentiment_scores):.3f}")
 
             # Show sample texts with their sentiment scores
         #    st.markdown("### 📝 Sample Texts with Sentiment Scores")
@@ -1101,16 +1104,16 @@ if texts:
 
 
             # Sentiment statistics
-st.markdown("### 📈 Sentiment Statistics")
-col1, col2, col3, col4 = st.columns(4)
-with col1:
-    st.metric("😊 Positive", f"{sum(1 for s in sentiment_scores if s > 0)}")
-with col2:
-    st.metric("😐 Neutral", f"{sum(1 for s in sentiment_scores if s == 0)}")
-with col3:
-    st.metric("😞 Negative", f"{sum(1 for s in sentiment_scores if s < 0)}")
-with col4:
-    st.metric("📊 Mean", f"{np.mean(sentiment_scores):.3f}")
+#st.markdown("### 📈 Sentiment Statistics")
+#col1, col2, col3, col4 = st.columns(4)
+#with col1:
+#    st.metric("😊 Positive", f"{sum(1 for s in sentiment_scores if s > 0)}")
+#with col2:
+#    st.metric("😐 Neutral", f"{sum(1 for s in sentiment_scores if s == 0)}")
+#with col3:
+#    st.metric("😞 Negative", f"{sum(1 for s in sentiment_scores if s < 0)}")
+#with col4:
+ #   st.metric("📊 Mean", f"{np.mean(sentiment_scores):.3f}")
 
 # === RAG Color Logic for Misinformation Rate ===
 def get_misinfo_rag(misinfo_rate):
@@ -1133,8 +1136,8 @@ def get_sentiment_rag(mean_score):
 # --- Streamlit Display Section ---
 
 # Sample Data (you can replace these with your actual data)
-misinfo_rate = 0.25  # Example misinformation rate
-mean_sentiment = -0.052  # Example sentiment mean
+#misinfo_rate = 0.25  # Example misinformation rate
+#mean_sentiment = -0.052  # Example sentiment mean
 
 # Get RAG labels and colors
 misinfo_label, misinfo_color = get_misinfo_rag(misinfo_rate)
@@ -1144,30 +1147,30 @@ sentiment_label, sentiment_color = get_sentiment_rag(mean_sentiment)
 col1, col2 = st.columns(2)
 
 # Misinformation Rate with Progress Bar
-with col1:
-    st.markdown(f"### 💬 Misinformation Rate: {misinfo_rate:.2f} — {misinfo_label}")
+#with col1:
+ #   st.markdown(f"### 💬 Misinformation Rate: {misinfo_rate:.2f} — {misinfo_label}")
     # Displaying the horizontal progress bar with color
-    st.markdown(f"""
-    <div style="background-color:{misinfo_color}; padding: 5px; border-radius: 10px;">
-        <p style="font-size:20px; font-weight:bold; color: #000;">{misinfo_label}</p>
-        <div style="height: 25px; background-color: #e9ecef; border-radius: 5px;">
-            <div style="width: {misinfo_rate * 100}%; height: 100%; background-color: {misinfo_color}; border-radius: 5px;"></div>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+  #  st.markdown(f"""
+   # <div style="background-color:{misinfo_color}; padding: 5px; border-radius: 10px;">
+   #     <p style="font-size:20px; font-weight:bold; color: #000;">{misinfo_label}</p>
+   #     <div style="height: 25px; background-color: #e9ecef; border-radius: 5px;">
+   #         <div style="width: {misinfo_rate * 100}%; height: 100%; background-color: {misinfo_color}; border-radius: 5px;"></div>
+   #     </div>
+    #</div>
+    #""", unsafe_allow_html=True)
 
 # Sentiment Mean with Progress Bar
-with col2:
-    st.markdown(f"### 📊 Sentiment Mean: {mean_sentiment:.3f} — {sentiment_label}")
+#with col2:
+ #   st.markdown(f"### 📊 Sentiment Mean: {mean_sentiment:.3f} — {sentiment_label}")
     # Displaying the horizontal progress bar with color
-    st.markdown(f"""
-    <div style="background-color:{sentiment_color}; padding: 5px; border-radius: 10px;">
-        <p style="font-size:20px; font-weight:bold; color: #000;">{sentiment_label}</p>
-        <div style="height: 25px; background-color: #e9ecef; border-radius: 5px;">
-            <div style="width: {((mean_sentiment + 1) / 2) * 100}%; height: 100%; background-color: {sentiment_color}; border-radius: 5px;"></div>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+ #   st.markdown(f"""
+ #   <div style="background-color:{sentiment_color}; padding: 5px; border-radius: 10px;">
+ #       <p style="font-size:20px; font-weight:bold; color: #000;">{sentiment_label}</p>
+  #      <div style="height: 25px; background-color: #e9ecef; border-radius: 5px;">
+   #         <div style="width: {((mean_sentiment + 1) / 2) * 100}%; height: 100%; background-color: {sentiment_color}; border-radius: 5px;"></div>
+   #     </div>
+   # </div>
+   # """, unsafe_allow_html=True)
 
 # =======================
 # AGENT-BASED SIMULATION (unchanged)
@@ -1471,6 +1474,7 @@ if simulate_button:
 #else:
     # Show placeholder when simulation hasn't been run
 #    st.info("👆 Use the sidebar controls above to configure and run the agent-based simulation.")
+
 
 
 
