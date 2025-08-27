@@ -781,6 +781,7 @@ if texts:
             f"Confidence: {score['confidence']}"
         )
  # Additional analysis: Misinformation rate and sentiment analysis
+    st.subheader("3⃣ Agent-Based Misinformation Simulation")
     if texts:
         st.markdown("### 📝 Sample Texts with Sentiment Scores")
         #st.markdown("### 📊 Misinformation Analysis")
@@ -804,7 +805,8 @@ if texts:
              
             st.write(f"{sentiment_label} ({sentiment:.2f}): {text[:150]}...")
 
-        st.subheader("3⃣ Agent-Based Misinformation Simulation")
+        
+        st.markdown("### 📊 Misinormation Analysis")
         # Data summary
         col1, col2, col3 = st.columns(3)
         with col1:
@@ -1128,6 +1130,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
