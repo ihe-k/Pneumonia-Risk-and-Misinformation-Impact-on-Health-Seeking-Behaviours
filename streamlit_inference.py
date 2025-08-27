@@ -423,24 +423,30 @@ def get_wikipedia_results(query='pneumonia', size=20):
         st.error(f"Error fetching Wikipedia results: {e}")
         return []
 
-
-
 def get_hackernews_results(query='pneumonia', size=20):
     """Get Hacker News search results (free via Algolia API)"""
     try:
+        # Construct the URL for the Hacker News API
         hn_url = f"https://hn.algolia.com/api/v1/search?query={quote_plus(query)}&tags=story&hitsPerPage={size}"
+        
+        # Make the request to the API
         response = requests.get(hn_url, timeout=20)
+        
+        # Check if the status code is 200 (success)
         if response.status_code == 200:
             data = response.json()
             hits = data.get("hits", [])
             texts = []
+            
+            # Process the returned hits
             for hit in hits:
-                title = hit.get("title") or ""
-                story_text = hit.get("story_text") or hit.get("_highlightResult", {}).get("title", {}).get("value", "") or ""
+                title = hit.get("title", "")
+                story_text = hit.get("story_text", "") or hit.get("_highlightResult", {}).get("title", {}).get("value", "")
                 story_text_clean = re.sub(r"<[^>]+>", " ", str(story_text))
                 text = f"{title} {story_text_clean}".strip()
                 if text:
                     texts.append(text)
+            
             return texts
         else:
             st.warning(f"⚠️ Hacker News search returned status {response.status_code}.")
@@ -948,7 +954,7 @@ elif dataset_source == "Wikipedia (Free)":
 
 elif dataset_source == "Hacker News (Free)":
     with st.spinner("Searching Hacker News..."):
-        texts = get_hackernews_results(search_query, size=search_count)
+        texts = get_hackernews_results(query="pneumonia", size=search_count)
     if texts:
         st.session_state.data_collected = True
         
@@ -1473,6 +1479,7 @@ if simulate_button:
 #else:
     # Show placeholder when simulation hasn't been run
 #    st.info("👆 Use the sidebar controls above to configure and run the agent-based simulation.")
+
 
 
 
