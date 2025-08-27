@@ -352,22 +352,31 @@ def raphael_score_claim(claim_text):
         "confidence": 0.85 if harmful else 0.5
     }
 
+import requests
+from urllib.parse import quote_plus
+import time
+
 def get_reddit_posts(query='pneumonia', size=50):
     """Get Reddit posts using Reddit's search API (free, no auth required)"""
-    # Rate limiting: pause to avoid hitting limits
-    time.sleep(1)
+    
+    # Crucial: Implement rate limiting
+    time.sleep(1)  # Initial delay, adjust as needed
+
     try:
         reddit_url = f"https://www.reddit.com/search.json?q={quote_plus(query)}&limit={size}&sort=new"
         headers = {"User-Agent": "Mozilla/5.0 (StreamlitApp)"}
         response = requests.get(reddit_url, headers=headers, timeout=15)
-        response.raise_for_status()
+
+        response.raise_for_status() # Check for bad status codes (e.g., 404, 500)
 
         if response.status_code == 200:
             data = response.json()
+            
+            # Robust error handling
             children = data.get("data", {}).get("children", [])
             if not isinstance(children, list):
-                st.warning("Unexpected data format for 'children'.")
-                return []
+                print("Error: Unexpected data format for 'children'. Skipping.")
+                return []  # Return empty list if data is invalid
 
             texts = []
             for child in children:
@@ -376,28 +385,20 @@ def get_reddit_posts(query='pneumonia', size=50):
                     selftext = child.get("data", {}).get("selftext", "") or ""
                     texts.append({"title": title, "selftext": selftext})
                 except (KeyError, AttributeError) as e:
-                    st.warning(f"Error processing a post: {e}")
+                    print(f"Error processing child data: {e}. Skipping.")
             return texts
         else:
-            st.warning(f"Reddit API returned status {response.status_code}")
-            return []
-
+            print(f"Error: Reddit API returned {response.status_code}.")
+            return []  # Return empty list on error
     except requests.exceptions.RequestException as e:
-        st.error(f"Request error: {e}")
-        return []
+        print(f"Error during request: {e}")
+        return []  # Return empty list on request error
     except Exception as e:
-        st.error(f"Unexpected error: {e}")
-        return []
+      print(f"An unexpected error occurred: {e}")
+      return []  # Return empty list on general error
 
-# Example usage inside Streamlit
-if __name__ == "__main__":
-    posts = get_reddit_posts(query='pneumonia', size=10)
-    if posts:
-        for post in posts:
-            st.write(f"**Title:** {post['title']}")
-            st.write(f"**Selftext:** {post['selftext']}\n")
-    else:
-        st.info("No posts found or an error occurred.")
+
+
 
 def get_tavily_results(query='pneumonia', size=20, api_key=None):
     """Get web search results using Tavily API"""
@@ -1342,6 +1343,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
