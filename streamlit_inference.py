@@ -866,7 +866,7 @@ else:
 # AGENT-BASED SIMULATION (unchanged)
 # =======================
 # Always show the subheader at the end of the page
-            st.subheader("3⃣ Agent-Based Misinformation Simulation")
+        st.subheader("3⃣ Agent-Based Misinformation Simulation")
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 def run_simulation(num_agents):
@@ -1130,6 +1130,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
