@@ -1295,19 +1295,59 @@ class MisinformationModel(Model):
 #st.subheader("3⃣ Agent-Based Misinformation Simulation")
 
 # Show simulation results only when button is clicked
-#if simulate_button:
-#    st.session_state.simulation_run = True
+if simulate_button:
+    st.session_state.simulation_run = True
     
-#    model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinfo_exposure)
- #   for _ in range(30):
- #       model.step()
+    model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinfo_exposure)
+    for _ in range(30):
+        model.step()
 
- #   df_sim = model.datacollector.get_agent_vars_dataframe()
-#    sample_df = df_sim.sample(n=500)  # or any number <= total points
- #   st.write(f"Number of data points for plotting: {len(df_sim)}")
- #   st.write(f"Total data points collected: {len(df_sim)}")
-#    st.write("### 📈 Simulation Results & Analysis")
+    df_sim = model.datacollector.get_agent_vars_dataframe()
+    sample_df = df_sim.sample(n=500)  # or any number <= total points
+    st.write(f"Number of data points for plotting: {len(df_sim)}")
+    st.write(f"Total data points collected: {len(df_sim)}")
+    st.write("### 📈 Simulation Results & Analysis")
+    st.markdown("### Behavioural Trends Over Time")
+    df_time_trends = df_reset.groupby('Step')[["Symptom Severity", "Care Seeking Behavior", "Misinformation Exposure"]].mean().reset_index()
 
+    fig4, ax4 = plt.subplots(figsize=(10, 6))
+    ax4.plot(df_time_trends['Step'], df_time_trends['Symptom Severity'], label="Symptom Severity", color='tab:blue')
+    ax4.plot(df_time_trends['Step'], df_time_trends['Care Seeking Behaviour'], label="Care Seeking Behaviour", color='tab:orange')
+    ax4.plot(df_time_trends['Step'], df_time_trends['Misinformation Exposure'], label="Misinformation Exposure", color='tab:green')
+
+    ax4.set_title("Behavioural Trends Over Time")
+    ax4.set_xlabel("Time Step")
+    ax4.set_ylabel("Average Value")
+    ax4.legend()
+    st.pyplot(fig4)
+
+    # Display the 2D Relationship Analysis Scatter Plots
+    st.markdown("### 🎯 2D Relationship Analysis")
+    fig3, (ax3a, ax3b) = plt.subplots(1, 2, figsize=(15, 6))
+
+    # First 2D plot: Symptom Severity vs Care Seeking Behavior
+    scatter1 = ax3a.scatter(df_reset['Symptom Severity'], 
+                             df_reset['Care Seeking Behaviour'],
+                             c=df_reset['Misinformation Exposure'],
+                             cmap='viridis', alpha=0.6, s=50)
+    ax3a.set_xlabel('Symptom Severity')
+    ax3a.set_ylabel('Care Seeking Behaviour')
+    ax3a.set_title('Symptoms vs Care-Seeking\n(Color = Misinformation Level)')
+    plt.colorbar(scatter1, ax=ax3a, label='Misinformation Exposure', shrink=0.8)
+
+    # Second 2D plot: Trust vs Care Seeking Behaviour
+    scatter2 = ax3b.scatter(df_reset['Trust in Clinician'], 
+                             df_reset['Care Seeking Behaviour'],
+                             c=df_reset['Misinformation Exposure'],
+                             cmap='viridis', alpha=0.6, s=50)
+    ax3b.set_xlabel('Trust in Clinician')
+    ax3b.set_ylabel('Care Seeking Behaviour')
+    ax3b.set_title('Trust vs Care-Seeking\n(Color = Misinformation Level)')
+    plt.colorbar(scatter2, ax=ax3b, label='Misinformation Exposure', shrink=0.8)
+
+    plt.tight_layout()
+    st.pyplot(fig3)
+   
     # Reset index for easier plotting
 #    df_reset = df_sim.reset_index()
     
@@ -1370,6 +1410,7 @@ class MisinformationModel(Model):
 #else:
     # Show placeholder when simulation hasn't been run
 #    st.info("👆 Use the sidebar controls above to configure and run the agent-based simulation.")
+
 
 
 
