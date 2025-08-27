@@ -23,14 +23,8 @@ from mesa import Agent, Model
 from mesa.time import RandomActivation
 from mesa.space import MultiGrid
 from mesa.datacollection import DataCollector
-import random
-import statsmodels.api as sm
-import seaborn as sns
-import matplotlib.pyplot as plt
-import streamlit as st
 import traceback
 import logging
-from sklearn.metrics import accuracy_score, classification_report
 import time
 
 def plot_relationship(df, x_col, y_col):
@@ -1298,6 +1292,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
