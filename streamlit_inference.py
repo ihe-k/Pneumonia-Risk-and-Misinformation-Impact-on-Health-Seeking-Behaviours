@@ -31,6 +31,9 @@ import streamlit as st
 import str
 import traceback
 import logging
+from sklearn.metrics import accuracy_score, classification_report
+
+
 def plot_relationship(df, x_col, y_col):
     plt.figure(figsize=(8,6))
     jitter_strength = 0.2  # You can adjust this value
@@ -741,7 +744,6 @@ try:
 
 
 
-from sklearn.metrics import accuracy_score, classification_report
 
 # Example accuracy calculations
 # (Replace these with your actual predictions and labels)
@@ -757,10 +759,6 @@ test_acc = accuracy_score(y_test, y_test_pred)
 
 st.markdown(f"**✅ Dev Accuracy:** {dev_acc:.3f}")
 st.markdown(f"**✅ Test Accuracy:** {test_acc:.3f}")
-
-import pandas as pd
-import streamlit as st
-from sklearn.metrics import accuracy_score, classification_report
 
 # Example true labels and predictions - replace these with your actual data
 y_dev = [0, 1, 0, 1, 1, 0]
@@ -1359,6 +1357,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
