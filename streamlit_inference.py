@@ -778,31 +778,56 @@ except Exception as e:
     st.error(f"⚠️ Could not evaluate HealthVer dataset: {e}")
 
 # Expander for summary of terms
-with st.expander("Summary of Terms (Click Here)"):
-    st.markdown("""
-    <div style="background-color: #003A6B; padding: 15px; border-radius: 6px; border: 1px solid #ddd;">
-    <ul style="margin-top: 0;">
-        <li><strong>Precision:</strong> Measures how many selected items are relevant.</li>
-        <li><strong>Recall:</strong> Measures how many relevant items are selected.</li>
-        <li><strong>F1-score:</strong> Harmonic mean of precision and recall.</li>
-        <li><strong>Supports / Refutes / Neutral:</strong> The categories being classified.</li>
-        <li><strong>Macro avg:</strong> Average of metrics treating all classes equally.</li>
-        <li><strong>Weighted avg:</strong> Metrics weighted by the number of true instances in each class.</li>
-        <li><strong>Accuracy:</strong> Overall proportion of correctly classified samples.</li>
-    </ul>
-    </div>
-    """, unsafe_allow_html=True)
+import streamlit as st
 
-# Additional markdown for terms explanation
-st.markdown("""
-- **Precision:** Measures the number of times a model correctly predicts a class.  
-- **Recall:** Measures how many relevant items are selected by the model.  
-- **F1-score:** The harmonic mean of precision and recall.  
-- **Supports / Refutes / Neutral:** The categories being classified.  
-- **Macro avg:** Average of metrics treating all classes equally.  
-- **Weighted avg:** Metrics weighted by the number of true instances in each class.  
-- **Accuracy:** Overall correctness of the model.  
-""")
+# Add dropdown options for user to select terms
+terms = [
+    "Precision",
+    "Recall",
+    "F1-score",
+    "Supports / Refutes / Neutral",
+    "Macro avg",
+    "Weighted avg",
+    "Accuracy"
+]
+
+# Select box for term selection
+selected_term = st.selectbox("Select a term to view its explanation:", terms)
+
+# Display an arrow for selected term
+st.markdown(f"<h3 style='color: #003A6B;'> {selected_term} &#8595;</h3>", unsafe_allow_html=True)
+
+# Explanation for each term
+if selected_term == "Precision":
+    st.markdown("""
+    **Precision:** Measures how many selected items are relevant.  
+    """)
+elif selected_term == "Recall":
+    st.markdown("""
+    **Recall:** Measures how many relevant items are selected by the model.  
+    """)
+elif selected_term == "F1-score":
+    st.markdown("""
+    **F1-score:** The harmonic mean of precision and recall.  
+    """)
+elif selected_term == "Supports / Refutes / Neutral":
+    st.markdown("""
+    **Supports / Refutes / Neutral:** The categories being classified.  
+    """)
+elif selected_term == "Macro avg":
+    st.markdown("""
+    **Macro avg:** Average of metrics treating all classes equally.  
+    """)
+elif selected_term == "Weighted avg":
+    st.markdown("""
+    **Weighted avg:** Metrics weighted by the number of true instances in each class.  
+    """)
+elif selected_term == "Accuracy":
+    st.markdown("""
+    **Accuracy:** Overall correctness of the model.  
+    """)
+
+# This is an optional addition for alternative display styles, but the dropdown works as the main way to show content
 
 
 # =======================
@@ -1402,6 +1427,7 @@ if simulate_button:
 #else:
     # Show placeholder when simulation hasn't been run
 #    st.info("👆 Use the sidebar controls above to configure and run the agent-based simulation.")
+
 
 
 
