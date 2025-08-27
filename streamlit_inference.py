@@ -834,7 +834,7 @@ if texts:
             # Sentiment distribution
             sentiment_scores = [TextBlob(text).sentiment.polarity for text in cleaned_texts]
 
-            st.subheader("3⃣ Agent-Based Misinformation Simulation")
+            
             # Sentiment statistics
             st.markdown("### 📈 Sentiment Statistics")
             col1, col2, col3, col4 = st.columns(4)
@@ -856,7 +856,7 @@ if texts:
              
          #       st.write(f"{sentiment_label} ({sentiment:.2f}): {text[:150]}...")
 
-                
+            # st.subheader("3⃣ Agent-Based Misinformation Simulation")   
 
 
 else:
@@ -866,7 +866,7 @@ else:
 # AGENT-BASED SIMULATION (unchanged)
 # =======================
 # Always show the subheader at the end of the page
-
+            st.subheader("3⃣ Agent-Based Misinformation Simulation")
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 def run_simulation(num_agents):
@@ -1130,6 +1130,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
