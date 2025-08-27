@@ -739,6 +739,25 @@ try:
     st.markdown(f"**✅ Test Accuracy:** {test_acc:.3f}")
 
 
+import pandas as pd
+import streamlit as st
+from sklearn.metrics import accuracy_score, classification_report
+
+# Example accuracy calculations
+# (Replace these with your actual predictions and labels)
+# y_dev, y_dev_pred, y_test, y_test_pred should be defined in your code
+# For demonstration, here's dummy data:
+y_dev = [0, 1, 0, 1]
+y_dev_pred = [0, 1, 1, 1]
+y_test = [0, 1, 0, 1]
+y_test_pred = [0, 0, 0, 1]
+
+dev_acc = accuracy_score(y_dev, y_dev_pred)
+test_acc = accuracy_score(y_test, y_test_pred)
+
+st.markdown(f"**✅ Dev Accuracy:** {dev_acc:.3f}")
+st.markdown(f"**✅ Test Accuracy:** {test_acc:.3f}")
+
 def display_classification_report(report_df):
     """
     Displays a classification report DataFrame in a user-friendly way using Streamlit.
@@ -758,7 +777,7 @@ def display_classification_report(report_df):
         st.subheader("Classification Report")
         st.dataframe(report_df, use_container_width=True)
 
-        # Calculate overall accuracy if available
+        # Calculate overall accuracy if support column exists
         if 'support' in report_df.columns:
             total_support = report_df['support'].sum()
             # Assuming support sums correspond to total correct predictions
@@ -775,9 +794,9 @@ def display_classification_report(report_df):
 
 # Example usage:
 if __name__ == "__main__":
-    # Replace with your actual data: simulate a classification report
-    y_true = [0, 1, 0, 1, 0, 1]
-    y_pred = [0, 0, 0, 1, 1, 1]
+    # Replace with your actual model predictions and true labels
+    y_true = [0, 1, 0, 1]
+    y_pred = [0, 0, 0, 1]
     label_names = ['Class 0', 'Class 1']
 
     # Generate classification report as dict
@@ -785,7 +804,7 @@ if __name__ == "__main__":
     # Convert to DataFrame
     report_df = pd.DataFrame(report_dict).transpose()
 
-    # Call the display function
+    # Display the report in Streamlit
     display_classification_report(report_df)
 
 
@@ -1322,6 +1341,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
