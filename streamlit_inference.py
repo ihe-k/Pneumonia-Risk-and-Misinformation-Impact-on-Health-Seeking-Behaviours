@@ -145,11 +145,11 @@ def plot_custom_scatter(df, category_col, value_col, category_positions):
       #      st.write("Overall accuracy not found in the report.")
 
         # Display the table with better formatting
-        #st.dataframe(
-        #    report_df,
-         #   use_container_width=True,
-         #   hide_index=False,  # Show row numbers
-          #  )
+        st.dataframe(
+            report_df,
+            use_container_width=True,
+            hide_index=False,  # Show row numbers
+            )
 
   #  except KeyError as e:
   #      print(f"Error: Column '{e}' not found in report_df. Skipping rounding and accuracy calculation.")
@@ -539,7 +539,7 @@ class MisinformationModel(Model):
         for i in range(num_patients):
             patient = Patient(i, self, misinformation_exposure)
             self.schedule.add(patient)
-            x, y = self.random.randrange(width), self.random.randrange(height)
+            x, y = self.random.randrange(width=width), self.random.randrange(height)
             self.grid.place_agent(patient, (x, y))
 
         # Add clinicians
@@ -635,7 +635,7 @@ uploaded_file = st.sidebar.file_uploader("Upload Chest X-Ray Image", type=["jpg"
 num_agents = st.sidebar.slider("Number of Patient Agents", 5, 200, 50)
 num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 3)
 misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.5, 0.05)
-# simulate_button = st.sidebar.button("Run Simulation")
+simulate_button = st.sidebar.button("Run Simulation")
 # Place in sidebar
 
 if 'num_agents' not in st.session_state:
@@ -647,9 +647,9 @@ width = 200  # Set width for layout
 
 col1, col2 = st.columns(2)  # Create two columns
 
-if False:
-    with col1:
-        if st.sidebar.button("Run Simulation_2", width=width):
+#if False:
+#    with col1:
+  #      if st.sidebar.button("Run Simulation_2", width=width):
     # Run simulation code here
             try:
             # Update session state with new values
@@ -1475,6 +1475,7 @@ if simulate_button:
 #else:
     # Show placeholder when simulation hasn't been run
 #    st.info("👆 Use the sidebar controls above to configure and run the agent-based simulation.")
+
 
 
 
