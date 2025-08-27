@@ -750,13 +750,30 @@ try:
     for col in numeric_columns:
         if col in report_df.columns:
             report_df[col] = report_df[col].round(3)
+
+    # After your code that gets and displays the classification report as a DataFrame:
+st.write("### Classification Metrics")
+st.dataframe(df_metrics.style.format("{:.3f}"))
+
+# Place the dropdown explanation immediately after the table:
+with st.expander("What do these metrics mean?"):
+    st.markdown("""
+    - **Precision:** When the model predicts a class, how often is it correct?  
+    - **Recall:** Out of all true instances of a class, how many did the model find?  
+    - **F1-score:** The balance between precision and recall (harmonic mean).  
+    - **Supports / Refutes / Neutral:** The categories being classified.  
+    - **Macro avg:** Average of metrics treating all classes equally.  
+    - **Weighted avg:** Average of metrics weighted by class size (support).  
+    - **Accuracy:** Overall correctness of the model (not shown here but important).  
+    """)
+
     
     # Display the table with better formatting
-    st.dataframe(
-        report_df,
-        use_container_width=True,
-        hide_index=False
-    )
+   # st.dataframe(
+    #    report_df,
+    #    use_container_width=True,
+   #     hide_index=False
+   # )
     
     # Also show accuracy metrics separately for better visibility
     st.markdown("### 📈 Overall Metrics")
@@ -1292,6 +1309,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
