@@ -62,9 +62,9 @@ else:
     # Keep the placeholder empty to hide the button
     run_button_placeholder.empty()
 
-3def plot_custom_scatter(df, category_col, value_col, category_positions):
+#def plot_custom_scatter(df, category_col, value_col, category_positions):
     # Error handling: Check if necessary columns exist
-  3  if not isinstance(df, pd.DataFrame):
+  #  if not isinstance(df, pd.DataFrame):
   #      st.error("Input 'df' must be a Pandas DataFrame.")
   #      return
 
@@ -1474,6 +1474,7 @@ if simulate_button:
 #else:
     # Show placeholder when simulation hasn't been run
 #    st.info("👆 Use the sidebar controls above to configure and run the agent-based simulation.")
+
 
 
 
