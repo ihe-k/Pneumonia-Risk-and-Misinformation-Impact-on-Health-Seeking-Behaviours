@@ -144,11 +144,11 @@ def display_classification_report(report_df):
                 report_df[col] = report_df[col].fillna(0)  # Or another appropriate value (e.g., report_df[col].mean())
 
         # Calculate and display overall accuracy (if applicable)
-        if 'accuracy' in report_df.columns:
-            overall_accuracy = report_df['accuracy'].iloc[0]  # Assuming accuracy is in the first row
-            st.write(f"**Overall Accuracy:** {overall_accuracy:.3f}")
-        else:
-            st.write("Overall accuracy not found in the report.")
+     #   if 'accuracy' in report_df.columns:
+     #       overall_accuracy = report_df['accuracy'].iloc[0]  # Assuming accuracy is in the first row
+     #       st.write(f"**Overall Accuracy:** {overall_accuracy:.3f}")
+    #    else:
+     #       st.write("Overall accuracy not found in the report.")
 
         # Display the table with better formatting
         #st.dataframe(
@@ -157,24 +157,24 @@ def display_classification_report(report_df):
          #   hide_index=False,  # Show row numbers
           #  )
 
-    except KeyError as e:
-        print(f"Error: Column '{e}' not found in report_df. Skipping rounding and accuracy calculation.")
-        st.write("Error: Column not found in report.")  # Inform the user
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")
-        st.error("An unexpected error occurred.")  # Display an error message in Streamlit
+  #  except KeyError as e:
+  #      print(f"Error: Column '{e}' not found in report_df. Skipping rounding and accuracy calculation.")
+  #      st.write("Error: Column not found in report.")  # Inform the user
+  #  except Exception as e:
+  #      print(f"An unexpected error occurred: {e}")
+   #     st.error("An unexpected error occurred.")  # Display an error message in Streamlit
 
 
 # Example usage (replace with your actual data loading)
 #  This is a placeholder – replace with your actual data loading code
-try:
+#try:
     # Example DataFrame (replace with your actual report_df)
-    data = {'precision': [0.9, 0.8, 0.7, 0.8], 'recall': [0.95, 0.78, 0.65, 0.92], 'f1-score': [0.92, 0.82, 0.69, 0.87], 'support': [100, 50, 25, 75], 'accuracy': [0.85]}
-    report_df = pd.DataFrame(data)
-    display_classification_report(report_df)
+ #   data = {'precision': [0.9, 0.8, 0.7, 0.8], 'recall': [0.95, 0.78, 0.65, 0.92], 'f1-score': [0.92, 0.82, 0.69, 0.87], 'support': [100, 50, 25, 75], 'accuracy': [0.85]}
+  #  report_df = pd.DataFrame(data)
+   # display_classification_report(report_df)
 
-except Exception as e:
-    st.error(f"An error occurred: {e}")
+#except Exception as e:
+ #   st.error(f"An error occurred: {e}")
     
 
 # Resolve default model directories relative to this script
@@ -1296,6 +1296,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
