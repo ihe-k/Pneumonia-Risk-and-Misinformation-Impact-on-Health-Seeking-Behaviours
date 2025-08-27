@@ -29,6 +29,7 @@ import matplotlib.pyplot as plt
 import streamlit as st
 import str
 import traceback
+import logging
 def plot_relationship(df, x_col, y_col):
     plt.figure(figsize=(8,6))
     jitter_strength = 0.2  # You can adjust this value
@@ -1255,6 +1256,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
