@@ -650,21 +650,24 @@ try:
     # Also show accuracy metrics separately for better visibility
     st.markdown("### 📈 Overall Metrics")
     
-    # Create a summary metrics table
+try:
+    # Create the metrics DataFrame with actual report data
     metrics_data = {
         'Metric': ['Accuracy', 'Macro Avg F1', 'Weighted Avg F1'],
         'Value': [
-            f"{report_df.loc['accuracy', 'precision']:.3f}",
-            f"{report_df.loc['macro avg', 'f1-score']:.3f}",
-            f"{report_df.loc['weighted avg', 'f1-score']:.3f}"
+            report_df.loc['accuracy', 'precision'],
+            report_df.loc['macro avg', 'f1-score'],
+            report_df.loc['weighted avg', 'f1-score']
         ]
     }
-    
     metrics_df = pd.DataFrame(metrics_data)
-    
-    # Display the metrics table
+
+    # Style with right alignment and format to 3 decimal places
+    styled_metrics_df = metrics_df.style.format({'Value': '{:>10.3f}'})
+
+    # Show in Streamlit with styling, container width, and no index
     st.dataframe(
-        metrics_df,
+        styled_metrics_df,
         use_container_width=True,
         hide_index=True
     )
@@ -1181,6 +1184,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
