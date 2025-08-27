@@ -1362,14 +1362,6 @@ class MisinformationModel(Model):
 #    st.info("👆 Use the sidebar controls above to configure and run the agent-based simulation.")
 
 
-# =======================
-# FOOTER
-# =======================
-
-
-
-
-
 
 
 
