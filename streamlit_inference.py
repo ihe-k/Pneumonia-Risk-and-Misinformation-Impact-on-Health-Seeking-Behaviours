@@ -434,46 +434,40 @@ import requests
 import re
 import html
 from urllib.parse import quote_plus
-import streamlit as st
 
 def get_wikipedia_results(query='pneumonia', size=20):
-    """Fetches Wikipedia search results using the Wikimedia REST API."""
+    """Fetch Wikipedia search results using Wikimedia REST API."""
     try:
         wiki_url = f"https://en.wikipedia.org/w/rest.php/v1/search/page?q={quote_plus(query)}&limit={size}"
         headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"  # good practice for public APIs
+            "User-Agent": (
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                "AppleWebKit/537.36 (KHTML, like Gecko) "
+                "Chrome/115.0.0.0 Safari/537.36"
+            )
         }
-        response = requests.get(wiki_url, headers=headers, timeout=20)
-        response.raise_for_status()  # Will raise HTTPError for bad responses
+        response = requests.get(wiki_url, headers=headers, timeout=15)
+        response.raise_for_status()
 
         data = response.json()
         pages = data.get("pages", [])
-        if not pages:
-            st.info("No results found from Wikipedia.")
-            return []
-
         texts = []
         for page in pages:
-            title = page.get("title", "").strip()
+            title = page.get("title", "")
             excerpt = page.get("excerpt", "")
-            excerpt_clean = re.sub(r"<[^>]+>", " ", excerpt)  # Remove HTML tags
-            excerpt_clean = html.unescape(excerpt_clean)  # Decode HTML entities
-
+            excerpt_clean = re.sub(r"<[^>]+>", " ", excerpt)
+            excerpt_clean = html.unescape(excerpt_clean)
             if title or excerpt_clean:
-                text = f"**{title}**\n{excerpt_clean.strip()}"
-                texts.append(text)
-
+                texts.append(f"**{title}**\n{excerpt_clean.strip()}")
         return texts
 
-    except requests.exceptions.RequestException as e:
-        st.error(f"Network error while fetching Wikipedia data: {e}")
-        return []
-    except ValueError as e:
-        st.error(f"Failed to parse response from Wikipedia: {e}")
+    except requests.exceptions.HTTPError as e:
+        print(f"HTTP error: {e}")
         return []
     except Exception as e:
-        st.error(f"Unexpected error: {e}")
+        print(f"Unexpected error: {e}")
         return []
+
 
 
 def get_hackernews_results(query='pneumonia', size=20):
@@ -1343,6 +1337,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
