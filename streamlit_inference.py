@@ -31,7 +31,9 @@ import streamlit as st
 import traceback
 import logging
 from sklearn.metrics import accuracy_score, classification_report
-
+import time
+import requests
+from urllib.parse import quote_plus
 
 def plot_relationship(df, x_col, y_col):
     plt.figure(figsize=(8,6))
@@ -352,27 +354,54 @@ def raphael_score_claim(claim_text):
 
 def get_reddit_posts(query='pneumonia', size=50):
     """Get Reddit posts using Reddit's search API (free, no auth required)"""
+    
+    # Crucial: Implement rate limiting
+    time.sleep(1)  # Initial delay, adjust as needed
+
     try:
         reddit_url = f"https://www.reddit.com/search.json?q={quote_plus(query)}&limit={size}&sort=new"
         headers = {"User-Agent": "Mozilla/5.0 (StreamlitApp)"}
         response = requests.get(reddit_url, headers=headers, timeout=15)
+
+        response.raise_for_status() # Check for bad status codes (e.g., 404, 500)
+
         if response.status_code == 200:
             data = response.json()
+            
+            # Robust error handling
             children = data.get("data", {}).get("children", [])
+            if not isinstance(children, list):
+                print("Error: Unexpected data format for 'children'. Skipping.")
+                return []  # Return empty list if data is invalid
+
             texts = []
             for child in children:
-                title = child.get("data", {}).get("title", "") or ""
-                selftext = child.get("data", {}).get("selftext", "") or ""
-                text = f"{title} {selftext}".strip()
-                if text:
-                    texts.append(text)
+                try:
+                    title = child.get("data", {}).get("title", "") or ""
+                    selftext = child.get("data", {}).get("selftext", "") or ""
+                    texts.append({"title": title, "selftext": selftext})
+                except (KeyError, AttributeError) as e:
+                    print(f"Error processing child data: {e}. Skipping.")
             return texts
         else:
-            st.warning(f"⚠️ Reddit search returned status {response.status_code}.")
-            return []
+            print(f"Error: Reddit API returned {response.status_code}.")
+            return []  # Return empty list on error
+    except requests.exceptions.RequestException as e:
+        print(f"Error during request: {e}")
+        return []  # Return empty list on request error
     except Exception as e:
-        st.error(f"Error fetching Reddit data: {e}")
-        return []
+      print(f"An unexpected error occurred: {e}")
+      return []  # Return empty list on general error
+
+
+# Example usage (you'll need the requests library)
+if __name__ == "__main__":
+    posts = get_reddit_posts(query='pneumonia', size=10)
+    if posts:
+        for post in posts:
+            print(f"Title: {post['title']}\nSelftext: {post['selftext']}\n")
+    else:
+        print("No posts found or an error occurred.")
 
 def get_tavily_results(query='pneumonia', size=20, api_key=None):
     """Get web search results using Tavily API"""
@@ -1296,6 +1325,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
