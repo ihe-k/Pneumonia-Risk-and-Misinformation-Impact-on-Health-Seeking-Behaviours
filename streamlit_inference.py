@@ -1041,6 +1041,62 @@ if texts:
 
 else:
     st.info("No text data loaded from selected dataset.")
+# === RAG Color Logic for Misinformation Rate ===
+def get_misinfo_rag(misinfo_rate):
+    if misinfo_rate < 0.1:
+        return "🟢 Low", "#d4edda"  # Green
+    elif misinfo_rate < 0.3:
+        return "🟡 Medium", "#fff3cd"  # Yellow
+    else:
+        return "🔴 High", "#f8d7da"  # Red
+
+# === RAG Color Logic for Sentiment Mean ===
+def get_sentiment_rag(mean_score):
+    if mean_score > 0.2:
+        return "🟢 Positive", "#d4edda"  # Green
+    elif mean_score > -0.1:
+        return "🟡 Neutral", "#fff3cd"  # Yellow
+    else:
+        return "🔴 Negative", "#f8d7da"  # Red
+
+# --- Streamlit Display Section ---
+
+# Sample Data (you can replace these with your actual data)
+misinfo_rate = 0.25  # Example misinformation rate
+mean_sentiment = -0.052  # Example sentiment mean
+
+# Get RAG labels and colors
+misinfo_label, misinfo_color = get_misinfo_rag(misinfo_rate)
+sentiment_label, sentiment_color = get_sentiment_rag(mean_sentiment)
+
+# Display metrics with horizontal bars and RAG context using HTML
+col1, col2 = st.columns(2)
+
+# Misinformation Rate with Progress Bar
+with col1:
+    st.markdown(f"### 💬 Misinformation Rate: {misinfo_rate:.2f} — {misinfo_label}")
+    # Displaying the horizontal progress bar with color
+    st.markdown(f"""
+    <div style="background-color:{misinfo_color}; padding: 5px; border-radius: 10px;">
+        <p style="font-size:20px; font-weight:bold; color: #000;">{misinfo_label}</p>
+        <div style="height: 25px; background-color: #e9ecef; border-radius: 5px;">
+            <div style="width: {misinfo_rate * 100}%; height: 100%; background-color: {misinfo_color}; border-radius: 5px;"></div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+# Sentiment Mean with Progress Bar
+with col2:
+    st.markdown(f"### 📊 Sentiment Mean: {mean_sentiment:.3f} — {sentiment_label}")
+    # Displaying the horizontal progress bar with color
+    st.markdown(f"""
+    <div style="background-color:{sentiment_color}; padding: 5px; border-radius: 10px;">
+        <p style="font-size:20px; font-weight:bold; color: #000;">{sentiment_label}</p>
+        <div style="height: 25px; background-color: #e9ecef; border-radius: 5px;">
+            <div style="width: {((mean_sentiment + 1) / 2) * 100}%; height: 100%; background-color: {sentiment_color}; border-radius: 5px;"></div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
 # =======================
 # AGENT-BASED SIMULATION (unchanged)
@@ -1309,16 +1365,6 @@ class MisinformationModel(Model):
 # =======================
 # FOOTER
 # =======================
-
-st.markdown("""
-This app integrates:
-- Real Chest X-ray pneumonia classification with pretrained Logistic Regression and XGBoost models  
-- Multi-source misinformation detection: Reddit (free API), Tavily web search, Wikipedia, Hacker News, HealthVer and FullFact  
-- RAPHAEL-style claim scoring for health claims with sentiment analysis  
-- Agent-based simulation modelling to illustrate the impact of misinformation on care-seeking behaviour with clinician interaction  
-- Advanced visualizations: sentiment distributions, misinformation rates and simulation trends  
-""")
-
 
 
 
