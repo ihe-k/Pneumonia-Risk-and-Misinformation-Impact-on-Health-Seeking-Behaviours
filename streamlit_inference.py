@@ -539,7 +539,7 @@ class MisinformationModel(Model):
         for i in range(num_patients):
             patient = Patient(i, self, misinformation_exposure)
             self.schedule.add(patient)
-            x, y = self.random.randrange(width=width), self.random.randrange(height)
+            x, y = self.random.randrange(width), self.random.randrange(height)
             self.grid.place_agent(patient, (x, y))
 
         # Add clinicians
@@ -1471,6 +1471,7 @@ if simulate_button:
 #else:
     # Show placeholder when simulation hasn't been run
 #    st.info("👆 Use the sidebar controls above to configure and run the agent-based simulation.")
+
 
 
 
