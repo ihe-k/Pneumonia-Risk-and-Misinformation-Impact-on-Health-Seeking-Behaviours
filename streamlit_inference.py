@@ -895,14 +895,14 @@ def display_simulation_results(df):
     # st.header("Simulation Results")
 
     # st.dataframe(df)  # Display the full DataFrame
-
+st.subheader("3⃣ Agent-Based Misinformation Simulation")
     st.write("Number of agents:", len(df))
     st.write("Average symptom severity:", df['symptom_severity'].mean())
     st.write("Distribution of care-seeking behavior:")
     care_seeking_counts = df['care_seeking_behavior'].value_counts()
     st.bar_chart(care_seeking_counts)
 
-st.subheader("3⃣ Agent-Based Misinformation Simulation")
+
     
     # Add more visualisations as needed (e.g., histograms, box plots)
 #    st.subheader("Age Distribution")
@@ -1117,6 +1117,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
