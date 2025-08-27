@@ -47,7 +47,6 @@ DEFAULT_MODEL_DIR = os.path.join(SCRIPT_DIR, "saved_trained_model")
 from sklearn.linear_model import LogisticRegression
 from xgboost import XGBClassifier
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
-
 from keras.preprocessing import image
 
 # for local
@@ -508,40 +507,41 @@ width = 200  # Set width for layout
 
 col1, col2 = st.columns(2)  # Create two columns
 
-with col1:
-    if st.sidebar.button("Run Simulation_2", width=width):
+if False:
+    with col1:
+        if st.sidebar.button("Run Simulation_2", width=width):
     # Run simulation code here
-        try:
+            try:
             # Update session state with new values
-            st.session_state['num_agents'] = num_agents
-            st.session_state['num_clinicians'] = num_clinicians
-            st.session_state['misinfo_exposure'] = misinfo_exposure
+                st.session_state['num_agents'] = num_agents
+                st.session_state['num_clinicians'] = num_clinicians
+                st.session_state['misinfo_exposure'] = misinfo_exposure
 
-            model = MisinformationModel(
-                num_patients=st.session_state['num_agents'],
-                #num_patients=num_patients,
-                num_clinicians=st.session_state['num_clinicians'],   # or another control if you want
-                misinformation_exposure=st.session_state['misinfo_exposure'],
-                width=10,
-                height=10,
+                model = MisinformationModel(
+                    num_patients=st.session_state['num_agents'],
+                    #num_patients=num_patients,
+                    num_clinicians=st.session_state['num_clinicians'],   # or another control if you want
+                    misinformation_exposure=st.session_state['misinfo_exposure'],
+                    width=10,
+                    height=10,
                 
-            )
-            for _ in range(30):
-                model.step()
-            df = model.datacollector.get_agent_vars_dataframe()
-            st.session_state['simulation_results'] = df
-            st.success("Simulation completed!")
-        except Exception as e:
-            st.error(f"An error occurred: {e}")
+                )
+                for _ in range(30):
+                    model.step()
+                df = model.datacollector.get_agent_vars_dataframe()
+                st.session_state['simulation_results'] = df
+                st.success("Simulation completed!")
+            except Exception as e:
+                st.error(f"An error occurred: {e}")
 
     # Save results in session state
-        if 'model' in locals():
-            df = model.datacollector.get_agent_vars_dataframe()
-            st.session_state['simulation_results'] = df
+            if 'model' in locals():
+                df = model.datacollector.get_agent_vars_dataframe()
+                st.session_state['simulation_results'] = df
 
-            st.success("Simulation completed!")
-        else:
-            st.error("Model was not initialized successfully.")
+                st.success("Simulation completed!")
+            else:
+                st.error("Model was not initialized successfully.")
 
 
 
@@ -1145,6 +1145,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
