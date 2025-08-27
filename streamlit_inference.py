@@ -1038,16 +1038,16 @@ if texts:
 
             
             # Sentiment statistics
-            st.markdown("### 📈 Sentiment Statistics")
-            col1, col2, col3, col4 = st.columns(4)
-            with col1:
-                st.metric("😊 Positive", f"{sum(1 for s in sentiment_scores if s > 0)}")
-            with col2:
-                st.metric("😐 Neutral", f"{sum(1 for s in sentiment_scores if s == 0)}")
-            with col3:
-                st.metric("😞 Negative", f"{sum(1 for s in sentiment_scores if s < 0)}")
-            with col4:
-                st.metric("📊 Mean", f"{np.mean(sentiment_scores):.3f}")
+         #   st.markdown("### 📈 Sentiment Statistics")
+         #   col1, col2, col3, col4 = st.columns(4)
+         #   with col1:
+         #       st.metric("😊 Positive", f"{sum(1 for s in sentiment_scores if s > 0)}")
+         #   with col2:
+         #       st.metric("😐 Neutral", f"{sum(1 for s in sentiment_scores if s == 0)}")
+          #  with col3:
+          #      st.metric("😞 Negative", f"{sum(1 for s in sentiment_scores if s < 0)}")
+          #  with col4:
+             #   st.metric("📊 Mean", f"{np.mean(sentiment_scores):.3f}")
 
             # Show sample texts with their sentiment scores
         #    st.markdown("### 📝 Sample Texts with Sentiment Scores")
@@ -1432,6 +1432,7 @@ if simulate_button:
 #else:
     # Show placeholder when simulation hasn't been run
 #    st.info("👆 Use the sidebar controls above to configure and run the agent-based simulation.")
+
 
 
 
