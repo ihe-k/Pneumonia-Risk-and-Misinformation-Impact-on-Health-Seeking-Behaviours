@@ -780,9 +780,7 @@ if texts:
             f"Harmful: {score['harmful']} | "
             f"Confidence: {score['confidence']}"
         )
-
-    
-    # Additional analysis: Misinformation rate and sentiment analysis
+ # Additional analysis: Misinformation rate and sentiment analysis
     if texts:
         st.markdown("### 📊 Misinformation Analysis")
         
@@ -793,6 +791,17 @@ if texts:
         except Exception as e:
             st.error(f"Error during text cleaning: {e}")
             cleaned_texts = texts  # Fallback to original texts
+
+               # Show sample texts with their sentiment scores
+        #    st.markdown("### 📝 Sample Texts with Sentiment Scores")
+        sentiment_scores = [TextBlob(text).sentiment.polarity for text in cleaned_texts[:5]]
+        sample_data = list(zip(cleaned_texts[:5], sentiment_scores))
+        # sample_data = list(zip(cleaned_texts[:5], sentiment_scores[:5]))
+            
+        for text, sentiment in sample_data:
+            sentiment_label = "❌ Negative" if sentiment < 0 else "✅ Positive" if sentiment > 0 else "⚪ Neutral"
+             
+            st.write(f"{sentiment_label} ({sentiment:.2f}): {text[:150]}...")
         
         # Data summary
         col1, col2, col3 = st.columns(3)
@@ -835,13 +844,13 @@ if texts:
                 st.metric("📊 Mean", f"{np.mean(sentiment_scores):.3f}")
 
             # Show sample texts with their sentiment scores
-            st.markdown("### 📝 Sample Texts with Sentiment Scores")
-            sample_data = list(zip(cleaned_texts[:5], sentiment_scores[:5]))
+        #    st.markdown("### 📝 Sample Texts with Sentiment Scores")
+        #    sample_data = list(zip(cleaned_texts[:5], sentiment_scores[:5]))
             
-            for text, sentiment in sample_data:
-                sentiment_label = "❌ Negative" if sentiment < 0 else "✅ Positive" if sentiment > 0 else "⚪ Neutral"
+         #   for text, sentiment in sample_data:
+         #       sentiment_label = "❌ Negative" if sentiment < 0 else "✅ Positive" if sentiment > 0 else "⚪ Neutral"
              
-                st.write(f"{sentiment_label} ({sentiment:.2f}): {text[:150]}...")
+         #       st.write(f"{sentiment_label} ({sentiment:.2f}): {text[:150]}...")
 
                 
 
@@ -1117,6 +1126,7 @@ st.markdown(
     - Advanced visualizations: sentiment distributions, misinformation rates, and simulation trends
     """
 )
+
 
 
 
