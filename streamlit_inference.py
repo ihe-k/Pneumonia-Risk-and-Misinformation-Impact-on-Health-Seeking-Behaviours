@@ -1233,68 +1233,64 @@ import matplotlib.pyplot as plt
 import statsmodels.api as sm
 from io import BytesIO
 
-# --- Your existing simulation data code ---
-# Assuming you already have the simulation data in st.session_state['simulation_results']
-# or you generate it here as 'df'
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+import statsmodels.api as sm
+from io import BytesIO
+import streamlit as st
 
-# For demonstration, let's create a simulated DataFrame similar to your agents
-def create_simulated_df():
-    num_agents = 100
-    data = {
-        ('agent_reporters', 'symptom_severity'): np.random.randint(0, 4, num_agents),
-        ('agent_reporters', 'care_seeking_behavior'): np.random.rand(num_agents),
-        ('agent_reporters', 'trust_in_clinician'): np.random.rand(num_agents),
-        ('agent_reporters', 'misinformation_exposure'): np.random.rand(num_agents),
-    }
-    df = pd.DataFrame(data)
-    df.columns = pd.MultiIndex.from_tuples(df.columns)
-    return df
+def regression_plot(x, y, data, xlabel, ylabel, title):
+    # Clean data: replace inf and NaN with column means
+    data_cleaned = data.copy()
+    data_cleaned[x] = data_cleaned[x].replace([np.inf, -np.inf], np.nan).fillna(data_cleaned[x].mean())
+    data_cleaned[y] = data_cleaned[y].replace([np.inf, -np.inf], np.nan).fillna(data_cleaned[y].mean())
 
-# Use your actual simulation results if available
+    # Fit linear regression
+    X = sm.add_constant(data_cleaned[x])
+    model = sm.OLS(data_cleaned[y], X).fit()
+    r2 = model.rsquared
+    p_value = model.pvalues[1]
+
+    # Plot
+    fig, ax = plt.subplots(figsize=(6, 4))
+    sns.regplot(x=x, y=y, data=data_cleaned, ax=ax, scatter_kws={'alpha': 0.6}, line_kws={'color': 'red'})
+    ax.set_title(f"{title}\nR² = {r2:.3f}, p = {p_value:.3f}")
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+
+    buf = BytesIO()
+    fig.tight_layout()
+    fig.savefig(buf, format='png')
+    buf.seek(0)
+    plt.close(fig)
+    return buf
+
+# Usage:
+# Suppose your simulation results are in st.session_state['simulation_results']
 if 'simulation_results' in st.session_state:
     df = st.session_state['simulation_results']
 else:
-    df = create_simulated_df()  # replace with your real data if available
+    # For testing, create dummy data similar to your simulation
+    df = pd.DataFrame({
+        ('agent_reporters', 'symptom_severity'): np.random.randint(0, 4, 100),
+        ('agent_reporters', 'care_seeking_behavior'): np.random.rand(100),
+        ('agent_reporters', 'trust_in_clinician'): np.random.rand(100),
+        ('agent_reporters', 'misinformation_exposure'): np.random.rand(100),
+    })
+    df.columns = pd.MultiIndex.from_tuples(df.columns)
 
-# 1. Flatten MultiIndex columns if needed
+# Flatten columns if needed
 if isinstance(df.columns, pd.MultiIndex):
     df.columns = ['_'.join(col).lower() for col in df.columns]
-    st.write("Columns after flattening:", df.columns)
 
-# 2. Show columns for verification
-st.write("DataFrame columns:", df.columns)
-
-# 3. Define exact columns for regression
+# Specify the columns for regression
 x_col = 'agent_reporters_symptom_severity'
 y_col = 'agent_reporters_care_seeking_behavior'
 
-# 4. Check if columns exist and perform regression plot
+# Check existence and plot
 if x_col in df.columns and y_col in df.columns:
     df_reset = df.reset_index()
-    
-    def regression_plot(x, y, data, xlabel, ylabel, title):
-        data_cleaned = data.copy()
-        data_cleaned[x] = data_cleaned[x].replace([np.inf, -np.inf], np.nan).fillna(data_cleaned[x].mean())
-        data_cleaned[y] = data_cleaned[y].replace([np.inf, -np.inf], np.nan).fillna(data_cleaned[y].mean())
-
-        X = sm.add_constant(data_cleaned[x])
-        model = sm.OLS(data_cleaned[y], X).fit()
-        r2 = model.rsquared
-        p_value = model.pvalues[1]
-
-        fig, ax = plt.subplots(figsize=(6, 4))
-        sns.regplot(x=x, y=y, data=data_cleaned, ax=ax, scatter_kws={'alpha': 0.6}, line_kws={'color': 'red'})
-        ax.set_title(f"{title}\nR² = {r2:.3f}, p = {p_value:.3f}")
-        ax.set_xlabel(xlabel)
-        ax.set_ylabel(ylabel)
-
-        buf = BytesIO()
-        plt.tight_layout()
-        plt.savefig(buf, format='png')
-        buf.seek(0)
-        plt.close(fig)
-        return buf
-
     buf = regression_plot(
         x=x_col,
         y=y_col,
@@ -1306,7 +1302,7 @@ if x_col in df.columns and y_col in df.columns:
     st.image(buf)
 else:
     st.warning(f"Columns '{x_col}' and/or '{y_col}' not found in data.")
-    
+  
 # =======================
 # FOOTER
 # =======================
@@ -1322,6 +1318,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
