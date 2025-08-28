@@ -933,23 +933,27 @@ def run_simulation(num_agents):
     return df
 
 
-#def display_simulation_results(df):
+def display_simulation_results(df):
     """Displays the simulation results in a user-friendly format using Streamlit.
 
     Args:
         df: The DataFrame containing the simulation results.
     """
- #   if df is None:
- #       return  # Handle the case where run_simulation returned None
+    if df is None:
+        return  # Handle the case where run_simulation returned None
 
  #   st.dataframe(df)
 
+
+    st.dataframe(df.style.format({
+        "symptom_severity": "{:.3f}",
+        "care_seeking_behavior": "{:.3f}",
+        "misinformation_exposure": "{:.3f}",
+        "trust_in_clinician": "{:.3f}"
+    }))
+
 simulation_data = run_simulation(num_agents)
-if simulation_data is not None:
-    # Output the values to make sure rounding works
-    #st.write("Rounded Simulation Data:")
-    st.write(simulation_data)
-#display_simulation_results(simulation_data)
+display_simulation_results(simulation_data)
 
     # st.header("Simulation Results")
 
@@ -1276,6 +1280,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
