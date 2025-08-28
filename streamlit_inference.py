@@ -342,7 +342,7 @@ def get_data_source_info(source):
 class Patient(Agent):
     def __init__(self, unique_id, model, misinformation_score=0.5):
         super().__init__(unique_id, model)
-        self.symptom_severity = self.unique_id / max(1, self.model.num_agents - 1))
+        self.symptom_severity = random.uniform(0, 1)
         self.trust_in_clinician = 0.5
         self.misinformation_exposure = misinformation_score
         self.care_seeking_behavior = 0.5
@@ -974,7 +974,7 @@ if st.sidebar.button("Run Simulation"):
 class Patient(Agent):
     def __init__(self, unique_id, model, misinformation_score=0.5):
         super().__init__(unique_id, model)
-        self.symptom_severity = self.unique_id / max(1, self.model.num_agents - 1)
+        self.symptom_severity = random.uniform(0, 1)
         self.trust_in_clinician = 0.5
         self.misinformation_exposure = misinformation_score
         self.care_seeking_behavior = 0.5
@@ -1223,7 +1223,7 @@ class PatientAgent(Agent):
         super().__init__(unique_id, model)
 
         # Ensure spread across the entire range
-        self.symptom_severity = unique_id / max(1, model.num_agents - 1)  # 0 to 1 evenly
+        self.symptom_severity = random.uniform(0, 1)
 
         # Trust is still random
         self.trust_in_clinician = random.uniform(0, 1)
@@ -1258,6 +1258,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
