@@ -1038,13 +1038,6 @@ class MisinformationModel(Model):
 
 
 
-## Graphs
-<img src="https://github.com/ihe-k/Pneumonia-Risk-and-Misinformation-Impact-on-Health-Seeking-Behaviours/blob/main/P2_Summary_Statistics_Table.png?raw=true" width="200" />
-<img src="https://github.com/ihe-k/Pneumonia-Risk-and-Misinformation-Impact-on-Health-Seeking-Behaviours/blob/main/P2_Symptom_Severity_Trust_Care_Seeking.png?raw=true" width="200" />
-<img src="https://github.com/ihe-k/Pneumonia-Risk-and-Misinformation-Impact-on-Health-Seeking-Behaviours/blob/main/P2_Misinformation_Trust_Care_Seeking_Behaviour.png?raw=true" width="200" />
-
-
-
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -1233,6 +1226,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
