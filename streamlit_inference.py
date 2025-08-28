@@ -1218,109 +1218,30 @@ import statsmodels.api as sm
 from io import BytesIO
 import streamlit as st
 
-def regression_plot(
-    x: str, 
-    y: str, 
-    data: pd.DataFrame, 
-    xlabel: str, 
-    ylabel: str, 
-    title: str
-) -> BytesIO:
-    """
-    Creates a regression plot with R² and p-value displayed in the title.
+class PatientAgent(Agent):
+    def __init__(self, unique_id, model):
+        super().__init__(unique_id, model)
 
-    Parameters:
-        x (str): Column name for the independent variable.
-        y (str): Column name for the dependent variable.
-        data (pd.DataFrame): Data containing x and y.
-        xlabel (str): Label for the x-axis.
-        ylabel (str): Label for the y-axis.
-        title (str): Plot title.
+        # Ensure spread across the entire range
+        self.symptom_severity = unique_id / max(1, model.num_agents - 1)  # 0 to 1 evenly
 
-    Returns:
-        BytesIO: A buffer containing the saved plot image.
-    """
-    # Copy and clean data (replace NaNs and infs with column means)
-    data_cleaned = data.copy()
-    data_cleaned[x] = (
-        data_cleaned[x].replace([np.inf, -np.inf], np.nan).fillna(data_cleaned[x].mean())
-    )
-    data_cleaned[y] = (
-        data_cleaned[y].replace([np.inf, -np.inf], np.nan).fillna(data_cleaned[y].mean())
-    )
+        # Trust is still random
+        self.trust_in_clinician = random.uniform(0, 1)
 
-    # Fit regression model
-    try:
-        X = sm.add_constant(data_cleaned[x])
-        model = sm.OLS(data_cleaned[y], X).fit()
-        r2 = model.rsquared
-        p_value = model.pvalues[1]
-    except Exception as e:
-        st.error(f"Regression failed: {e}")
-        return BytesIO()  # Return empty buffer
+        # Misinformation exposure has slight randomness but scaled with symptom_severity
+        self.misinfo_exposure = min(1.0, max(0.0, self.symptom_severity + random.uniform(-0.3, 0.3)))
 
-    # Create plot
-    fig, ax = plt.subplots(figsize=(6, 4))
-    sns.regplot(x=x, y=y, data=data_cleaned, ax=ax,
-                scatter_kws={'alpha': 0.6}, line_kws={'color': 'red'})
-    ax.set_title(f"{title}\nR² = {r2:.3f}, p = {p_value:.3f}")
-    ax.set_xlabel(xlabel)
-    ax.set_ylabel(ylabel)
+        # Care seeking behavior correlates negatively with misinfo, positively with symptom severity & trust
+        self.care_seeking_behavior = min(1.0, max(0.0,
+            0.6 * self.symptom_severity + 
+            0.3 * self.trust_in_clinician - 
+            0.5 * self.misinfo_exposure +
+            random.uniform(-0.1, 0.1)
+        ))
 
-    # Save to buffer
-    buf = BytesIO()
-    fig.tight_layout()
-    fig.savefig(buf, format='png')
-    buf.seek(0)
-    plt.close(fig)
-    return buf
-
-
-def generate_dummy_data() -> pd.DataFrame:
-    """
-    Generates dummy simulation-like data for testing.
-
-    Returns:
-        pd.DataFrame: A DataFrame with multi-index columns mimicking simulation output.
-    """
-    df = pd.DataFrame({
-        ('agent_reporters', 'symptom_severity'): np.random.randint(0, 4, 100),
-        ('agent_reporters', 'care_seeking_behavior'): np.random.rand(100),
-        ('agent_reporters', 'trust_in_clinician'): np.random.rand(100),
-        ('agent_reporters', 'misinformation_exposure'): np.random.rand(100),
-    })
-    df.columns = pd.MultiIndex.from_tuples(df.columns)
-    return df
-
-
-# === Streamlit App ===
-st.title("📊 Regression Analysis of Simulation Results")
-
-# Get simulation data from session or fallback to dummy
-df = st.session_state.get("simulation_results", generate_dummy_data())
-
-# Flatten multi-index columns if present
-if isinstance(df.columns, pd.MultiIndex):
-    df.columns = ['_'.join(col).lower() for col in df.columns]
-
-# Define columns for regression
-x_col = 'agent_reporters_symptom_severity'
-y_col = 'agent_reporters_care_seeking_behavior'
-
-# Check that required columns exist
-if x_col in df.columns and y_col in df.columns:
-    df_reset = df.reset_index()
-    plot_buffer = regression_plot(
-        x=x_col,
-        y=y_col,
-        data=df_reset,
-        xlabel="Symptom Severity",
-        ylabel="Care Seeking Behavior",
-        title="Symptom Severity vs Care-Seeking Behavior"
-    )
-    st.image(plot_buffer)
-else:
-    st.warning(f"⚠️ Columns '{x_col}' and/or '{y_col}' not found in the data.")
+    def step(self):
+        # Agent dynamics can be added here later
+        pass
 
 # =======================
 # FOOTER
@@ -1337,6 +1258,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
