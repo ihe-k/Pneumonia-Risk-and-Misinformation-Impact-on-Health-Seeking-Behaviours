@@ -1312,15 +1312,41 @@ if st.sidebar.button("Run Regression Analysis"):
     # Reset index to start at 1 (optional)
     df_sim.index = df_sim.index + 1
 
+if st.sidebar.button("Run Regression Analysis"):
+  #  if simulate_button:
+    st.session_state.simulation_run = True
+
+    # Run your Mesa simulation
+    model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinfo_exposure)
+    for _ in range(30):
+        model.step()
+
+    # Get the simulation data as a DataFrame
+    df_sim = model.get_agent_vars_dataframe().reset_index(drop=True)
+
+    # Reset index to start at 1 (optional)
+    df_sim.index = df_sim.index + 1
+
+    cols_to_round = [
+    "Symptom Severity",
+    "Care Seeking Behavior",
+    "Trust in Clinician",
+    "Misinformation Exposure"
+]
+df_sim[cols_to_round] = df_sim[cols_to_round].round(3)
+    
     # Show the simulation results
     st.write("### 📈 Simulation Results & Analysis")
     st.dataframe(df_sim.style.format({
-        "Symptom Severity",
-        "Care Seeking Behavior",
-        "Trust in Clinician",
-        "Misinformation Exposure"
+        "Symptom Severity": "{:.3f},
+        "Care Seeking Behavior": "{:.3f},
+        "Trust in Clinician": "{:.3f},
+        "Misinformation Exposure": "{:.3f}
     }))
-#: "{:.3f}"
+    
+
+
+
     # Your regression plotting function calls, for example:
     if len(df_sim) > 10:
         st.markdown("### 🎯 2D Relationship Analysis")
@@ -1374,6 +1400,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
