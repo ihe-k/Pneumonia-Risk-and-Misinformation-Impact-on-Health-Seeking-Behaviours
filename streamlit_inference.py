@@ -934,7 +934,7 @@ def run_simulation(num_agents):
     df['care_seeking_behavior'] = df['care_seeking_behavior'].round(3)
     df['misinformation_exposure'] = df['misinformation_exposure'].round(3)
     df['trust_in_clinician'] = df['trust_in_clinician'].round(3)
-
+    df.index = df.index + 1
     return df
 
 
@@ -944,14 +944,7 @@ def display_simulation_results(df):
     Args:
         df: The DataFrame containing the simulation results.
     """
-    if df is None:
-        df = df.reset_index(drop=True)
-        df.index = df.index + 1  # Shift index to start at 1  (Correcting the indentation here)
-
         return  # Handle the case where run_simulation returned None
-
- #   st.dataframe(df)
-
 
     st.dataframe(df.style.format({
         "symptom_severity": "{:.3f}",
@@ -1288,6 +1281,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
