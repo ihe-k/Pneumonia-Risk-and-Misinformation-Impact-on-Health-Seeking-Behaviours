@@ -1209,6 +1209,138 @@ import random
     # Show placeholder when simulation hasn't been run
 #    st.info("👆 Use the sidebar controls above to configure and run the agent-based simulation.")
 
+--
+import streamlit as st
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+import statsmodels.api as sm
+from io import BytesIO
+from mesa import Agent, Model
+from mesa.time import RandomActivation
+from mesa.space import MultiGrid
+from mesa.datacollection import DataCollector
+import random
+
+# --- Your existing classes: Patient, Clinician, MisinformationModel ---
+# (Ensure these are included before this code block)
+
+# --- Regression plot function ---
+def regression_plot(x, y, data, xlabel, ylabel, title):
+    # Clean data
+    data_cleaned = data.copy()
+    data_cleaned[x] = data_cleaned[x].replace([np.inf, -np.inf], np.nan).fillna(data_cleaned[x].mean())
+    data_cleaned[y] = data_cleaned[y].replace([np.inf, -np.inf], np.nan).fillna(data_cleaned[y].mean())
+
+    # Fit linear model
+    X = sm.add_constant(data_cleaned[x])
+    model = sm.OLS(data_cleaned[y], X).fit()
+    r2 = model.rsquared
+    p_value = model.pvalues[1]
+
+    # Plot
+    fig, ax = plt.subplots(figsize=(6, 4))
+    sns.regplot(x=x, y=y, data=data_cleaned, ax=ax, scatter_kws={'alpha': 0.6}, line_kws={'color': 'red'})
+    ax.set_title(f"{title}\nR² = {r2:.3f}, p = {p_value:.3f}")
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+
+    buf = BytesIO()
+    fig.tight_layout()
+    fig.savefig(buf, format='png')
+    buf.seek(0)
+    plt.close(fig)
+    return buf
+
+# --- Run simulation and display regression analysis ---
+if st.sidebar.button("Run Simulation & Regression Analysis"):
+    # Use current slider values
+    num_patients = st.session_state.get('num_patients', 50)
+    num_clinicians = st.session_state.get('num_clinicians', 3)
+    misinfo_exposure = st.session_state.get('misinfo_exposure', 0.5)
+
+    # Run the simulation
+    model = MisinformationModel(
+        num_patients=num_patients,
+        num_clinicians=num_clinicians,
+        width=10,
+        height=10,
+        misinformation_exposure=misinfo_exposure
+    )
+    for _ in range(30):
+        model.step()
+    df = model.get_agent_vars_dataframe()
+    st.session_state['df_sim'] = df
+
+    # Show basic simulation info
+    st.write("### Simulation Results & Regression Analysis")
+    df_reset = df.reset_index()
+
+    # Basic scatter plot
+    col1, col2 = st.columns(2)
+    with col1:
+        fig1, ax1 = plt.subplots(figsize=(8, 6))
+        sns.scatterplot(
+            data=df_reset,
+            x="symptom_severity",
+            y="care_seeking_behavior",
+            hue="trust_in_clinician",
+            size="misinformation_exposure",
+            alpha=0.7,
+            ax=ax1,
+            palette="coolwarm",
+            sizes=(20, 200)
+        )
+        ax1.set_title("Impact of Misinformation & Trust on Care-Seeking")
+        ax1.set_xlabel("Symptom Severity")
+        ax1.set_ylabel("Care Seeking Behavior")
+        st.pyplot(fig1)
+
+    # Regression plots only if enough data
+    if len(df_reset) > 10:
+        st.markdown("### Regression Analysis with statsmodels")
+        col3, col4 = st.columns(2)
+
+        with col3:
+            buf1 = regression_plot(
+                x="misinformation_exposure",
+                y="care_seeking_behavior",
+                data=df_reset,
+                xlabel="Misinformation Exposure",
+                ylabel="Care Seeking Behavior",
+                title="Misinformation Exposure vs Care-Seeking"
+            )
+            st.image(buf1)
+
+        with col4:
+            buf2 = regression_plot(
+                x="symptom_severity",
+                y="care_seeking_behavior",
+                data=df_reset,
+                xlabel="Symptom Severity",
+                ylabel="Care Seeking Behavior",
+                title="Symptom Severity vs Care-Seeking"
+            )
+            st.image(buf2)
+
+        # Additional regression plots (optional)
+        col5, col6 = st.columns(2)
+        with col5:
+            buf3 = regression_plot(
+                x="trust_in_clinician",
+                y="care_seeking_behavior",
+                data=df_reset,
+                xlabel="Trust in Clinician",
+                ylabel="Care Seeking Behavior",
+                title="Trust in Clinician vs Care-Seeking"
+            )
+            st.image(buf3)
+    else:
+        st.info("Not enough data for regression analysis. Run the simulation with more agents.")
+
+# --- End of regression analysis code ---
+
 
 
 # =======================
@@ -1226,6 +1358,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
