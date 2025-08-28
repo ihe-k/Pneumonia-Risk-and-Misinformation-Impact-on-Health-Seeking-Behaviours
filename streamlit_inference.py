@@ -340,11 +340,11 @@ def get_data_source_info(source):
 #st.subheader("3⃣ Agent-Based Misinformation Simulation")
 
 class Patient(Agent):
-    def __init__(self, unique_id, model, misinformation_score=0.5):
+    def __init__(self, unique_id, model, misinformation_score=None):
         super().__init__(unique_id, model)
         self.symptom_severity = random.uniform(0, 1)
-        self.trust_in_clinician = 0.5
-        self.misinformation_exposure = misinformation_score
+        self.trust_in_clinician = random.uniform(0, 1)
+        self.misinformation_exposure = misinformation_score if misinformation_score is not None else random.uniform(0, 1)
         self.care_seeking_behavior = min(1.0, max(0.0,
             0.6 * self.symptom_severity + 
             0.3 * self.trust_in_clinician - 
@@ -914,7 +914,7 @@ def run_simulation(num_agents):
         'symptom_severity': np.random.uniform(0, 1, num_agents),  # 1-3 severity
         'care_seeking_behavior': np.random.uniform(0, 1, num_agents),
         'trust_in_clinician': np.random.rand(num_agents),  # 0-1 trust level
-        'misinformation_exposure': np.random.randint(0, 3, num_agents), # 0-2 exposure level
+        'misinformation_exposure': np.random.uniform(0, 1, num_agents), # 0-2 exposure level
         'age': np.random.randint(20, 61, num_agents),  # Example adding an age column
         'location': np.random.choice(['Rural', 'Suburban', 'Urban'], num_agents)  # Example adding a location column
     }
@@ -1002,7 +1002,7 @@ class Patient(Agent):
         
     def step(self):
         # Example behavior logic
-        if self.misinformation_exposure > 0.7 :
+        if self.misinformation_exposure > 0.7 and random.random() < 0.4:
             self.symptom_severity = max(0, self.symptom_severity - 0.1 * (self.misinformation_exposure - 0.7))
         elif self.trust_in_clinician > 0.8:
             self.symptom_severity = min(1, self.symptom_severity + 0.2)
@@ -1032,7 +1032,7 @@ class Clinician(Agent):
                 patient.misinformation_exposure = max(0, patient.misinformation_exposure - misinformation_reduction)
             if self.clinician_trust > 0.8:
                 care_seeking_increase = 0.05 + random.uniform(-0.02, 0.02)
-                patient.care_seeking_behavior = min(1.0, patient.care_seeking_behavior + care_seeking_increase)
+                patient.care_seeking_behavior = min(1.0, max(0.0, patient.care_seeking_behavior + care_seeking_increase))
                 
 # Define the MisinformationModel
 class MisinformationModel(Model):
@@ -1288,6 +1288,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
