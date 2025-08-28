@@ -937,6 +937,7 @@ def display_simulation_results(df):
 if st.sidebar.button("Run Simulation"):
     df = run_simulation(num_agents)
     if df is not None:
+        st.write("DataFrame columns:", df.columns)
         df = df.reset_index(drop=True)
         df.index = df.index + 1  # Shift index to start at 1  (Correcting the indentation here)
         st.dataframe(df)
@@ -1370,6 +1371,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
