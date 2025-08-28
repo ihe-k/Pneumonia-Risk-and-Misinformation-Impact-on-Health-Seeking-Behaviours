@@ -1312,6 +1312,13 @@ if st.sidebar.button("Run Regression Analysis", key="run_regression"):
     # Reset index to start at 1 (optional)
     df_sim.index = df_sim.index + 1
 
+    df_sim.rename(columns={
+    "symptom_severity": "Symptom Severity",
+    "care_seeking_behavior": "Care Seeking Behavior",
+    "trust_in_clinician": "Trust in Clinician",
+    "misinformation_exposure": "Misinformation Exposure"
+    }, inplace=True)
+    
     cols_to_round = [
     "Symptom Severity",
     "Care Seeking Behavior",
@@ -1386,6 +1393,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
