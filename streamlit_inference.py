@@ -345,21 +345,42 @@ class Patient(Agent):
         self.symptom_severity = random.uniform(0, 1)
         self.trust_in_clinician = 0.5
         self.misinformation_exposure = misinformation_score
-        self.care_seeking_behavior = 0.5
+        self.care_seeking_behavior = min(1.0, max(0.0,
+            0.6 * self.symptom_severity + 
+            0.3 * self.trust_in_clinician - 
+            0.5 * self.misinfo_exposure +
+            random.uniform(-0.1, 0.1)
+        )) 
 
     def step(self):
         # Misinformation reduces symptom perception and care seeking
         if self.misinformation_exposure > 0.7 and random.random() < 0.4:
-            self.symptom_severity = 0
+            self.symptom_severity = max(0, self.symptom_severity - 0.1 * (self.misinformation_exposure - 0.7))
         # Trust increases symptom recognition
         elif self.trust_in_clinician > 0.8:
-            self.symptom_severity = 1
+            self.symptom_severity = min(1, self.symptom_severity + 0.2)
 
         # Care seeking behavior adjusted by misinformation and trust
         if self.misinformation_exposure > 0.7:
-            self.care_seeking_behavior = max(0, self.care_seeking_behavior - 0.3)
-        elif self.symptom_severity == 1 and self.trust_in_clinician > 0.5:
-            self.care_seeking_behavior = min(1, self.care_seeking_behavior + 0.5)
+            self.care_seeking_behavior = max(0, self.care_seeking_behavior - 0.3 * (self.misinformation_exposure - 0.7))
+        elif self.symptom_severity > 0.5 and self.trust_in_clinician > 0.5:
+            self.care_seeking_behavior = min(1, self.care_seeking_behavior + 0.4 * self.symptom_severity * self.trust_in_clinician)
+
+        # care-seeking behaviour based on misinformation exposure
+        if self.misinformation_exposure > 0.7:
+        # More misinformation decreases care-seeking
+            self.care_seeking_behavior = max(0, self.care_seeking_behavior - 0.3 * (self.misinformation_exposure - 0.7))
+
+        # If symptom severity is high and trust in clinician is good, care-seeking increases
+        if self.symptom_severity > 0.5 and self.trust_in_clinician > 0.5:
+            self.care_seeking_behavior = min(1, self.care_seeking_behavior + 0.4 * self.symptom_severity * self.trust_in_clinician)
+
+        # Optional: Add a small random noise to introduce more variation
+            self.care_seeking_behavior += random.uniform(-0.05, 0.05)
+
+        # Clip to [0, 1] for realism
+            self.care_seeking_behavior = min(1.0, max(0.0, self.care_seeking_behavior))
+
 
 class Clinician(Agent):
     def __init__(self, unique_id, model):
@@ -977,33 +998,42 @@ class Patient(Agent):
         self.symptom_severity = random.uniform(0, 1)
         self.trust_in_clinician = 0.5
         self.misinformation_exposure = misinformation_score
-        self.care_seeking_behavior = 0.5
-
+        self.care_seeking_behavior = self.calculate_care_seeking_behavior()
+        
     def step(self):
         # Example behavior logic
-        if self.misinformation_exposure > 0.7 and random.random() < 0.4:
-            self.symptom_severity = 0
+        if self.misinformation_exposure > 0.7 :
+            self.symptom_severity = max(0, self.symptom_severity - 0.1 * (self.misinformation_exposure - 0.7))
         elif self.trust_in_clinician > 0.8:
-            self.symptom_severity = 1
+            self.symptom_severity = min(1, self.symptom_severity + 0.2)
         if self.misinformation_exposure > 0.7:
-            self.care_seeking_behavior = max(0, self.care_seeking_behavior - 0.3)
-        elif self.symptom_severity == 1 and self.trust_in_clinician > 0.5:
-            self.care_seeking_behavior = min(1, self.care_seeking_behavior + 0.5)
+            self.care_seeking_behavior = max(0, self.care_seeking_behavior - 0.3 * (self.misinformation_exposure - 0.7))
+        elif self.symptom_severity > 0.5 and self.trust_in_clinician > 0.5:
+            self.care_seeking_behavior = min(1, self.care_seeking_behavior + 0.4 * self.symptom_severity * self.trust_in_clinician)
+         # Add random noise or behavior change if needed
+            self.care_seeking_behavior += random.uniform(-0.05, 0.05)  # Adding noise for realism
+        # Clip care-seeking behavior to range [0, 1]
+            self.care_seeking_behavior = min(1.0, max(0.0, self.care_seeking_behavior))
 
 # Define Clinician agent
 class Clinician(Agent):
     def __init__(self, unique_id, model):
         super().__init__(unique_id, model)
-
+        self.clinician_trust = clinician_trust #new
     def step(self):
-        # Example behavior: increase trust for patients in same cell
+        # Example behaviour: increase trust for patients in same cell
         cellmates = self.model.grid.get_cell_list_contents([self.pos])
         patients_here = [agent for agent in cellmates if isinstance(agent, Patient)]
         for patient in patients_here:
-            patient.trust_in_clinician = min(1.0, patient.trust_in_clinician + 0.1)
+            trust_increase = 0.1 * self.clinician_trust
+            patient.trust_in_clinician = min(1.0, patient.trust_in_clinician + trust_increase)
             if patient.misinformation_exposure > 0:
-                patient.misinformation_exposure = max(0, patient.misinformation_exposure - 0.05)
-
+                misinformation_reduction = 0.05 + random.uniform(-0.02, 0.02)
+                patient.misinformation_exposure = max(0, patient.misinformation_exposure - misinformation_reduction)
+            if self.clinician_trust > 0.8:
+                care_seeking_increase = 0.05 + random.uniform(-0.02, 0.02)
+                patient.care_seeking_behavior = min(1.0, patient.care_seeking_behavior + care_seeking_increase)
+                
 # Define the MisinformationModel
 class MisinformationModel(Model):
     def __init__(self, num_patients, num_clinicians, width, height, misinformation_exposure):
@@ -1258,6 +1288,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
