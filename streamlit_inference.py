@@ -1210,18 +1210,25 @@ import random
 #    st.info("👆 Use the sidebar controls above to configure and run the agent-based simulation.")
 
 ###
+import streamlit as st
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+import statsmodels.api as sm
+from io import BytesIO
 
-# --- Your existing classes: Patient, Clinician, MisinformationModel ---
-# (Ensure these are included before this code block)
+# Your existing model classes (Patient, Clinician, MisinformationModel) should be here
+# Make sure they include the datacollector attribute with proper setup.
 
-# --- Regression plot function ---
+# Regression plot function
 def regression_plot(x, y, data, xlabel, ylabel, title):
     # Clean data
     data_cleaned = data.copy()
     data_cleaned[x] = data_cleaned[x].replace([np.inf, -np.inf], np.nan).fillna(data_cleaned[x].mean())
     data_cleaned[y] = data_cleaned[y].replace([np.inf, -np.inf], np.nan).fillna(data_cleaned[y].mean())
 
-    # Fit linear model
+    # Linear regression model
     X = sm.add_constant(data_cleaned[x])
     model = sm.OLS(data_cleaned[y], X).fit()
     r2 = model.rsquared
@@ -1241,7 +1248,7 @@ def regression_plot(x, y, data, xlabel, ylabel, title):
     plt.close(fig)
     return buf
 
-# --- Run simulation and display regression analysis ---
+# Trigger simulation and regression analysis
 if st.sidebar.button("Run Simulation & Regression Analysis"):
     # Use current slider values
     num_patients = st.session_state.get('num_patients', 50)
@@ -1258,14 +1265,15 @@ if st.sidebar.button("Run Simulation & Regression Analysis"):
     )
     for _ in range(30):
         model.step()
-    df = model.get_agent_vars_dataframe()
+    # Use the correct way to get the DataFrame
+    df = model.datacollector.get_agent_vars_dataframe()
     st.session_state['df_sim'] = df
 
-    # Show basic simulation info
+    # Show basic info
     st.write("### Simulation Results & Regression Analysis")
     df_reset = df.reset_index()
 
-    # Basic scatter plot
+    # Basic scatterplot
     col1, col2 = st.columns(2)
     with col1:
         fig1, ax1 = plt.subplots(figsize=(8, 6))
@@ -1285,7 +1293,7 @@ if st.sidebar.button("Run Simulation & Regression Analysis"):
         ax1.set_ylabel("Care Seeking Behavior")
         st.pyplot(fig1)
 
-    # Regression plots only if enough data
+    # Regression plots if enough data
     if len(df_reset) > 10:
         st.markdown("### Regression Analysis with statsmodels")
         col3, col4 = st.columns(2)
@@ -1312,7 +1320,7 @@ if st.sidebar.button("Run Simulation & Regression Analysis"):
             )
             st.image(buf2)
 
-        # Additional regression plots (optional)
+        # Optional: Trust in Clinician
         col5, col6 = st.columns(2)
         with col5:
             buf3 = regression_plot(
@@ -1326,9 +1334,6 @@ if st.sidebar.button("Run Simulation & Regression Analysis"):
             st.image(buf3)
     else:
         st.info("Not enough data for regression analysis. Run the simulation with more agents.")
-
-# --- End of regression analysis code ---
-
 
 
 # =======================
@@ -1346,6 +1351,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
