@@ -945,6 +945,9 @@ def display_simulation_results(df):
         df: The DataFrame containing the simulation results.
     """
     if df is None:
+        df = df.reset_index(drop=True)
+        df.index = df.index + 1  # Shift index to start at 1  (Correcting the indentation here)
+
         return  # Handle the case where run_simulation returned None
 
  #   st.dataframe(df)
@@ -984,12 +987,12 @@ display_simulation_results(simulation_data)
 #results = calculate_something(num_agents)  # Assuming this is not needed
 #st.write("Results:", results) # Remove this line if not needed
 
-if st.sidebar.button("Run Simulation"):
+if st.sidebar.button("Run Regression Analysis"):
     df = run_simulation(num_agents)
     if df is not None:
         df = df.reset_index(drop=True)
         df.index = df.index + 1  # Shift index to start at 1  (Correcting the indentation here)
-        st.dataframe(df)
+   #     st.dataframe(df)
 
     # display_simulation_results(df)  # Remove or adjust if needed
     
@@ -1285,6 +1288,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
