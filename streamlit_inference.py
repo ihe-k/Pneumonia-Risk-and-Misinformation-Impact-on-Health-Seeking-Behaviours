@@ -928,7 +928,15 @@ def run_simulation(num_agents):
         'location': np.random.choice(['Rural', 'Suburban', 'Urban'], num_agents)  # Example adding a location column
     }
     df = pd.DataFrame(data)
-   
+
+    df = df.rename(columns={
+        'symptom_severity': 'Symptom Severity',
+        'care_seeking_behavior': 'Care Seeking Behavior',
+        'trust_in_clinician': 'Trust in Clinician',
+        'misinformation_exposure': 'Misinformation Exposure',
+        'age': 'Age',
+        'location': 'Location'
+    })
 
     df['symptom_severity'] = df['symptom_severity'].round(3)
     df['care_seeking_behavior'] = df['care_seeking_behavior'].round(3)
@@ -1081,6 +1089,7 @@ class Clinician(Agent):
 # Define the MisinformationModel
 class MisinformationModel(Model):
     def __init__(self, num_patients, num_clinicians, width, height, misinformation_exposure):
+        super().__init__()
         self.grid = MultiGrid(width, height, torus=True)
         self.schedule = RandomActivation(self)
         self.datacollector = DataCollector(
@@ -1091,7 +1100,13 @@ class MisinformationModel(Model):
                 "Misinformation Exposure": "misinformation_exposure"
             }
         )
+    def step(self):
+        self.datacollector.collect(self)
+        self.schedule.step()
 
+    def get_agent_vars_dataframe(self):  # ✅ Add this
+        return self.datacollector.get_agent_vars_dataframe()        
+    
         # Create patient agents
         for i in range(num_patients):
             patient = Patient(i, self, misinformation_exposure)
@@ -1106,9 +1121,7 @@ class MisinformationModel(Model):
             x, y = self.random.randrange(width), self.random.randrange(height)
             self.grid.place_agent(clinician, (x, y))
 
-    def step(self):
-        self.datacollector.collect(self)
-        self.schedule.step()
+    
 
 
 
@@ -1360,6 +1373,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
