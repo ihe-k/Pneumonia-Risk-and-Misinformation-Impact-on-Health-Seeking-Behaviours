@@ -619,13 +619,17 @@ try:
     report_str = classification_report(y_test, y_test_pred, target_names=label_map.keys(), output_dict=True)
     
     # Convert to DataFrame for better display
-    report_df = pd.DataFrame(report_str).transpose()
+    report_df = pd.DataFrame(report_dict).transpose()
     
     # Round numeric values to 3 decimal places
     numeric_columns = ['precision', 'recall', 'f1-score', 'support']
     for col in numeric_columns:
         if col in report_df.columns:
             report_df[col] = report_df[col].round(3)
+
+    st.markdown("### 📊 Classification Report (Test Set)")
+    st.write(report_df)  # Show the DataFrame in the app
+
     
     # Display the table with better formatting
     st.dataframe(
@@ -1293,6 +1297,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
