@@ -944,6 +944,7 @@ def display_simulation_results(df):
 
     st.dataframe(df)
 
+simulation_data = run_simulation(num_agents)
 if simulation_data is not None:
     # Output the values to make sure rounding works
     st.write("Rounded Simulation Data:")
@@ -1275,6 +1276,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
