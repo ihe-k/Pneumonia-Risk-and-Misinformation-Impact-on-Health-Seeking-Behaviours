@@ -1231,9 +1231,39 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
 import statsmodels.api as sm
+from io import BytesIO
 
-# Assume your MisinformationModel is defined as in your setup:
-# from your_module import MisinformationModel
+# Your MisinformationModel should be defined here.
+# For demonstration, here's a minimal mock:
+class MisinformationModel:
+    def __init__(self, num_patients, num_clinicians, width, height, misinformation_exposure):
+        self.datacollector = self._create_datacollector()
+        self.grid = None
+        self.schedule = None
+        # Simulate data
+        self._simulate_data()
+
+    def _create_datacollector(self):
+        # Dummy datacollector with get_agent_vars_dataframe method
+        class DummyCollector:
+            def get_agent_vars_dataframe(self):
+                # Generate dummy data with columns matching your setup
+                df = pd.DataFrame({
+                    ('agent_reporters', 'symptom_severity'): np.random.randint(0, 4, 100),
+                    ('agent_reporters', 'care_seeking_behavior'): np.random.rand(100),
+                    ('agent_reporters', 'trust_in_clinician'): np.random.rand(100),
+                    ('agent_reporters', 'misinformation_exposure'): np.random.rand(100),
+                })
+                df.columns = pd.MultiIndex.from_tuples(df.columns)
+                return df
+        return DummyCollector()
+
+    def _simulate_data(self):
+        pass
+
+    def step(self):
+        pass
+
 
 # Regression plotting function
 def regression_plot(x, y, data, xlabel, ylabel, title):
@@ -1262,17 +1292,17 @@ def regression_plot(x, y, data, xlabel, ylabel, title):
     plt.close(fig)
     return buf
 
-# Your app starts here
-st.title("Misinformation Model Simulation & Regression Analysis")
+# Streamlit app
+st.title("Misinformation Model with Regression Analysis")
 
-# Sidebar inputs
+# Inputs for simulation
 num_patients = st.sidebar.slider("Number of Patients", 5, 100, 10)
 num_clinicians = st.sidebar.slider("Number of Clinicians", 1, 20, 3)
 misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.5)
 
 # Run simulation button
-if st.sidebar.button("Run Simulation"):
-    # Create the model instance
+if st.sidebar.button("Run Simulation", key="run_simulation_button"):
+    # Instantiate the model
     model = MisinformationModel(
         num_patients=num_patients,
         num_clinicians=num_clinicians,
@@ -1283,47 +1313,47 @@ if st.sidebar.button("Run Simulation"):
     for _ in range(30):
         model.step()
 
-    # Save model and data in session_state
+    # Save model and dataframe in session_state
     st.session_state['model'] = model
     df = model.datacollector.get_agent_vars_dataframe()
     st.session_state['df'] = df
-
     st.success("Simulation completed!")
 
-# Retrieve model and data
+# Regression Analysis button
+if st.sidebar.button("Regression Analysis", key="regression_analysis_button"):
+    model = st.session_state.get('model', None)
+    df = st.session_state.get('df', None)
+    if model is None or df is None:
+        st.warning("Please run the simulation first.")
+    else:
+        # Handle MultiIndex columns
+        if isinstance(df.columns, pd.MultiIndex):
+            df.columns = ['_'.join(col).lower() for col in df.columns]
+        st.write("Columns after flattening:", df.columns)
+
+        # Check if the expected columns exist
+        x_col = 'symptom_severity'
+        y_col = 'care_seeking_behavior'
+        if x_col in df.columns and y_col in df.columns:
+            df_reset = df.reset_index()
+            buf = regression_plot(
+                x=x_col,
+                y=y_col,
+                data=df_reset,
+                xlabel="Symptom Severity",
+                ylabel="Care Seeking Behavior",
+                title="Symptom Severity vs Care-Seeking"
+            )
+            st.image(buf)
+        else:
+            st.warning(f"Columns '{x_col}' and/or '{y_col}' not found in data.")
+
+# Optional: display data for inspection
 model = st.session_state.get('model', None)
 df = st.session_state.get('df', None)
-
-if model is not None and df is not None:
-    # Check and flatten MultiIndex columns
-    if isinstance(df.columns, pd.MultiIndex):
-        df.columns = ['_'.join(col).lower() for col in df.columns]
-        st.write("Flattened columns:", df.columns)
-    else:
-        st.write("Columns:", df.columns)
-
-    st.write("Sample data:")
+if df is not None:
+    st.write("Sample data from last simulation:")
     st.dataframe(df.head())
-
-    # Define column names for regression
-    x_col = 'symptom_severity'
-    y_col = 'care_seeking_behavior'
-
-    if x_col in df.columns and y_col in df.columns:
-        df_reset = df.reset_index()
-        buf = regression_plot(
-            x=x_col,
-            y=y_col,
-            data=df_reset,
-            xlabel="Symptom Severity",
-            ylabel="Care Seeking Behavior",
-            title="Symptom Severity vs Care-Seeking"
-        )
-        st.image(buf)
-    else:
-        st.write(f"Columns '{x_col}' and/or '{y_col}' not found in data.")
-else:
-    st.write("Please run the simulation first.")
     
 # =======================
 # FOOTER
@@ -1340,6 +1370,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
