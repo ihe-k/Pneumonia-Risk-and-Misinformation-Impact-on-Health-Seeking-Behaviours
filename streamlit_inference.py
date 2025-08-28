@@ -976,11 +976,11 @@ display_simulation_results(simulation_data)
 #results = calculate_something(num_agents)  # Assuming this is not needed
 #st.write("Results:", results) # Remove this line if not needed
 
-if st.sidebar.button("Run Regression Analysis"):
-    df = run_simulation(num_agents)
-    if df is not None:
-        df = df.reset_index(drop=True)
-        df.index = df.index + 1  # Shift index to start at 1  (Correcting the indentation here)
+
+ #   df = run_simulation(num_agents)
+ #   if df is not None:
+#        df = df.reset_index(drop=True)
+ #       df.index = df.index + 1  # Shift index to start at 1  (Correcting the indentation here)
    #     st.dataframe(df)
 
     # display_simulation_results(df)  # Remove or adjust if needed
@@ -1260,6 +1260,66 @@ import random
 #    st.info("👆 Use the sidebar controls above to configure and run the agent-based simulation.")
 
 ###
+if st.sidebar.button("Run Regression Analysis"):
+  #  if simulate_button:
+    st.session_state.simulation_run = True
+
+    # Run your Mesa simulation
+    model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinfo_exposure)
+    for _ in range(30):
+        model.step()
+
+    # Get the simulation data as a DataFrame
+    df_sim = model.get_agent_vars_dataframe().reset_index(drop=True)
+
+    # Reset index to start at 1 (optional)
+    df_sim.index = df_sim.index + 1
+
+    # Show the simulation results
+    st.write("### 📈 Simulation Results & Analysis")
+    st.dataframe(df_sim.style.format({
+        "Symptom Severity": "{:.3f}",
+        "Care Seeking Behavior": "{:.3f}",
+        "Trust in Clinician": "{:.3f}",
+        "Misinformation Exposure": "{:.3f}"
+    }))
+
+    # Your regression plotting function calls, for example:
+    if len(df_sim) > 10:
+        st.markdown("### 🎯 2D Relationship Analysis")
+        col1, col2 = st.columns(2)
+
+        with col1:
+            buffer1 = regression_plot(
+                x="Misinformation Exposure",
+                y="Care Seeking Behavior",
+                data=df_sim,
+                xlabel="Misinformation Exposure",
+                ylabel="Care Seeking Behavior",
+                title="Misinformation vs Care-Seeking Behavior"
+            )
+            st.image(buffer1)
+
+        with col2:
+            buffer2 = regression_plot(
+                x="Symptom Severity",
+                y="Care Seeking Behavior",
+                data=df_sim,
+                xlabel="Symptom Severity",
+                ylabel="Care Seeking Behavior",
+                title="Symptom Severity vs Care-Seeking Behavior"
+            )
+            st.image(buffer2)
+
+        # Add more regression plots as you like
+
+    # Summary stats table
+    st.markdown("### 📋 Simulation Summary Statistics")
+    summary_stats = df_sim[["Symptom Severity", "Care Seeking Behavior", "Trust in Clinician", "Misinformation Exposure"]].describe()
+    st.dataframe(summary_stats.round(3))
+
+else:
+    st.info("👆 Use the sidebar controls above to configure and run the agent-based simulation.")
 
 
 # =======================
@@ -1277,6 +1337,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
