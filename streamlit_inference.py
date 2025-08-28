@@ -1297,22 +1297,7 @@ import random
 #    st.info("👈 Use the sidebar controls above to configure and run an agent-based simulation and a regression analysis.")
 
 ###
-if st.sidebar.button("Run Regression Analysis"):
-  #  if simulate_button:
-    st.session_state.simulation_run = True
-
-    # Run your Mesa simulation
-    model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinfo_exposure)
-    for _ in range(30):
-        model.step()
-
-    # Get the simulation data as a DataFrame
-    df_sim = model.get_agent_vars_dataframe().reset_index(drop=True)
-
-    # Reset index to start at 1 (optional)
-    df_sim.index = df_sim.index + 1
-
-if st.sidebar.button("Run Regression Analysis"):
+if st.sidebar.button("Run Regression Analysis", key="run_regression"):
   #  if simulate_button:
     st.session_state.simulation_run = True
 
@@ -1343,7 +1328,8 @@ if st.sidebar.button("Run Regression Analysis"):
         "Trust in Clinician": "{:.3f}",
         "Misinformation Exposure": "{:.3f}"
     }))
-    
+        
+
 
 
 
@@ -1400,6 +1386,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
