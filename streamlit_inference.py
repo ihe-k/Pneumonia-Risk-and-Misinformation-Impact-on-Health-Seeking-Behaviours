@@ -616,7 +616,7 @@ try:
     st.markdown("### 📊 Classification Report (Test Set)")
     
     # Get the classification report as a string and parse it
-    report_str = classification_report(y_test, y_test_pred, target_names=label_map.keys(), output_dict=True)
+    report_dict = classification_report(y_test, y_test_pred, target_names=label_map.keys(), output_dict=True)
     
     # Convert to DataFrame for better display
     report_df = pd.DataFrame(report_dict).transpose()
@@ -1297,6 +1297,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
