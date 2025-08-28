@@ -944,6 +944,12 @@ def display_simulation_results(df):
 
     st.dataframe(df)
 
+if simulation_data is not None:
+    # Output the values to make sure rounding works
+    st.write("Rounded Simulation Data:")
+    st.write(simulation_data)
+display_simulation_results(simulation_data)
+
     # st.header("Simulation Results")
 
     # st.dataframe(df)  # Display the full DataFrame
@@ -1253,38 +1259,6 @@ import random
 
 ###
 
-import pandas as pd
-import numpy as np
-import seaborn as sns
-import matplotlib.pyplot as plt
-import statsmodels.api as sm
-from io import BytesIO
-import streamlit as st
-
-class PatientAgent(Agent):
-    def __init__(self, unique_id, model):
-        super().__init__(unique_id, model)
-
-        # Ensure spread across the entire range
-        self.symptom_severity = random.uniform(0, 1)
-
-        # Trust is still random
-        self.trust_in_clinician = random.uniform(0, 1)
-
-        # Misinformation exposure has slight randomness but scaled with symptom_severity
-        self.misinfo_exposure = min(1.0, max(0.0, self.symptom_severity + random.uniform(-0.3, 0.3)))
-
-        # Care seeking behavior correlates negatively with misinfo, positively with symptom severity & trust
-        self.care_seeking_behavior = min(1.0, max(0.0,
-            0.6 * self.symptom_severity + 
-            0.3 * self.trust_in_clinician - 
-            0.5 * self.misinfo_exposure +
-            random.uniform(-0.1, 0.1)
-        ))
-
-    def step(self):
-        # Agent dynamics can be added here later
-        pass
 
 # =======================
 # FOOTER
@@ -1301,6 +1275,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
