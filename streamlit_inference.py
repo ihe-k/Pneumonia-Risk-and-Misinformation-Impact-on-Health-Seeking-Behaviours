@@ -1318,7 +1318,7 @@ if st.sidebar.button("Run Regression Analysis"):
         "Symptom Severity",
         "Care Seeking Behavior",
         "Trust in Clinician",
-        "Misinformation Exposure""
+        "Misinformation Exposure"
     }))
 #: "{:.3f}"
     # Your regression plotting function calls, for example:
@@ -1374,6 +1374,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
