@@ -1315,12 +1315,12 @@ if st.sidebar.button("Run Regression Analysis"):
     # Show the simulation results
     st.write("### 📈 Simulation Results & Analysis")
     st.dataframe(df_sim.style.format({
-        "Symptom Severity": "{:.3f}",
-        "Care Seeking Behavior": "{:.3f}",
-        "Trust in Clinician": "{:.3f}",
-        "Misinformation Exposure": "{:.3f}"
+        "Symptom Severity",
+        "Care Seeking Behavior",
+        "Trust in Clinician",
+        "Misinformation Exposure""
     }))
-
+#: "{:.3f}"
     # Your regression plotting function calls, for example:
     if len(df_sim) > 10:
         st.markdown("### 🎯 2D Relationship Analysis")
@@ -1374,6 +1374,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
