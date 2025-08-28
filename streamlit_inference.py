@@ -1338,10 +1338,10 @@ if st.sidebar.button("Run Regression Analysis"):
     # Show the simulation results
     st.write("### 📈 Simulation Results & Analysis")
     st.dataframe(df_sim.style.format({
-        "Symptom Severity": "{:.3f},
-        "Care Seeking Behavior": "{:.3f},
-        "Trust in Clinician": "{:.3f},
-        "Misinformation Exposure": "{:.3f}
+        "Symptom Severity": "{:.3f}",
+        "Care Seeking Behavior": "{:.3f}",
+        "Trust in Clinician": "{:.3f}",
+        "Misinformation Exposure": "{:.3f}"
     }))
     
 
@@ -1400,6 +1400,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
