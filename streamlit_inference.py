@@ -923,14 +923,15 @@ def run_simulation(num_agents):
         'location': np.random.choice(['Rural', 'Suburban', 'Urban'], num_agents)  # Example adding a location column
     }
     df = pd.DataFrame(data)
-   # return df
+   
 
 df['symptom_severity'] = df['symptom_severity'].round(3)
 df['care_seeking_behavior'] = df['care_seeking_behavior'].round(3)
 df['misinformation_exposure'] = df['misinformation_exposure'].round(3)
 df['trust_in_clinician'] = df['trust_in_clinician'].round(3)
 
-st.dataframe(df)
+return df
+
 
 def display_simulation_results(df):
     """Displays the simulation results in a user-friendly format using Streamlit.
@@ -941,6 +942,7 @@ def display_simulation_results(df):
     if df is None:
         return  # Handle the case where run_simulation returned None
 
+st.dataframe(df)
 
     # st.header("Simulation Results")
 
@@ -1299,6 +1301,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
