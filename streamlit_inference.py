@@ -1213,9 +1213,17 @@ import random
 
 import streamlit as st
 import pandas as pd
-import seaborn as sns
 import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+from io import BytesIO
 import statsmodels.api as sm
+from mesa import Model
+from mesa.time import RandomActivation
+from mesa.space import MultiGrid
+from mesa.datacollection import DataCollector
+from mesa.agent import Agent
+import random
 
 # Define your regression plot function
 def regression_plot(x, y, data, xlabel, ylabel, title):
@@ -1297,6 +1305,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
