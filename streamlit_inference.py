@@ -626,9 +626,7 @@ try:
     for col in numeric_columns:
         if col in report_df.columns:
             report_df[col] = report_df[col].round(3)
-    if 'support' in report_df.columns:
-    report_df['support'] = report_df['support'].astype(int)
-
+        
    # st.markdown("### 📊 Classification Report (Test Set)")
    # st.write(report_df)  # Show the DataFrame in the app
     st.dataframe(report_df.style.format(precision=3))
@@ -1282,6 +1280,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
