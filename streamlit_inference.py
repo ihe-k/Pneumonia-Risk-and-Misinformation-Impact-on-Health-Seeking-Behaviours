@@ -1316,6 +1316,9 @@ if st.sidebar.button("Run Regression Analysis", key="run_regression"):
     # Get the simulation data as a DataFrame
     df_sim = model.get_agent_vars_dataframe().reset_index(drop=True)
 
+    st.write("First few rows of simulation data:")
+    st.write(df_sim.head())
+
     # Reset index to start at 1 (optional)
     df_sim.index = df_sim.index + 1
 
@@ -1326,22 +1329,13 @@ if st.sidebar.button("Run Regression Analysis", key="run_regression"):
     "misinformation_exposure": "Misinformation Exposure"
     }, inplace=True)
     
-    cols_to_round = [
-    "Symptom Severity",
-    "Care Seeking Behavior",
-    "Trust in Clinician",
-    "Misinformation Exposure"
-    ]
-    df_sim[cols_to_round] = df_sim[cols_to_round].round(3)
+    df_sim[["Symptom Severity", "Care Seeking Behavior", "Trust in Clinician", "Misinformation Exposure"]] = df_sim[
+        ["Symptom Severity", "Care Seeking Behavior", "Trust in Clinician", "Misinformation Exposure"]
+    ].round(3)
     
     # Show the simulation results
     st.write("### 📈 Simulation Results & Analysis")
-    st.dataframe(df_sim.style.format({
-        "Symptom Severity": "{:.3f}",
-        "Care Seeking Behavior": "{:.3f}",
-        "Trust in Clinician": "{:.3f}",
-        "Misinformation Exposure": "{:.3f}"
-    }))
+    st.dataframe(df_sim)
         
 
 
@@ -1400,6 +1394,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
