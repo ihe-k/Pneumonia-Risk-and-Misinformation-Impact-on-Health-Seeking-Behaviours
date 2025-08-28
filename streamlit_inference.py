@@ -923,7 +923,7 @@ def run_simulation(num_agents):
         'location': np.random.choice(['Rural', 'Suburban', 'Urban'], num_agents)  # Example adding a location column
     }
     df = pd.DataFrame(data)
-    return df
+   # return df
 
 df['symptom_severity'] = df['symptom_severity'].round(3)
 df['care_seeking_behavior'] = df['care_seeking_behavior'].round(3)
@@ -1299,6 +1299,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
