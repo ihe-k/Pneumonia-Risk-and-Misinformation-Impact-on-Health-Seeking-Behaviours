@@ -930,6 +930,8 @@ df['care_seeking_behavior'] = df['care_seeking_behavior'].round(3)
 df['misinformation_exposure'] = df['misinformation_exposure'].round(3)
 df['trust_in_clinician'] = df['trust_in_clinician'].round(3)
 
+st.dataframe(df)
+
 def display_simulation_results(df):
     """Displays the simulation results in a user-friendly format using Streamlit.
 
@@ -1297,6 +1299,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
