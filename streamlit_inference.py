@@ -921,6 +921,11 @@ def run_simulation(num_agents):
     df = pd.DataFrame(data)
     return df
 
+df['symptom_severity'] = df['symptom_severity'].round(3)
+df['care_seeking_behavior'] = df['care_seeking_behavior'].round(3)
+df['misinformation_exposure'] = df['misinformation_exposure'].round(3)
+df['trust_in_clinician'] = df['trust_in_clinician'].round(3)
+
 def display_simulation_results(df):
     """Displays the simulation results in a user-friendly format using Streamlit.
 
@@ -934,10 +939,10 @@ def display_simulation_results(df):
     # st.header("Simulation Results")
 
     # st.dataframe(df)  # Display the full DataFrame
-    st.write("Number of agents:", len(df))
-    st.write("Average symptom severity:", df['symptom_severity'].mean())
-    st.write("Distribution of care-seeking behavior:")
-    care_seeking_counts = df['care_seeking_behavior'].value_counts()
+ #   st.write("Number of agents:", len(df))
+ #   st.write("Average symptom severity:", df['symptom_severity'].mean())
+ #   st.write("Distribution of care-seeking behavior:")
+ #   care_seeking_counts = df['care_seeking_behavior'].value_counts()
   #  st.bar_chart(care_seeking_counts)
 
 
@@ -1288,6 +1293,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
