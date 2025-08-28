@@ -1257,7 +1257,7 @@ import random
 
 #else:
     # Show placeholder when simulation hasn't been run
-#    st.info("👆 Use the sidebar controls above to configure and run the agent-based simulation.")
+#    st.info("👈 Use the sidebar controls above to configure and run an agent-based simulation and a regression analysis.")
 
 ###
 if st.sidebar.button("Run Regression Analysis"):
@@ -1337,6 +1337,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
