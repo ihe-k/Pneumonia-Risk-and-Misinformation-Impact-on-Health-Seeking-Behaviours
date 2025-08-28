@@ -1020,7 +1020,30 @@ class Patient(Agent):
         self.trust_in_clinician = 0.5
         self.misinformation_exposure = misinformation_score
         self.care_seeking_behavior = self.calculate_care_seeking_behavior()
-        
+
+    def calculate_care_seeking_behavior(self):
+        base = 0.1  # baseline minimum care seeking
+
+        # weights for each factor (tune these as you see fit)
+        w_severity = 0.5
+        w_trust = 0.3
+        w_misinfo = 0.4
+
+        # Calculate weighted sum
+        care = (base 
+                + w_severity * self.symptom_severity 
+                + w_trust * self.trust_in_clinician 
+                - w_misinfo * self.misinformation_exposure)
+
+        # Add some noise for realism
+        noise = random.uniform(-0.05, 0.05)
+        care += noise
+
+        # Clip to [0,1] range
+        care = max(0, min(1, care))
+
+        return care
+    
     def step(self):
         # Example behavior logic
         if self.misinformation_exposure > 0.7 and random.random() < 0.4:
@@ -1319,7 +1342,7 @@ if st.sidebar.button("Run Regression Analysis"):
     st.dataframe(summary_stats.round(3))
 
 else:
-    st.info("👆 Use the sidebar controls above to configure and run the agent-based simulation.")
+    st.info("👈 Use the sidebar controls on the left to configure and run the agent-based simulation and a regression analysis")
 
 
 # =======================
@@ -1337,6 +1360,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
