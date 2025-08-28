@@ -622,7 +622,7 @@ try:
     report_df = pd.DataFrame(report_dict).transpose()
     
     # Round numeric values to 3 decimal places
-    numeric_columns = ['precision', 'recall', 'f1-score', 'support']
+    numeric_columns = ['precision', 'recall', 'f1-score']
     for col in numeric_columns:
         if col in report_df.columns:
             report_df[col] = report_df[col].round(3)
@@ -639,19 +639,19 @@ try:
 #    )
     
     # Also show accuracy metrics separately for better visibility
-    st.markdown("### 📈 Overall Metrics")
+ #   st.markdown("### 📈 Overall Metrics")
     
     # Create a summary metrics table
-    metrics_data = {
-        'Metric': ['Accuracy', 'Macro Avg F1', 'Weighted Avg F1'],
-        'Value': [
-            f"{report_df.loc['accuracy', 'precision']:.3f}",
-            f"{report_df.loc['macro avg', 'f1-score']:.3f}",
-            f"{report_df.loc['weighted avg', 'f1-score']:.3f}"
-        ]
-    }
+  #  metrics_data = {
+   #     'Metric': ['Accuracy', 'Macro Avg F1', 'Weighted Avg F1'],
+   #     'Value': [
+    #        f"{report_df.loc['accuracy', 'precision']:.3f}",
+    #        f"{report_df.loc['macro avg', 'f1-score']:.3f}",
+     #       f"{report_df.loc['weighted avg', 'f1-score']:.3f}"
+      #  ]
+    #}
     
-    metrics_df = pd.DataFrame(metrics_data)
+    #metrics_df = pd.DataFrame(metrics_data)
     
     # Display the metrics table
   #  st.dataframe(
@@ -1280,6 +1280,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
