@@ -929,6 +929,12 @@ def run_simulation(num_agents):
     }
     df = pd.DataFrame(data)
 
+    df['symptom_severity'] = df['symptom_severity'].round(3)
+    df['care_seeking_behavior'] = df['care_seeking_behavior'].round(3)
+    df['misinformation_exposure'] = df['misinformation_exposure'].round(3)
+    df['trust_in_clinician'] = df['trust_in_clinician'].round(3)
+    df.index = df.index + 1
+    
     df = df.rename(columns={
         'symptom_severity': 'Symptom Severity',
         'care_seeking_behavior': 'Care Seeking Behavior',
@@ -938,11 +944,6 @@ def run_simulation(num_agents):
         'location': 'Location'
     })
 
-    df['symptom_severity'] = df['symptom_severity'].round(3)
-    df['care_seeking_behavior'] = df['care_seeking_behavior'].round(3)
-    df['misinformation_exposure'] = df['misinformation_exposure'].round(3)
-    df['trust_in_clinician'] = df['trust_in_clinician'].round(3)
-    df.index = df.index + 1
     return df
 
 
@@ -1373,6 +1374,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
