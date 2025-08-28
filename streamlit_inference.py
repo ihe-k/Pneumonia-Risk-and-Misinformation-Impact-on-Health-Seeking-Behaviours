@@ -1063,7 +1063,7 @@ class Patient(Agent):
 class Clinician(Agent):
     def __init__(self, unique_id, model):
         super().__init__(unique_id, model)
-        self.clinician_trust = clinician_trust #new
+        self.clinician_trust = random.uniform(0, 1)
     def step(self):
         # Example behaviour: increase trust for patients in same cell
         cellmates = self.model.grid.get_cell_list_contents([self.pos])
@@ -1360,6 +1360,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
