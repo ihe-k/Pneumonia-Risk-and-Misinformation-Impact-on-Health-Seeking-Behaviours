@@ -626,17 +626,19 @@ try:
     for col in numeric_columns:
         if col in report_df.columns:
             report_df[col] = report_df[col].round(3)
+    if 'support' in report_df.columns:
+    report_df['support'] = report_df['support'].astype(int)
 
-    st.markdown("### 📊 Classification Report (Test Set)")
-    st.write(report_df)  # Show the DataFrame in the app
-
+   # st.markdown("### 📊 Classification Report (Test Set)")
+   # st.write(report_df)  # Show the DataFrame in the app
+    st.dataframe(report_df.style.format(precision=3))
     
     # Display the table with better formatting
-    st.dataframe(
-        report_df,
-        use_container_width=True,
-        hide_index=False
-    )
+#    st.dataframe(
+#        report_df,
+#        use_container_width=True,
+#        hide_index=False
+#    )
     
     # Also show accuracy metrics separately for better visibility
     st.markdown("### 📈 Overall Metrics")
@@ -654,11 +656,11 @@ try:
     metrics_df = pd.DataFrame(metrics_data)
     
     # Display the metrics table
-    st.dataframe(
-        metrics_df,
-        use_container_width=True,
-        hide_index=True
-    )
+  #  st.dataframe(
+  #      metrics_df,
+  #      use_container_width=True,
+  #      hide_index=True
+   # )
 
 except Exception as e:
     st.error(f"⚠️ Could not evaluate HealthVer dataset: {e}")
@@ -1280,6 +1282,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
