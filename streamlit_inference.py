@@ -1233,8 +1233,8 @@ import numpy as np
 import statsmodels.api as sm
 from io import BytesIO
 
-# Your MisinformationModel should be defined here.
-# For demonstration, here's a minimal mock:
+# st.write("DataFrame columns:", df.columns)
+
 class MisinformationModel:
     def __init__(self, num_patients, num_clinicians, width, height, misinformation_exposure):
         self.datacollector = self._create_datacollector()
@@ -1370,6 +1370,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
