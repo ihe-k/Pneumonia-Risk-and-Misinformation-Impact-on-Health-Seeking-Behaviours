@@ -1225,14 +1225,24 @@ from mesa.datacollection import DataCollector
 from mesa.agent import Agent
 import random
 
-# Define your regression plot function
+import streamlit as st
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+import numpy as np
+import statsmodels.api as sm
+
+# Assume your MisinformationModel is defined as in your setup:
+# from your_module import MisinformationModel
+
+# Regression plotting function
 def regression_plot(x, y, data, xlabel, ylabel, title):
     # Clean data
     data_cleaned = data.copy()
     data_cleaned[x] = data_cleaned[x].replace([np.inf, -np.inf], np.nan).fillna(data_cleaned[x].mean())
     data_cleaned[y] = data_cleaned[y].replace([np.inf, -np.inf], np.nan).fillna(data_cleaned[y].mean())
 
-    # Fit linear model
+    # Fit model
     X = sm.add_constant(data_cleaned[x])
     model = sm.OLS(data_cleaned[y], X).fit()
     r2 = model.rsquared
@@ -1252,43 +1262,68 @@ def regression_plot(x, y, data, xlabel, ylabel, title):
     plt.close(fig)
     return buf
 
-# After running your simulation and retrieving the DataFrame:
-# Example: df = model.datacollector.get_agent_vars_dataframe()
+# Your app starts here
+st.title("Misinformation Model Simulation & Regression Analysis")
 
-# Retrieve the DataFrame
-df = model.datacollector.get_agent_vars_dataframe()
+# Sidebar inputs
+num_patients = st.sidebar.slider("Number of Patients", 5, 100, 10)
+num_clinicians = st.sidebar.slider("Number of Clinicians", 1, 20, 3)
+misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.5)
 
-# Check if columns are MultiIndex and flatten if needed
-if isinstance(df.columns, pd.MultiIndex):
-    df.columns = ['_'.join(col).lower() for col in df.columns]
-    st.write("Flattened columns:", df.columns)
-else:
-    st.write("Columns:", df.columns)
-
-# Show first few rows for verification
-st.write(df.head())
-
-# Now, define the column names you will use in the regression plots
-x_col = 'symptom_severity'
-y_col = 'care_seeking_behavior'
-
-# Make sure these columns exist
-if x_col in df.columns and y_col in df.columns:
-    # Reset index for plotting
-    df_reset = df.reset_index()
-
-    # Generate regression plot
-    buf = regression_plot(
-        x=x_col,
-        y=y_col,
-        data=df_reset,
-        xlabel="Symptom Severity",
-        ylabel="Care Seeking Behavior",
-        title="Symptom Severity vs Care-Seeking"
+# Run simulation button
+if st.sidebar.button("Run Simulation"):
+    # Create the model instance
+    model = MisinformationModel(
+        num_patients=num_patients,
+        num_clinicians=num_clinicians,
+        width=10,
+        height=10,
+        misinformation_exposure=misinfo_exposure
     )
-    st.image(buf)
+    for _ in range(30):
+        model.step()
+
+    # Save model and data in session_state
+    st.session_state['model'] = model
+    df = model.datacollector.get_agent_vars_dataframe()
+    st.session_state['df'] = df
+
+    st.success("Simulation completed!")
+
+# Retrieve model and data
+model = st.session_state.get('model', None)
+df = st.session_state.get('df', None)
+
+if model is not None and df is not None:
+    # Check and flatten MultiIndex columns
+    if isinstance(df.columns, pd.MultiIndex):
+        df.columns = ['_'.join(col).lower() for col in df.columns]
+        st.write("Flattened columns:", df.columns)
+    else:
+        st.write("Columns:", df.columns)
+
+    st.write("Sample data:")
+    st.dataframe(df.head())
+
+    # Define column names for regression
+    x_col = 'symptom_severity'
+    y_col = 'care_seeking_behavior'
+
+    if x_col in df.columns and y_col in df.columns:
+        df_reset = df.reset_index()
+        buf = regression_plot(
+            x=x_col,
+            y=y_col,
+            data=df_reset,
+            xlabel="Symptom Severity",
+            ylabel="Care Seeking Behavior",
+            title="Symptom Severity vs Care-Seeking"
+        )
+        st.image(buf)
+    else:
+        st.write(f"Columns '{x_col}' and/or '{y_col}' not found in data.")
 else:
-    st.write(f"Columns '{x_col}' and/or '{y_col}' not found in DataFrame.")
+    st.write("Please run the simulation first.")
     
 # =======================
 # FOOTER
@@ -1305,6 +1340,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
