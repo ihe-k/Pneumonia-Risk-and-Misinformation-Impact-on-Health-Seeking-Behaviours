@@ -938,7 +938,7 @@ def display_simulation_results(df):
     st.write("Average symptom severity:", df['symptom_severity'].mean())
     st.write("Distribution of care-seeking behavior:")
     care_seeking_counts = df['care_seeking_behavior'].value_counts()
-    st.bar_chart(care_seeking_counts)
+  #  st.bar_chart(care_seeking_counts)
 
 
     
@@ -1288,6 +1288,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
