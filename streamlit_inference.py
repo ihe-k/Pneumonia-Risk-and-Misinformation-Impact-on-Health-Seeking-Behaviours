@@ -1125,19 +1125,6 @@ class MisinformationModel(Model):
     
 
 
-
-import streamlit as st
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-import numpy as np
-from mesa import Model
-from mesa.time import RandomActivation
-from mesa.space import MultiGrid
-from mesa.datacollection import DataCollector
-from mesa.agent import Agent
-import random
-
 # === Simulation Setup ===
 #num_agents = st.sidebar.slider("Number of Patient Agents", 5, 100, 10)
 #num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 5)
@@ -1297,6 +1284,26 @@ import random
 #    st.info("👈 Use the sidebar controls above to configure and run an agent-based simulation and a regression analysis.")
 
 ###
+def display_simulation_results(df):
+    if df is None:
+        return  # Handle the case where run_simulation returned None
+
+    # Round to 3 decimal places explicitly here
+    df = df.round({
+        "Symptom Severity": 3,
+        "Care Seeking Behavior": 3,
+        "Misinformation Exposure": 3,
+        "Trust in Clinician": 3
+    })
+
+    # Display the dataframe with formatted values
+    st.dataframe(df.style.format({
+        "Symptom Severity": "{:.3f}",
+        "Care Seeking Behavior": "{:.3f}",
+        "Misinformation Exposure": "{:.3f}",
+        "Trust in Clinician": "{:.3f}"
+    }))
+
 if st.sidebar.button("Run Regression Analysis", key="run_regression"):
   #  if simulate_button:
     st.session_state.simulation_run = True
@@ -1393,6 +1400,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
