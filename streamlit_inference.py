@@ -620,7 +620,12 @@ try:
     
     # Convert to DataFrame for better display
     report_df = pd.DataFrame(report_dict).transpose()
-    
+    if 'support' in report_df.columns:
+    report_df = report_df.drop(columns=['support'])
+
+    if 'support' in report_df.index:
+    report_df = report_df.drop(index=['support'])
+
     # Round numeric values to 3 decimal places
     numeric_columns = ['precision', 'recall', 'f1-score']
     for col in numeric_columns:
@@ -1280,6 +1285,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
