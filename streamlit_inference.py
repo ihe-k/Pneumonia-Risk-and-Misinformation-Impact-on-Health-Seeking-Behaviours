@@ -912,7 +912,7 @@ def run_simulation(num_agents):
 
     data = {
         'symptom_severity': np.random.uniform(0, 1, num_agents),  # 1-3 severity
-        'care_seeking_behavior': np.random.choice(['yes', 'no'], num_agents),
+        'care_seeking_behavior': np.random.uniform(0, 1, num_agents),
         'trust_in_clinician': np.random.rand(num_agents),  # 0-1 trust level
         'misinformation_exposure': np.random.randint(0, 3, num_agents), # 0-2 exposure level
         'age': np.random.randint(20, 61, num_agents),  # Example adding an age column
@@ -1288,6 +1288,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
