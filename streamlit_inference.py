@@ -975,7 +975,7 @@ if st.sidebar.button("Run Simulation"):
         df.index = df.index + 1  # Shift index to start at 1  (Correcting the indentation here)
         st.dataframe(df)
 
-    display_simulation_results(df)  # Remove or adjust if needed
+    # display_simulation_results(df)  # Remove or adjust if needed
     
     # This section appears to be attempting to create a DataFrame from 'data'
     # but 'data' isn't defined in the snippet.  
@@ -1301,6 +1301,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
