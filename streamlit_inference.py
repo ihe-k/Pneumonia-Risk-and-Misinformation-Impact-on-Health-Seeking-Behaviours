@@ -1332,8 +1332,8 @@ if st.sidebar.button("Run Regression Analysis"):
     "Care Seeking Behavior",
     "Trust in Clinician",
     "Misinformation Exposure"
-]
-df_sim[cols_to_round] = df_sim[cols_to_round].round(3)
+    ]
+    df_sim[cols_to_round] = df_sim[cols_to_round].round(3)
     
     # Show the simulation results
     st.write("### 📈 Simulation Results & Analysis")
@@ -1400,6 +1400,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
