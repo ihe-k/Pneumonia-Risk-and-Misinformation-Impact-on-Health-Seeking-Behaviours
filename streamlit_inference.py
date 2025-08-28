@@ -925,12 +925,12 @@ def run_simulation(num_agents):
     df = pd.DataFrame(data)
    
 
-df['symptom_severity'] = df['symptom_severity'].round(3)
-df['care_seeking_behavior'] = df['care_seeking_behavior'].round(3)
-df['misinformation_exposure'] = df['misinformation_exposure'].round(3)
-df['trust_in_clinician'] = df['trust_in_clinician'].round(3)
+    df['symptom_severity'] = df['symptom_severity'].round(3)
+    df['care_seeking_behavior'] = df['care_seeking_behavior'].round(3)
+    df['misinformation_exposure'] = df['misinformation_exposure'].round(3)
+    df['trust_in_clinician'] = df['trust_in_clinician'].round(3)
 
-return df
+    return df
 
 
 def display_simulation_results(df):
@@ -942,7 +942,7 @@ def display_simulation_results(df):
     if df is None:
         return  # Handle the case where run_simulation returned None
 
-st.dataframe(df)
+    st.dataframe(df)
 
     # st.header("Simulation Results")
 
@@ -1301,6 +1301,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
