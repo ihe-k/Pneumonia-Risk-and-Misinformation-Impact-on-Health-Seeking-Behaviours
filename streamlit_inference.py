@@ -1348,7 +1348,9 @@ class MisinformationModel(Model):
                 "Symptom Severity": "symptom_severity",  
                 "Care Seeking Behavior": "care_seeking_behavior",
                 "Trust in Clinician": "trust_in_clinician",
-                "Misinformation Exposure": "misinformation_exposure"
+                "Misinformation Exposure": "misinformation_exposure",
+                "Age": "age",  
+                "Location": "location"  
             }
         )
 
@@ -1382,6 +1384,8 @@ class PatientAgent(Agent):
         self.care_seeking_behavior = random.uniform(0, 1)
         self.trust_in_clinician = random.uniform(0, 1)
         self.misinformation_exposure = random.uniform(0, 1)
+        self.age = random.randint(18, 80)  # Random age between 18 and 80
+        self.location = random.choice(['Urban', 'Rural'])  # Random location
 
     def step(self):
         pass
@@ -1453,12 +1457,13 @@ def regression_plot(x, y, data, xlabel, ylabel, title):
 
 # **Main App Logic**
 def display_simulation_results():
-    # Get Simulation data
+    # Get Simulation data (non-stepped data)
     df_S = generate_simulation_data(num_agents, num_clinicians, misinfo_exposure)
+    df_S.index = df_S.index + 1  # Adjust index to start from 1
 
     # Display tables and plots
     st.write("### 📊 Non-Stepped Simulation Results")
-    st.dataframe(df_S.round(3))
+    st.dataframe(df_S[['Symptom Severity', 'Care Seeking Behavior', 'Trust in Clinician', 'Misinformation Exposure', 'Age', 'Location']].round(3))
 
     # Top row: 2D Relationship Analysis (Symptoms vs Care-Seeking and Trust vs Care-Seeking)
     col1, col2 = st.columns([1, 1])
@@ -1478,14 +1483,15 @@ def display_simulation_results():
 
     with col1:
         st.write("#### Logistic Regression for Non-Stepped Simulation: Symptoms vs Care-Seeking")
-        st.pyplot(regression_plot("Symptom Severity", "Care Seeking Behavior", df_S, "Symptom Severity", "Care Seeking Behavior", "Symptoms vs Care-Seeking Behavior"))
+        st.pyplot(regression_plot("Symptom Severity", "Care Seeking Behavior", df_S, "Symptom Severity", "Care Seeking Behavior", "Symptoms vs Care-Seeking (Non-Stepped Simulation)"))
 
     with col2:
         st.write("#### Logistic Regression for Non-Stepped Simulation: Trust vs Care-Seeking")
-        st.pyplot(regression_plot("Trust in Clinician", "Care Seeking Behavior", df_S, "Trust in Clinician", "Care Seeking Behavior", "Trust vs Care-Seeking Behavior"))
+        st.pyplot(regression_plot("Trust in Clinician", "Care Seeking Behavior", df_S, "Trust in Clinician", "Care Seeking Behavior", "Trust vs Care-Seeking (Non-Stepped Simulation)"))
 
-# Call the function to display the simulation results
-display_simulation_results()
+# Run the function to display results in Streamlit
+if __name__ == "__main__":
+    display_simulation_results()
 
 # =======================
 # FOOTER
@@ -1502,6 +1508,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
