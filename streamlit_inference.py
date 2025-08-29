@@ -1296,12 +1296,12 @@ def display_simulation_results(df):
         if col in df.columns:
             df_sim[col] = df_sim[col].round(3)
  
-#    st.dataframe(df.style.format({
-#        "Symptom Severity": "{:.3f}",
-#        "Care Seeking Behavior": "{:.3f}",
-#        "Misinformation Exposure": "{:.3f}",
-#        "Trust in Clinician": "{:.3f}"
-#    }))
+    st.dataframe(df.style.format({
+        "Symptom Severity": "{:.3f}",
+        "Care Seeking Behavior": "{:.3f}",
+        "Misinformation Exposure": "{:.3f}",
+        "Trust in Clinician": "{:.3f}"
+    }))
 
 if st.sidebar.button("Run Regression Analysis", key="run_regression"):
   #  if simulate_button:
@@ -1392,6 +1392,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
