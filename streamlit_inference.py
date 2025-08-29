@@ -1504,7 +1504,6 @@ def display_simulation_results():
         st.pyplot(regression_plot("Symptom Severity", "Care Seeking Behavior", df_A, "Symptom Severity", "Care Seeking Behavior", "Symptoms vs Care-Seeking Behavior (Stepped Simulation)"))
 
 
-
 # =======================
 # FOOTER
 # =======================
@@ -1520,6 +1519,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
