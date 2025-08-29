@@ -1368,7 +1368,7 @@ if st.sidebar.button("Run Simulation and Regression Analysis", key="run_regressi
   #  if simulate_button:
    # st.session_state.simulation_run = True
 
-
+    try:
                  model = MisinformationModel(
                     num_patients=st.session_state['num_agents'],
                     #num_patients=num_patients,
@@ -1376,13 +1376,12 @@ if st.sidebar.button("Run Simulation and Regression Analysis", key="run_regressi
                     misinformation_exposure=st.session_state['misinformation_exposure'],
                     width=10,
                     height=10,
-                
                 )
                 for _ in range(30):
                     model.step()
-                df = model.datacollector.get_agent_vars_dataframe()
-                st.session_state['simulation_results'] = df
-                st.success("Simulation completed!")
+                #df = model.datacollector.get_agent_vars_dataframe()
+                #st.session_state['simulation_results'] = df
+                #st.success("Simulation completed!")
             except Exception as e:
                 st.error(f"An error occurred: {e}")
 
@@ -1494,6 +1493,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
