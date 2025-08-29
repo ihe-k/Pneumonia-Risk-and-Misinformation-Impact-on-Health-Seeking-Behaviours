@@ -1416,11 +1416,22 @@ class ClinicianAgent(Agent):
         pass
 
 # === Running the Simulation ===
-simulate_button = st.sidebar.button("Run Simulation")
+#simulate_button = st.sidebar.button("Run Simulation")
 
-if st.button("Simulate", key="simulate_button_1"):  # Use a unique key for the button
+import streamlit as st
+
+# Sidebar sliders to adjust parameters dynamically
+num_agents = st.sidebar.slider("Number of Agents", min_value=10, max_value=200, value=50, step=10)
+num_clinicians = st.sidebar.slider("Number of Clinicians", min_value=1, max_value=20, value=5, step=1)
+misinformation_exposure = st.sidebar.slider("Misinformation Exposure", min_value=0.0, max_value=1.0, value=0.2, step=0.05)
+
+# Button to trigger the simulation
+simulate_button = st.sidebar.button("Run Simulation", key="run_simulation_button")
+
+# Run the simulation when the button is clicked
+if simulate_button:
     try:
-        # Initialize the model
+        # Initialize the model with the values from the sliders
         model = MisinformationModel(
             num_agents=num_agents,
             num_clinicians=num_clinicians,
@@ -1429,34 +1440,49 @@ if st.button("Simulate", key="simulate_button_1"):  # Use a unique key for the b
             misinformation_exposure=misinformation_exposure
         )
         
-        # Show a spinner or loading indicator
-        max_steps = 30  # Or whatever the maximum steps in your simulation are 
+        # Show a loading indicator
+        max_steps = 30
         progress_bar = st.progress(0)
-        st.session_state.simulation_run = True  # Use session state for proper tracking
-        
+        st.session_state.simulation_run = True  # Mark simulation as running
+
+        # Run the simulation
         for i in range(max_steps):
-            try: 
+            try:
                 model.step()
             except Exception as e:
                 st.error(f"An error occurred during step {i+1}: {e}")
                 progress_bar.progress(1.0)
-                st.stop()  # Stops the Streamlit app execution after an error
-                break  # Stop the loop as the simulation has failed
-            
+                st.stop()  # Stops Streamlit execution after an error
+                break  # Stop the loop if simulation fails
+
+            # Update progress bar
             progress = (i + 1) / max_steps
             progress_bar.progress(progress)
-        
+
         # Final progress bar update
         progress_bar.progress(1.0)
-        
-        # If no error occurred, show the simulation results
+
+        # Collect the simulation results (as a DataFrame)
         df = model.get_agent_vars_dataframe()
+
+        # Show the simulation results
         st.dataframe(df)
-        st.write("Relationship Analysis")
-    
+        st.write("### Relationship Analysis")
+
+        # Store results in session state for reuse
+        st.session_state.simulation_data = df
+
     except Exception as e:
         st.error(f"An error occurred in the simulation: {e}")
-        st.session_state.simulation_run = False  # Reset simulation flag if error happens
+        st.session_state.simulation_run = False  # Reset the simulation flag if an error happens
+
+# Display previously run simulation results if available
+if "simulation_data" in st.session_state:
+    st.write("### Previously Run Simulation Results")
+    st.dataframe(st.session_state.simulation_data)
+else:
+    st.write("No simulation data available yet.")
+
 
     # Create and run the model again (if necessary)
     model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinformation_exposure)
@@ -1725,6 +1751,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
