@@ -1440,13 +1440,16 @@ if simulate_button:
             except Exception as e:
                 st.error(f"An error occurred during step {i+1}: {e}")
                 progress_bar.progress(1.0)
-                st.stop()  # Stops the Streamlit app execution
-                return
+                st.stop()  # Stops the Streamlit app execution after an error
+                break  # Stop the loop as the simulation has failed
             
             progress = (i + 1) / max_steps
             progress_bar.progress(progress)
         
+        # Final progress bar update
         progress_bar.progress(1.0)
+        
+        # If no error occurred, show the simulation results
         df = model.get_agent_vars_dataframe()
         st.dataframe(df)
         st.write("Relationship Analysis")
@@ -1725,6 +1728,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
