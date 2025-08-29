@@ -1341,7 +1341,7 @@ def regression_plot(x, y, data, xlabel, ylabel, title):
     buf = io.BytesIO()
     try:
         plt.figure(figsize=(8, 6))
-        sns.regplot(x=x, y=y, data=data, scatter_kws={'s': 50}, line_kws={'color': 'red'})
+        sns.regplot(x=x, y=y, data=df_sim, scatter_kws={'s': 50}, line_kws={'color': 'red'})
         plt.title(title)
         plt.xlabel(xlabel)
         plt.ylabel(ylabel)
@@ -1462,6 +1462,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
