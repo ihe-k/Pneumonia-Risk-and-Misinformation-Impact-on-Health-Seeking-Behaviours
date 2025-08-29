@@ -485,7 +485,7 @@ if dataset_source:
 st.sidebar.markdown("---")
 st.sidebar.markdown("### 📊 Session Status")
 
-# Initialize session state for tracking
+# Initialise session state for tracking
 if 'models_loaded' not in st.session_state:
     st.session_state.models_loaded = False
 if 'data_collected' not in st.session_state:
@@ -1416,7 +1416,7 @@ def generate_simulation_data(num_agents, num_clinicians, misinfo_exposure):
 
     return df_sim
 
-# **Visualization 1: 2D Scatter Plots for Relationships**
+# **Visualisation 1: 2D Scatter Plots for Relationships**
 def scatter_plots_2d(df_reset):
     fig1, ax1 = plt.subplots(figsize=(6, 4))  # Left Plot
     scatter1 = ax1.scatter(df_reset['Symptom Severity'],
@@ -1425,6 +1425,7 @@ def scatter_plots_2d(df_reset):
                             cmap='viridis', alpha=0.6, s=50)
     ax1.set_xlabel('Symptom Severity')
     ax1.set_ylabel('Care Seeking Behavior')
+    plt.title('Stepped Simulation: Symptoms Severity vs Care-Seeking)
     plt.colorbar(scatter1, ax=ax1, label='Misinformation Exposure', shrink=0.8)
 
     fig2, ax2 = plt.subplots(figsize=(6, 4))  # Right Plot
@@ -1434,6 +1435,7 @@ def scatter_plots_2d(df_reset):
                             cmap='viridis', alpha=0.6, s=50)
     ax2.set_xlabel('Trust in Clinician')
     ax2.set_ylabel('Care Seeking Behavior')
+    plt.title('Stepped Simulation: Trust in Clinician vs Care-Seeking')
     plt.colorbar(scatter2, ax=ax2, label='Misinformation Exposure', shrink=0.8)
 
     return fig1, fig2
@@ -1472,25 +1474,25 @@ def display_simulation_results():
     col1, col2 = st.columns([1, 1])
 
     with col1:
-        st.write("#### Stepped Simulation: Symptoms vs Care-Seeking")
+ #       st.write("#### Stepped Simulation: Symptoms vs Care-Seeking")
         fig1, _ = scatter_plots_2d(df_S)  # Left plot
         st.pyplot(fig1)
 
     with col2:
-        st.write("#### Stepped Simulation: Trust vs Care-Seeking")
+ #       st.write("#### Stepped Simulation: Trust vs Care-Seeking")
         _, fig2 = scatter_plots_2d(df_S)  # Right plot
         st.pyplot(fig2)
 
-    # Bottom row: Logistic Regression Plots
-    col1, col2 = st.columns([1, 1])
+#    # Bottom row: Logistic Regression Plots
+#    col1, col2 = st.columns([1, 1])
 
-    with col1:
-        st.write("#### Non-Stepped Simulation (Logistic Regression): Symptoms vs Care-Seeking")
-        st.pyplot(regression_plot("Symptom Severity", "Care Seeking Behavior", df_S, "Symptom Severity", "Care Seeking Behavior", "Symptoms vs Care-Seeking (Non-Stepped Simulation)"))
+#    with col1:
+ #       st.write("#### Non-Stepped Simulation (Logistic Regression): Symptoms vs Care-Seeking")
+ #       st.pyplot(regression_plot("Symptom Severity", "Care Seeking Behavior", df_S, "Symptom Severity", "Care Seeking Behavior", "Symptoms vs Care-Seeking (Non-Stepped Simulation)"))
 
-    with col2:
-        st.write("#### Non-Stepped Simulation (Logistic Regression): Trust vs Care-Seeking")
-        st.pyplot(regression_plot("Trust in Clinician", "Care Seeking Behavior", df_S, "Trust in Clinician", "Care Seeking Behavior", "Trust vs Care-Seeking (Non-Stepped Simulation)"))
+ #   with col2:
+ #       st.write("#### Non-Stepped Simulation (Logistic Regression): Trust vs Care-Seeking")
+  #      st.pyplot(regression_plot("Trust in Clinician", "Care Seeking Behavior", df_S, "Trust in Clinician", "Care Seeking Behavior", "Trust vs Care-Seeking (Non-Stepped Simulation)"))
 
 # Run the simulation display
 if __name__ == "__main__":
@@ -1513,6 +1515,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
