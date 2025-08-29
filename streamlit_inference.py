@@ -1291,10 +1291,10 @@ def display_simulation_results(df):
     
 
      # Round numeric values to 3 decimal places
-    numeric_columns = ['Symptom Severity', 'Care Seeking Behavior', 'Misinformation Exposure', 'Trust in Clinician']
-    for col in numeric_columns:
-        if col in df.columns:
-            df_sim[col] = df_sim[col].round(3)
+#    numeric_columns = ['Symptom Severity', 'Care Seeking Behavior', 'Misinformation Exposure', 'Trust in Clinician']
+ #   for col in numeric_columns:
+  #      if col in df.columns:
+ #           df_sim[col] = df_sim[col].round(3)
  
     st.dataframe(df.style.format({
         "Symptom Severity": "{:.3f}",
@@ -1392,6 +1392,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
