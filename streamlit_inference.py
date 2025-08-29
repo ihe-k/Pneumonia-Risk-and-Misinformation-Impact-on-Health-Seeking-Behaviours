@@ -1288,15 +1288,13 @@ def display_simulation_results(df):
     if df is None:
         return  # Handle the case where run_simulation returned None
 
-    # Round to 3 decimal places explicitly here
-    df = df.round({
-        "Symptom Severity": 3,
-        "Care Seeking Behavior": 3,
-        "Misinformation Exposure": 3,
-        "Trust in Clinician": 3
-    })
+    
 
-    # Display the dataframe with formatted values
+     # Round numeric values to 3 decimal places
+    numeric_columns = ['Symptom Severity', 'Care Seeking Behavior', 'Misinformation Exposure', 'Trust in Clinician']
+    for col in numeric_columns:
+        if col in df.columns:
+            df_sim[col] = df_sim[col].round(3)
     st.dataframe(df.style.format({
         "Symptom Severity": "{:.3f}",
         "Care Seeking Behavior": "{:.3f}",
@@ -1319,8 +1317,7 @@ if st.sidebar.button("Run Regression Analysis", key="run_regression"):
     st.write("First few rows of simulation data:")
     st.write(df_sim.head())
 
-    df_sim = pd.DataFrame(sim_dict).transpose()
-
+    
     # Reset index to start at 1 (optional)
     df_sim.index = df_sim.index + 1
 
@@ -1331,12 +1328,7 @@ if st.sidebar.button("Run Regression Analysis", key="run_regression"):
     "misinformation_exposure": "Misinformation Exposure"
     }, inplace=True)
    
-     # Round numeric values to 3 decimal places
-    numeric_columns = ['Symptom Severity', 'Care Seeking Behavior', 'Misinformation Exposure', 'Trust in Clinician']
-    for col in numeric_columns:
-        if col in df_sim.columns:
-            df_sim[col] = df_sim[col].round(3)
-
+ 
     
     # Show the simulation results
     st.write("### 📈 Simulation Results & Analysis")
@@ -1399,6 +1391,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
