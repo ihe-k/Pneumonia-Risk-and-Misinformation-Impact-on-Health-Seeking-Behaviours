@@ -1311,11 +1311,6 @@ import seaborn as sns
 import numpy as np
 import statsmodels.api as sm
 import os
-import random
-from mesa import Agent, Model
-from mesa.time import RandomActivation
-from mesa.space import MultiGrid
-from mesa.datacollection import DataCollector
 
 # === Simulation Setup ===
 # Sidebar Inputs for Stepped Simulation
@@ -1325,7 +1320,7 @@ num_clinicians_stepped = st.sidebar.slider("Number of Clinician Agents (Stepped)
 misinfo_exposure_stepped = st.sidebar.slider("Baseline Misinformation Exposure (Stepped)", 0.0, 1.0, 0.3, 0.05, key="S_misinfo")
 
 # === Simulation Model ===
-class MisinformationModel(Model):
+class MisinformationModel:
     def __init__(self, num_agents, num_clinicians, width, height, misinfo_exposure):
         self.num_agents = num_agents
         self.num_clinicians = num_clinicians
@@ -1347,15 +1342,12 @@ class MisinformationModel(Model):
         )
 
     def create_agents(self):
-        # Create Patient Agents
         for i in range(self.num_agents):
             a = PatientAgent(i, self)
             self.schedule.add(a)
             x = self.random.randint(0, self.grid.width - 1)
             y = self.random.randint(0, self.grid.height - 1)
             self.grid.place_agent(a, (x, y))
-
-        # Create Clinician Agents
         for i in range(self.num_clinicians):
             c = ClinicianAgent(i, self)
             self.schedule.add(c)
@@ -1370,9 +1362,10 @@ class MisinformationModel(Model):
     def get_agent_vars_dataframe(self):
         return self.datacollector.get_agent_vars_dataframe()
 
-class PatientAgent(Agent):
+class PatientAgent:
     def __init__(self, unique_id, model):
-        super().__init__(unique_id, model)
+        self.unique_id = unique_id
+        self.model = model
         self.symptom_severity = random.uniform(0, 1)
         self.care_seeking_behavior = random.uniform(0, 1)
         self.trust_in_clinician = random.uniform(0, 1)
@@ -1380,13 +1373,14 @@ class PatientAgent(Agent):
         self.age = random.randint(18, 80)
         self.location = random.choice(['Urban', 'Rural'])
 
-class ClinicianAgent(Agent):
+class ClinicianAgent:
     def __init__(self, unique_id, model):
-        super().__init__(unique_id, model)
+        self.unique_id = unique_id
+        self.model = model
         self.trust_in_clinician = random.uniform(0, 1)
 
 # === Simulation Data Generation ===
-@st.cache_data  # Cache simulation data to make it static
+@st.cache_data  # Cache non-stepped simulation data to make it static
 def generate_non_stepped_simulation_data(num_agents, num_clinicians, misinfo_exposure):
     model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinfo_exposure)
     for _ in range(30):
@@ -1396,7 +1390,7 @@ def generate_non_stepped_simulation_data(num_agents, num_clinicians, misinfo_exp
     df_sim.index = df_sim.index + 1  # Adjust the index to start at 1
     return df_sim
 
-# **Visualization 1: 2D Scatter Plots for Relationships (Dynamic)**
+# **Visualization 1: 2D Scatter Plots for Relationships**
 def scatter_plots_2d(df_reset):
     fig1, ax1 = plt.subplots(figsize=(6, 4))  # Left Plot
     scatter1 = ax1.scatter(df_reset['Symptom Severity'],
@@ -1423,7 +1417,6 @@ def scatter_plots_2d(df_reset):
     return fig1, fig2
 
 # **Regression Plot (Logistic Regression)**
-@st.cache_data  # Cache regression plots (bottom row)
 def regression_plot(x, y, data, xlabel, ylabel, title):
     data_cleaned = data.copy()
     data_cleaned[x] = data_cleaned[x].replace([np.inf, -np.inf], np.nan).fillna(data_cleaned[x].mean())
@@ -1454,7 +1447,7 @@ def display_simulation_results():
     if not os.path.exists("graphs"):
         os.makedirs("graphs")
     
-    # Create and save the 2D Relationship Analysis graphs (Dynamic)
+    # Create and save the 2D Relationship Analysis graphs
     fig1, fig2 = scatter_plots_2d(df_S)
     fig1.savefig("graphs/symptom_vs_care_seeking.png")
     fig2.savefig("graphs/trust_vs_care_seeking.png")
@@ -1471,9 +1464,11 @@ def display_simulation_results():
     col1, col2 = st.columns([1, 1])
 
     with col1:
+     #   st.write("#### Stepped Simulation: Symptoms vs Care-Seeking")
         st.image(symptom_vs_care_seeking_img, use_container_width=True)
 
     with col2:
+      #  st.write("#### Stepped Simulation: Trust vs Care-Seeking")
         st.image(trust_vs_care_seeking_img, use_container_width=True)
 
     # Bottom row: Logistic Regression (Non-Stepped Simulation)
@@ -1484,13 +1479,11 @@ def display_simulation_results():
         st.pyplot(regression_plot("Symptom Severity", "Care Seeking Behavior", df_S, "Symptom Severity", "Care Seeking Behavior", "Symptoms vs Care-Seeking Behavior"))
 
     with col2:
-        st.write("#### Non-Stepped Simulation: Logistic Regression (Trust in Clinician vs Care-Seeking)")
-        st.pyplot(regression_plot("Trust in Clinician", "Care Seeking Behavior", df_S, "Trust in Clinician", "Care Seeking Behavior", "Trust in Clinician vs Care-Seeking Behavior"))
+        st.write("#### Non-Stepped Simulation: Logistic Regression (Trust vs Care-Seeking)")
+        st.pyplot(regression_plot("Trust in Clinician", "Care Seeking Behavior", df_S, "Trust in Clinician", "Care Seeking Behavior", df_S, "Trust in Clinician", "Care Seeking Behavior", "Trust vs Care-Seeking Behavior"))
 
 # Run the simulation results display function
-display_simulation_results()
-
-
+    display_simulation_results()
 
 # =======================
 # FOOTER
@@ -1507,6 +1500,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
