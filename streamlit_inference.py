@@ -1329,7 +1329,7 @@ if st.sidebar.button("Run Regression Analysis", key="run_regression"):
 
     # Run your Mesa simulation
     model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinformation_exposure)
-    for _ in range(30):
+    for i in range(30):
         model.step()
         print(f"Step {i+1}:")
         print(model.get_agent_vars_dataframe().head())
@@ -1418,6 +1418,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
