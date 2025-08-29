@@ -1479,11 +1479,11 @@ def display_simulation_results():
     col1, col2 = st.columns([1, 1])
 
     with col1:
-        st.write("#### Non-Stepped Simulation: Logistic Regression (Symptoms vs Care-Seeking)")
+       # st.write("#### Non-Stepped Simulation: Logistic Regression (Symptoms vs Care-Seeking)")
         st.pyplot(regression_plot("Symptom Severity", "Care Seeking Behavior", df_S, "Symptom Severity", "Care Seeking Behavior", "Symptoms vs Care-Seeking Behavior"))
 
     with col2:
-        st.write("#### Non-Stepped Simulation: Logistic Regression (Trust vs Care-Seeking)")
+     #   st.write("#### Non-Stepped Simulation: Logistic Regression (Trust vs Care-Seeking)")
         st.pyplot(regression_plot("Trust in Clinician", "Care Seeking Behavior", df_S, "Trust in Clinician", "Care Seeking Behavior", "Trust vs Care-Seeking Behavior"))
 
 # Run the simulation results display function
@@ -1504,6 +1504,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
