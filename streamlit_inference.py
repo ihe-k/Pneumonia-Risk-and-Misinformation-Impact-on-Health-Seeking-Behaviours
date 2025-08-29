@@ -1304,65 +1304,88 @@ class MisinformationModel(Model):
 #    st.info("👈 Use the sidebar controls above to configure and run an agent-based simulation and a regression analysis.")
 
 ###
+# Drop rows with NaN or infinite values in the relevant columns
+df_sim_clean = df_sim[['Symptom Severity', 'Care Seeking Behavior', 'Misinformation Exposure', 'Trust in Clinician']]
+df_sim_clean = df_sim_clean.replace([np.inf, -np.inf], np.nan)  # Replace infinities with NaN
+df_sim_clean = df_sim_clean.dropna()  # Drop rows with NaN values
 
+# Check if the DataFrame is empty after cleaning
+if df_sim_clean.empty:
+    st.error("The data has too many missing or invalid values to run the regression.")
+else:
+    # Now proceed with the regression plot
+    st.markdown("### 🎯 Relationship Analysis")
+    col1, col2 = st.columns(2)
+
+    with col1:
+        buffer1 = regression_plot(
+            x="Misinformation Exposure",
+            y="Care Seeking Behavior",
+            data=df_sim_clean,
+            xlabel="Misinformation Exposure",
+            ylabel="Care Seeking Behavior",
+            title="Misinformation vs Care-Seeking Behavior"
+        )
+        if buffer1:
+            st.image(buffer1)
+
+    with col2:
+        buffer2 = regression_plot(
+            x="Symptom Severity",
+            y="Care Seeking Behavior",
+            data=df_sim_clean,
+            xlabel="Symptom Severity",
+            ylabel="Care Seeking Behavior",
+            title="Symptom Severity vs Care-Seeking Behavior"
+        )
+        if buffer2:
+            st.image(buffer2)
+
+##
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-import numpy as np
+import statsmodels.api as sm
 from mesa import Model
 from mesa.time import RandomActivation
 from mesa.space import MultiGrid
 from mesa.datacollection import DataCollector
 from mesa.agent import Agent
 import random
-import statsmodels.api as sm
+import io
 
-# === Sidebar inputs (MUST be defined before button is pressed) ===
-num_agents = st.sidebar.slider("Number of Agents", min_value=10, max_value=200, value=50, step=10)
-num_clinicians = st.sidebar.slider("Number of Clinicians", min_value=1, max_value=20, value=5, step=1)
-misinformation_exposure = st.sidebar.slider("Misinformation Exposure", min_value=0.0, max_value=1.0, value=0.2, step=0.05)
-
-simulate_button = st.sidebar.button("Run Simulation", key="run_simulation_button")
-
-# === Simulation Model ===
+# --- Simulation Model ---
 class MisinformationModel(Model):
     def __init__(self, num_agents, num_clinicians, width, height, misinformation_exposure):
         super().__init__()
-
         self.num_agents = num_agents
         self.num_clinicians = num_clinicians
         self.width = width
         self.height = height
         self.misinformation_exposure = misinformation_exposure
-        
-        # Create grid and scheduler
         self.grid = MultiGrid(width, height, True)
         self.schedule = RandomActivation(self)
-
-        # Initialize agents
         self.create_agents()
-
-        # Set up data collection (track these variables for each agent)
         self.datacollector = DataCollector(
             agent_reporters={
-                "Symptom Severity": "symptom_severity",  # Example agent attribute to collect
+                "Symptom Severity": "symptom_severity",
                 "Care Seeking Behavior": "care_seeking_behavior",
                 "Trust in Clinician": "trust_in_clinician",
                 "Misinformation Exposure": "misinformation_exposure"
             }
         )
-
+    
     def create_agents(self):
-        # Create patient agents
+        # Patient agents
         for i in range(self.num_agents):
             a = PatientAgent(i, self)
             self.schedule.add(a)
             x = self.random.randint(0, self.grid.width - 1)
             y = self.random.randint(0, self.grid.height - 1)
             self.grid.place_agent(a, (x, y))
-
-        # Create clinician agents
+        
+        # Clinician agents
         for i in range(self.num_clinicians):
             c = ClinicianAgent(i, self)
             self.schedule.add(c)
@@ -1377,7 +1400,6 @@ class MisinformationModel(Model):
     def get_agent_vars_dataframe(self):
         return self.datacollector.get_agent_vars_dataframe()
 
-# === Agent Definitions ===
 class PatientAgent(Agent):
     def __init__(self, unique_id, model):
         super().__init__(unique_id, model)
@@ -1387,7 +1409,6 @@ class PatientAgent(Agent):
         self.misinformation_exposure = random.uniform(0, 1)
 
     def step(self):
-        # Agent's behavior logic here
         pass
 
 class ClinicianAgent(Agent):
@@ -1396,229 +1417,188 @@ class ClinicianAgent(Agent):
         self.trust_in_clinician = random.uniform(0, 1)
 
     def step(self):
-        # Clinician's behavior logic here
         pass
 
-# === Running the Simulation ===
-if simulate_button:
-    try:
-        # Initialize the model with the values from the sliders
-        model = MisinformationModel(
-            num_agents=num_agents,
-            num_clinicians=num_clinicians,
-            width=10,
-            height=10,
-            misinformation_exposure=misinformation_exposure
-        )
-        
-        # Show a loading indicator
-        max_steps = 30
-        progress_bar = st.progress(0)
-        st.session_state.simulation_run = True  # Mark simulation as running
-
-        # Run the simulation
-        for i in range(max_steps):
-            try:
-                model.step()
-            except Exception as e:
-                st.error(f"An error occurred during step {i+1}: {e}")
-                progress_bar.progress(1.0)
-                st.stop()  # Stops Streamlit execution after an error
-                break  # Stop the loop if simulation fails
-
-            # Update progress bar
-            progress = (i + 1) / max_steps
-            progress_bar.progress(progress)
-
-        # Final progress bar update
-        progress_bar.progress(1.0)
-
-        # Collect the simulation results (as a DataFrame)
-        df = model.get_agent_vars_dataframe()
-
-        # Show the simulation results
-        st.dataframe(df)
-        st.write("### Relationship Analysis")
-
-        # Store results in session state for reuse
-        st.session_state.simulation_data = df
-
-        # === Visualization 1: Symptom Severity vs Care Seeking Behavior ===
-        if len(df) > 10:
-            fig1, ax1 = plt.subplots(figsize=(8, 6))
-            sns.scatterplot(
-                data=df,
-                x="Symptom Severity",
-                y="Care Seeking Behavior",
-                hue="Misinformation Exposure",
-                palette="viridis",
-                alpha=0.7,
-                ax=ax1
-            )
-            ax1.set_title("Symptom Severity vs Care-Seeking Behavior\n(Color = Misinformation Exposure)")
-            st.pyplot(fig1)
-
-        # === Visualization 2: Misinformation Exposure vs Care Seeking Behavior ===
-        if len(df) > 10:
-            fig2, ax2 = plt.subplots(figsize=(8, 6))
-            sns.scatterplot(
-                data=df,
-                x="Misinformation Exposure",
-                y="Care Seeking Behavior",
-                hue="Misinformation Exposure",
-                palette="viridis",
-                alpha=0.7,
-                ax=ax2
-            )
-            ax2.set_title("Misinformation Exposure vs Care-Seeking Behavior")
-            st.pyplot(fig2)
-
-        # === Regression Analysis ===
-        if len(df) > 10:
-            X = df[["Misinformation Exposure", "Symptom Severity"]]
-            X = sm.add_constant(X)  # Adds a constant (intercept) to the regression model
-            y = df["Care Seeking Behavior"]
-
-            model_reg = sm.OLS(y, X).fit()
-            st.write("### 📊 Regression Analysis Results")
-            st.write(model_reg.summary())
-
-    except Exception as e:
-        st.error(f"An error occurred in the simulation: {e}")
-        st.session_state.simulation_run = False  # Reset the simulation flag if an error happens
-
-# === Display previously run simulation results ===
-if "simulation_data" in st.session_state:
-    st.write("### Previously Run Simulation Results")
-    st.dataframe(st.session_state.simulation_data)
-else:
-    st.write("Use the sidebar controls above to configure and run the agent-based simulation.")
-
-
-###
-import io
-import base64
-import matplotlib.pyplot as plt
-import seaborn as sns
-import streamlit as st
-import pandas as pd
-from mesa import Model
-from mesa.time import RandomActivation
-from mesa.space import MultiGrid
-from mesa.datacollection import DataCollector
-from mesa.agent import Agent
-import random
-import statsmodels.api as sm
-
-# --- Function to Display Simulation Results ---
-def display_simulation_results(df):
-    if df is None:
-        return  # Handle the case where run_simulation returned None
-
-    # Display the simulation data with rounded values
-    st.dataframe(df.style.format({
-        "symptom_severity": "{:.3f}",
-        "care_seeking_behavior": "{:.3f}",
-        "misinformation_exposure": "{:.3f}",
-        "trust_in_clinician": "{:.3f}"
-    }))
-
-# --- Function for Regression Plot ---
+# --- Regression Plot Function ---
 def regression_plot(x, y, data, xlabel, ylabel, title):
     buf = io.BytesIO()
     try:
+        # Extract independent and dependent variables
+        X = data[x]
+        Y = data[y]
+
+        # Add constant (intercept) to the independent variable for OLS
+        X = sm.add_constant(X)
+        
+        # Fit OLS model
+        model = sm.OLS(Y, X).fit()
+
+        # Create the regression plot
         plt.figure(figsize=(8, 6))
         sns.regplot(x=x, y=y, data=data, scatter_kws={'s': 50}, line_kws={'color': 'red'})
         plt.title(title)
         plt.xlabel(xlabel)
         plt.ylabel(ylabel)
+
+        # Add R-squared and p-value annotation
+        r_squared = model.rsquared
+        p_value = model.pvalues[1]  # p-value for the first independent variable (x)
+        plt.text(0.05, 0.95, f"R-squared: {r_squared:.3f}\np-value: {p_value:.3f}",
+                 transform=plt.gca().transAxes, fontsize=12, verticalalignment='top')
+
         plt.tight_layout()
         plt.savefig(buf, format='png')
         plt.close()
         buf.seek(0)
-        # Check if buffer has data
+        
         if buf.getbuffer().nbytes > 0:
             return buf
         else:
             return None
     except Exception as e:
         plt.close()
-        # Optionally, log the exception if needed
         return None
 
-# --- Run Simulation and Regression Analysis ---
-if st.sidebar.button("Run Simulation and Regression Analysis", key="run_regression"):
+# --- Logistic Regression Plot Function ---
+def logistic_regression_plot(x, y, data, xlabel, ylabel, title):
+    buf = io.BytesIO()
     try:
-        model = MisinformationModel(
-            num_agents=st.session_state['num_agents'],
-            num_clinicians=st.session_state['num_clinicians'],   
-            misinformation_exposure=st.session_state['misinformation_exposure'],
-            width=10,
-            height=10,
-        )
+        # Extract independent and dependent variables
+        X = data[x]
+        Y = data[y]
+
+        # Add constant (intercept) to the independent variable for logistic regression
+        X = sm.add_constant(X)
+        
+        # Fit Logistic Regression model
+        model = sm.Logit(Y, X).fit()
+
+        # Create the logistic regression plot
+        plt.figure(figsize=(8, 6))
+        sns.regplot(x=x, y=y, data=data, logistic=True, scatter_kws={'s': 50}, line_kws={'color': 'green'})
+        plt.title(title)
+        plt.xlabel(xlabel)
+        plt.ylabel(ylabel)
+
+        # Add model summary (pseudo R-squared, p-value)
+        pseudo_r2 = model.prsquared
+        p_value = model.pvalues[1]  # p-value for the first independent variable (x)
+        plt.text(0.05, 0.95, f"Pseudo R-squared: {pseudo_r2:.3f}\np-value: {p_value:.3f}",
+                 transform=plt.gca().transAxes, fontsize=12, verticalalignment='top')
+
+        plt.tight_layout()
+        plt.savefig(buf, format='png')
+        plt.close()
+        buf.seek(0)
+        
+        if buf.getbuffer().nbytes > 0:
+            return buf
+        else:
+            return None
+    except Exception as e:
+        plt.close()
+        return None
+
+# --- Streamlit UI ---
+num_agents = st.sidebar.slider("Number of Agents", min_value=10, max_value=200, value=50, step=10)
+num_clinicians = st.sidebar.slider("Number of Clinicians", min_value=1, max_value=20, value=5, step=1)
+misinformation_exposure = st.sidebar.slider("Misinformation Exposure", min_value=0.0, max_value=1.0, value=0.2, step=0.05)
+simulate_button = st.sidebar.button("Run Simulation")
+
+if simulate_button:
+    try:
+        model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinformation_exposure)
         for _ in range(30):
             model.step()
-        
-        # Store the simulation results in session state
-        df_sim = model.datacollector.get_agent_vars_dataframe().reset_index(drop=True)
+
+        # Collect results and store in session state
+        df_sim = model.get_agent_vars_dataframe()
         st.session_state['df_sim'] = df_sim
+        st.session_state['simulation_run'] = True
+
         st.success("Simulation completed!")
-
+        
     except Exception as e:
-        st.error(f"An error occurred: {e}")
+        st.error(f"An error occurred in the simulation: {e}")
 
-# --- Check and Plot Results ---
-if 'df_sim' in st.session_state:
+# --- Display Results After Simulation ---
+if 'simulation_run' in st.session_state and st.session_state['simulation_run']:
     df_sim = st.session_state['df_sim']
+    df_sim_clean = df_sim.dropna(subset=['Symptom Severity', 'Care Seeking Behavior', 'Misinformation Exposure', 'Trust in Clinician'])
 
-    # Drop NaNs to avoid errors
-    df_plot = df_sim.dropna(subset=['Symptom Severity', 'Care Seeking Behavior', 'Misinformation Exposure', 'Trust in Clinician'])
+    # Relationship Analysis (Regression Plots)
+    st.markdown("### 🎯 Relationship Analysis")
+    col1, col2 = st.columns(2)
 
-    if len(df_sim) > 10:
-        st.markdown("### 🎯 Relationship Analysis")
-        col1, col2 = st.columns(2)
+    with col1:
+        buffer1 = regression_plot(
+            x="Misinformation Exposure",
+            y="Care Seeking Behavior",
+            data=df_sim_clean,
+            xlabel="Misinformation Exposure",
+            ylabel="Care Seeking Behavior",
+            title="Misinformation vs Care-Seeking Behavior"
+        )
+        if buffer1:
+            st.image(buffer1)
 
-        with col1:
-            buffer1 = regression_plot(
-                x="Misinformation Exposure",
-                y="Care Seeking Behavior",
-                data=df_sim,
-                xlabel="Misinformation Exposure",
-                ylabel="Care Seeking Behavior",
-                title="Misinformation vs Care-Seeking Behavior"
-            )
-            if buffer1:
-                st.image(buffer1)
+    with col2:
+        buffer2 = regression_plot(
+            x="Symptom Severity",
+            y="Care Seeking Behavior",
+            data=df_sim_clean,
+            xlabel="Symptom Severity",
+            ylabel="Care Seeking Behavior",
+            title="Symptom Severity vs Care-Seeking Behavior"
+        )
+        if buffer2:
+            st.image(buffer2)
 
-        with col2:
-            buffer2 = regression_plot(
-                x="Symptom Severity",
-                y="Care Seeking Behavior",
-                data=df_sim,
-                xlabel="Symptom Severity",
-                ylabel="Care Seeking Behavior",
-                title="Symptom Severity vs Care-Seeking Behavior"
-            )
-            if buffer2:
-                st.image(buffer2)
+    # Logistic Regression Plots
+    st.markdown("### 🧑‍🔬 Logistic Regression Analysis")
+    col3, col4, col5 = st.columns(3)
 
-    # Clean column names for clarity
-    df_sim.columns = df_sim.columns.str.strip()
-    df_sim.rename(columns={
-        "symptom_severity": "Symptom Severity",
-        "care_seeking_behavior": "Care Seeking Behavior",
-        "trust_in_clinician": "Trust in Clinician",
-        "misinformation_exposure": "Misinformation Exposure"
-    }, inplace=True)
+    with col3:
+        buffer3 = logistic_regression_plot(
+            x="Misinformation Exposure",
+            y="Care Seeking Behavior",
+            data=df_sim_clean,
+            xlabel="Misinformation Exposure",
+            ylabel="Care Seeking Behavior",
+            title="Logistic Misinformation vs Care-Seeking"
+        )
+        if buffer3:
+            st.image(buffer3)
 
-    # Show the DataFrame and analysis
-    st.dataframe(df_sim)
-    display_simulation_results(df_sim)
+    with col4:
+        buffer4 = logistic_regression_plot(
+            x="Symptom Severity",
+            y="Care Seeking Behavior",
+            data=df_sim_clean,
+            xlabel="Symptom Severity",
+            ylabel="Care Seeking Behavior",
+            title="Logistic Symptom Severity vs Care-Seeking"
+        )
+        if buffer4:
+            st.image(buffer4)
 
-    # Show summary stats
+    with col5:
+        buffer5 = logistic_regression_plot(
+            x="Misinformation Exposure",
+            y="Trust in Clinician",
+            data=df_sim_clean,
+            xlabel="Misinformation Exposure",
+            ylabel="Trust in Clinician",
+            title="Logistic Misinformation vs Trust"
+        )
+        if buffer5:
+            st.image(buffer5)
+
+    # Summary Statistics
     st.markdown("### 📋 Simulation Summary Statistics")
-    summary_stats = df_sim[["Symptom Severity", "Care Seeking Behavior", "Trust in Clinician", "Misinformation Exposure"]].describe()
+    summary_stats = df_sim_clean.describe()
     st.dataframe(summary_stats.round(3))
+
 else:
     st.info("Please run the simulation")
 
@@ -1637,6 +1617,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
