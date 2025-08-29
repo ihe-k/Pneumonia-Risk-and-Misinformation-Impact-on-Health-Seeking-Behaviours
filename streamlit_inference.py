@@ -1318,8 +1318,8 @@ from mesa.agent import Agent
 import random
 
 # === Simulation Setup ===
-# Sidebar Inputs for Simulation in Steps
-st.sidebar.subheader("Simulation in Steps")
+# Sidebar Inputs for Non-Stepped Simulation (Updated label)
+st.sidebar.subheader("Non-Stepped Simulation")
 num_agents = st.sidebar.slider("Number of Patient Agents", 5, 100, 10, key="A_agents")
 num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 5, key="A_clinicians")
 misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.3, 0.05, key="A_misinfo")
@@ -1397,13 +1397,13 @@ class ClinicianAgent(Agent):
         pass
 
 # === Simulation Data Generation ===
-def generate_simulation_data(num_agents, num_clinicians, misinfo_exposure):
+def generate_stepped_simulation_data(num_agents, num_clinicians, misinfo_exposure, steps=30):
     model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinfo_exposure)
     
-    # Run the model for 30 steps
-    for _ in range(30):
+    # Run the model for 'steps' iterations
+    for _ in range(steps):
         model.step()
-    
+
     # Get the data from the simulation
     df_sim = model.get_agent_vars_dataframe()
     return df_sim.reset_index()
@@ -1478,9 +1478,9 @@ def regression_plot(x, y, data, xlabel, ylabel, title):
 
 # **Main App Logic**
 def display_simulation_results():
-    # Get Simulation data
-    df_A = generate_simulation_data(num_agents, num_clinicians, misinfo_exposure)
-    st.write("### 📈 Simulation in Steps Results")
+    # Get Simulation data (use the stepped version)
+    df_A = generate_stepped_simulation_data(num_agents, num_clinicians, misinfo_exposure, steps=30)
+    st.write("### 📈 Non-Stepped Simulation Results")  # Changed the label here
     st.dataframe(df_A.round(3))
 
     # Plot for Simulation (Top: 2D Relationship Analysis, Below: Logistic Regressions)
@@ -1488,20 +1488,17 @@ def display_simulation_results():
     
     # Left side: 2D Relationship Analysis + Logistic Regression (Simulation in Steps)
     with col1:
-        st.write("#### 2D Relationship Analysis for Simulation in Steps")
+        st.write("#### 2D Relationship Analysis for Non-Stepped Simulation")  # Updated title
         st.pyplot(scatter_plots_2d(df_A))
 
-    # Right side: Logistic Regression Comparison
+    # Right side: Logistic Regression (Non-Stepped Simulation)
     with col2:
-        st.write("#### Logistic Regression: Symptoms vs Care-Seeking (Comparison)")
-        st.pyplot(regression_plot("Symptom Severity", "Care Seeking Behavior", df_A, "Symptom Severity", "Care Seeking Behavior", "Symptoms vs Care-Seeking Behavior (Comparison)"))
+        st.write("#### Logistic Regression: Symptoms vs Care-Seeking (Non-Stepped Simulation)")
+        st.pyplot(regression_plot("Symptom Severity", "Care Seeking Behavior", df_A, "Symptom Severity", "Care Seeking Behavior", "Symptoms vs Care-Seeking Behavior (Non-Stepped Simulation)"))
     
     # Below the 2D Relationship, place the regression for Simulation in Steps
-    st.write("#### Logistic Regression: Symptom Severity vs Care Seeking Behavior (Simulation in Steps)")
-    st.pyplot(regression_plot("Symptom Severity", "Care Seeking Behavior", df_A, "Symptom Severity", "Care Seeking Behavior", "Symptoms vs Care-Seeking Behavior (Simulation in Steps)"))
+    col1, col2 = st.columns([1,
 
-if __name__ == "__main__":
-    display_simulation_results()
 
 # =======================
 # FOOTER
@@ -1518,6 +1515,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
