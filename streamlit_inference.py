@@ -1497,7 +1497,14 @@ def display_simulation_results():
         st.pyplot(regression_plot("Symptom Severity", "Care Seeking Behavior", df_A, "Symptom Severity", "Care Seeking Behavior", "Symptoms vs Care-Seeking Behavior (Non-Stepped Simulation)"))
     
     # Below the 2D Relationship, place the regression for Simulation in Steps
-    col1, col2 = st.columns([1,
+    col1, col2 = st.columns([1, 1])
+
+    with col1:
+        st.write("#### Logistic Regression: Symptom Severity vs Care Seeking Behavior (Simulation in Steps)")
+        st.pyplot(regression_plot("Symptom Severity", "Care Seeking Behavior", df_A, "Symptom Severity", "Care Seeking Behavior", "Symptoms vs Care-Seeking Behavior (Simulation in Steps)"))
+
+# Run the display function
+display_simulation_results()
 
 
 # =======================
@@ -1515,6 +1522,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
