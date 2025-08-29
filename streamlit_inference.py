@@ -1503,7 +1503,6 @@ def display_simulation_results():
         st.write("#### Logistic Regression: Symptom Severity vs Care Seeking Behavior (Simulation in Steps)")
         st.pyplot(regression_plot("Symptom Severity", "Care Seeking Behavior", df_A, "Symptom Severity", "Care Seeking Behavior", "Symptoms vs Care-Seeking Behavior (Simulation in Steps)"))
 
-
 # =======================
 # FOOTER
 # =======================
@@ -1519,6 +1518,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
