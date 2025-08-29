@@ -1396,7 +1396,7 @@ def generate_non_stepped_simulation_data(num_agents, num_clinicians, misinfo_exp
     df_sim.index = df_sim.index + 1  # Adjust the index to start at 1
     return df_sim
 
-# **Visualization 1: 2D Scatter Plots for Relationships**
+# **Visualization 1: 2D Scatter Plots for Relationships (Dynamic)**
 def scatter_plots_2d(df_reset):
     fig1, ax1 = plt.subplots(figsize=(6, 4))  # Left Plot
     scatter1 = ax1.scatter(df_reset['Symptom Severity'],
@@ -1423,7 +1423,7 @@ def scatter_plots_2d(df_reset):
     return fig1, fig2
 
 # **Regression Plot (Logistic Regression)**
-@st.cache  # Cache regression plots
+@st.cache  # Cache regression plots (bottom row)
 def regression_plot(x, y, data, xlabel, ylabel, title):
     data_cleaned = data.copy()
     data_cleaned[x] = data_cleaned[x].replace([np.inf, -np.inf], np.nan).fillna(data_cleaned[x].mean())
@@ -1454,7 +1454,7 @@ def display_simulation_results():
     if not os.path.exists("graphs"):
         os.makedirs("graphs")
     
-    # Create and save the 2D Relationship Analysis graphs
+    # Create and save the 2D Relationship Analysis graphs (Dynamic)
     fig1, fig2 = scatter_plots_2d(df_S)
     fig1.savefig("graphs/symptom_vs_care_seeking.png")
     fig2.savefig("graphs/trust_vs_care_seeking.png")
@@ -1480,15 +1480,15 @@ def display_simulation_results():
     col1, col2 = st.columns([1, 1])
 
     with col1:
-    #    st.write("#### Non-Stepped Simulation: Logistic Regression (Symptoms vs Care-Seeking)")
+       # st.write("#### Non-Stepped Simulation: Logistic Regression (Symptoms vs Care-Seeking)")
         st.pyplot(regression_plot("Symptom Severity", "Care Seeking Behavior", df_S, "Symptom Severity", "Care Seeking Behavior", "Symptoms vs Care-Seeking Behavior"))
 
     with col2:
       #  st.write("#### Non-Stepped Simulation: Logistic Regression (Trust vs Care-Seeking)")
-        st.pyplot(regression_plot("Trust in Clinician", "Care Seeking Behavior", df_S, "Trust in Clinician", "Care Seeking Behavior", "Trust vs Care-Seeking Behavior"))
+        st.pyplot(regression_plot("Trust in Clinician", "Care Seeking Behavior", df_S, "Trust in Clinician", "Care Seeking Behavior", df_S, "Trust in Clinician", "Care Seeking Behavior", "Trust vs Care-Seeking Behavior"))
 
 # Run the simulation results display function
-display_simulation_results()
+    display_simulation_results()
 
 
 # =======================
@@ -1506,6 +1506,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
