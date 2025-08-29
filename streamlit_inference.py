@@ -1324,22 +1324,7 @@ if st.sidebar.button("Run Regression Analysis", key="run_regression"):
     # Reset index to start at 1 (optional)
     df_sim.index = df_sim.index + 1
 
-    df_sim.columns = df_sim.columns.str.strip()
-    df_sim.rename(columns={
-    "symptom_severity": "Symptom Severity",
-    "care_seeking_behavior": "Care Seeking Behavior",
-    "trust_in_clinician": "Trust in Clinician",
-    "misinformation_exposure": "Misinformation Exposure"
-    }, inplace=True)
-   
- 
-    
-    # Show the simulation results
-    st.write("### 📈 Simulation Results & Analysis")
-    #st.dataframe(df_sim)
-    display_simulation_results(df_sim)    
-
-
+  
 
 
     # Your regression plotting function calls, for example:
@@ -1369,12 +1354,28 @@ if st.sidebar.button("Run Regression Analysis", key="run_regression"):
             )
             st.image(buffer2)
 
+    df_sim.columns = df_sim.columns.str.strip()
+    df_sim.rename(columns={
+    "symptom_severity": "Symptom Severity",
+    "care_seeking_behavior": "Care Seeking Behavior",
+    "trust_in_clinician": "Trust in Clinician",
+    "misinformation_exposure": "Misinformation Exposure"
+    }, inplace=True)
+   
+ 
+    
+    # Show the simulation results
+    st.write("### 📈 Simulation Results & Analysis")
+    #st.dataframe(df_sim)
+    display_simulation_results(df_sim)    
+
+
         # Add more regression plots as you like
 
     # Summary stats table
-   # st.markdown("### 📋 Simulation Summary Statistics")
-  #  summary_stats = df_sim[["symptom_severity", "care_seeking_behavior", "trust_in_clinician", "misinformation_exposure"]].describe()
-  #  st.dataframe(summary_stats.round(3))
+    st.markdown("### 📋 Simulation Summary Statistics")
+    summary_stats = df_sim[["Symptom Severity", "Care Seeking Behavior", "Trust in Clinician", "Misinformation Exposure"]].describe()
+    st.dataframe(summary_stats.round(3))
 
 else:
     st.info("👈 Use the sidebar controls on the left to configure and run the agent-based simulation and a regression analysis")
@@ -1395,6 +1396,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
