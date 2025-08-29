@@ -1420,56 +1420,56 @@ simulate_button = st.sidebar.button("Run Simulation")
 
 if simulate_button:
     try:
+        # Initialize the model
         model = MisinformationModel(
-        num_agents=num_agents,
-        num_clinicians=num_clinicians,
-        width=10,
-        height=10,
-        misinformation_exposure=misinformation_exposure
-    )
-    # Show a spinner or loading indicator
-    max_steps = 30  # Or whatever the maximum steps in your simulation are 
-    progress_bar = st.progress(0)
-    st.session_state.simulation_run = True  # Use session state for proper tracking
-    
-    for i in range(30):
-        try: 
-            model.step()
-        except Exception as e:
-             st.error(f"An error occurred: {e}")
-             progress_bar.progress(1.0)
-            return
+            num_agents=num_agents,
+            num_clinicians=num_clinicians,
+            width=10,
+            height=10,
+            misinformation_exposure=misinformation_exposure
+        )
         
-        progress = (i + 1) / 30 
-        progress_bar.progress(progress)
-    progress_bar.progress(1.0)
-    df = model.get_agent_vars_dataframe()
-    st.dataframe(df)
-    st.write("Relationship Analysis")
+        # Show a spinner or loading indicator
+        max_steps = 30  # Or whatever the maximum steps in your simulation are 
+        progress_bar = st.progress(0)
+        st.session_state.simulation_run = True  # Use session state for proper tracking
+        
+        for i in range(max_steps):
+            try: 
+                model.step()
+            except Exception as e:
+                st.error(f"An error occurred during step {i+1}: {e}")
+                progress_bar.progress(1.0)
+                return
+            
+            progress = (i + 1) / max_steps
+            progress_bar.progress(progress)
+        
+        progress_bar.progress(1.0)
+        df = model.get_agent_vars_dataframe()
+        st.dataframe(df)
+        st.write("Relationship Analysis")
     
-except Exception as e:
-    st.error(f"An error occurred: {e}")
-    return
-  #  if "progress_bar" in locals():
-  #      progress_bar.progress(0)
+    except Exception as e:
+        st.error(f"An error occurred in the simulation: {e}")
+        st.session_state.simulation_run = False  # Reset simulation flag if error happens
+
+    # Optional: Additional clean-up or resetting logic can go here
     st.session_state.simulation_run = False
 
-    # Create and run the model
+    # Create and run the model again (if necessary)
     model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinformation_exposure)
-    for _ in range(30):
+    for _ in range(max_steps):
         progress_bar.write(f"Step {_ + 1}")  # Update progress
         model.step()
-
-       # model.step()
 
     # Collect simulation data
     df_sim = model.get_agent_vars_dataframe()
 
     # Display simulation results
     st.write("### 📈 Simulation Results & Analysis")
-
-    # Reset index for easier plotting
-    df_reset = df_sim.reset_index()
+    df_reset = df_sim.reset_index()  # Reset index for easier plotting
+    # Add additional data visualization or analysis here if needed
 
     # Visualization 1: Scatter Plot (Impact of Misinformation & Trust on Care-Seeking)
     col1, col2 = st.columns(2)
@@ -1724,6 +1724,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
