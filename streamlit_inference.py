@@ -1309,6 +1309,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
+from io import BytesIO
+import statsmodels.api as sm
 from mesa import Model
 from mesa.time import RandomActivation
 from mesa.space import MultiGrid
@@ -1316,7 +1318,7 @@ from mesa.datacollection import DataCollector
 from mesa.agent import Agent
 import random
 
-# --- Simulation Setup ---
+# === Simulation Setup ===
 # Sidebar inputs (MUST be defined before button is pressed)
 num_agents = st.sidebar.slider("Number of Patient Agents", 5, 100, 10)
 num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 5)
@@ -1324,7 +1326,7 @@ misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.
 
 simulate_button = st.sidebar.button("Run Simulation")  # Button to trigger the simulation
 
-# --- Simulation Model ---
+# === Simulation Model ===
 class MisinformationModel(Model):
     def __init__(self, num_agents, num_clinicians, width, height, misinfo_exposure):
         super().__init__()
@@ -1345,17 +1347,17 @@ class MisinformationModel(Model):
         # Set up data collection (track these variables for each agent)
         self.datacollector = DataCollector(
             agent_reporters={
-                "Symptom Severity": "symptom_severity",  # Example agent attribute to collect
+                "Symptom Severity": "symptom_severity",
                 "Care Seeking Behavior": "care_seeking_behavior",
                 "Trust in Clinician": "trust_in_clinician",
-                "Misinformation Exposure": "misinformation_exposure"
+                "Misinformation Exposure": "misinfo_exposure"
             }
         )
 
     def create_agents(self):
         # Create patient agents
         for i in range(self.num_agents):
-            a = PatientAgent(i, self)
+            a = PatientAgent(i, self, self.misinfo_exposure)
             self.schedule.add(a)
             x = self.random.randint(0, self.grid.width - 1)
             y = self.random.randint(0, self.grid.height - 1)
@@ -1376,17 +1378,17 @@ class MisinformationModel(Model):
     def get_agent_vars_dataframe(self):
         return self.datacollector.get_agent_vars_dataframe()
 
-# --- Agent Definitions ---
+# === Agent Definitions ===
 class PatientAgent(Agent):
-    def __init__(self, unique_id, model):
+    def __init__(self, unique_id, model, misinfo_exposure):
         super().__init__(unique_id, model)
         self.symptom_severity = random.uniform(0, 1)
         self.care_seeking_behavior = random.uniform(0, 1)
         self.trust_in_clinician = random.uniform(0, 1)
-        self.misinformation_exposure = random.uniform(0, 1)
+        self.misinformation_exposure = misinfo_exposure  # Set based on slider
 
     def step(self):
-        # Agent's behavior logic here
+        # Optionally, patient behavior logic could be added here (e.g., interactions with clinicians)
         pass
 
 class ClinicianAgent(Agent):
@@ -1395,10 +1397,40 @@ class ClinicianAgent(Agent):
         self.trust_in_clinician = random.uniform(0, 1)
 
     def step(self):
-        # Clinician's behavior logic here
+        # Optionally, clinician behavior logic could be added here (e.g., interactions with patients)
         pass
 
-# --- Running the Simulation ---
+# === Regression Plot with Data Cleaning ===
+def regression_plot(x, y, data, xlabel, ylabel, title):
+    # Replace NaN and Inf values with the mean of the respective columns
+    data_cleaned = data.copy()
+    
+    # Replace NaN and infinite values with the mean of the respective columns
+    data_cleaned[x] = data_cleaned[x].replace([np.inf, -np.inf], np.nan).fillna(data_cleaned[x].mean())
+    data_cleaned[y] = data_cleaned[y].replace([np.inf, -np.inf], np.nan).fillna(data_cleaned[y].mean())
+    
+    # Linear regression model
+    X = sm.add_constant(data_cleaned[x])  # Add constant term (intercept)
+    model = sm.OLS(data_cleaned[y], X).fit()
+    r_squared = model.rsquared
+    p_value = model.pvalues[1]
+
+    # Plot
+    fig, ax = plt.subplots(figsize=(6, 4))
+    sns.regplot(x=x, y=y, data=data_cleaned, ax=ax, scatter_kws={'alpha': 0.6}, line_kws={'color': 'red'})
+    ax.set_title(f"{title}\nR² = {r_squared:.3f}, p = {p_value:.3f}")
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+
+    # Save to buffer
+    buffer = BytesIO()
+    fig.tight_layout()
+    fig.savefig(buffer, format='png')
+    buffer.seek(0)
+    plt.close(fig)
+    return buffer
+
+# === Running the Simulation ===
 if simulate_button:
     st.session_state.simulation_run = True
 
@@ -1435,36 +1467,34 @@ if simulate_button:
         ax1.set_title("Impact of Misinformation & Trust on Care-Seeking")
         ax1.set_xlabel("Symptom Severity")
         ax1.set_ylabel("Care Seeking Behavior")
-        ax1.legend(title="Misinformation Exposure")
         st.pyplot(fig1)
 
-    # Visualization 2: 2D Scatter Plots for Relationships
+    # Visualization 2: Regression Plots for Significance
     if len(df_reset) > 10:
         st.markdown("### 🎯 2D Relationship Analysis")
-        fig3, (ax3a, ax3b) = plt.subplots(1, 2, figsize=(15, 6))
+        col3, col4 = st.columns(2)
 
-        # First 2D plot: Symptom Severity vs Care Seeking Behavior
-        scatter1 = ax3a.scatter(df_reset['Symptom Severity'],
-                               df_reset['Care Seeking Behavior'],
-                               c=df_reset['Misinformation Exposure'],
-                               cmap='viridis', alpha=0.6, s=50)
-        ax3a.set_xlabel('Symptom Severity')
-        ax3a.set_ylabel('Care Seeking Behavior')
-        ax3a.set_title('Symptoms vs Care-Seeking\n(Color = Misinformation Level)')
-        plt.colorbar(scatter1, ax=ax3a, label='Misinformation Exposure', shrink=0.8)
+        with col3:
+            buffer1 = regression_plot(
+                x="Symptom Severity",
+                y="Care Seeking Behavior",
+                data=df_reset,
+                xlabel="Symptom Severity",
+                ylabel="Care Seeking Behavior",
+                title="Symptoms vs Care-Seeking Behavior"
+            )
+            st.image(buffer1)
 
-        # Second 2D plot: Trust vs Care Seeking Behavior
-        scatter2 = ax3b.scatter(df_reset['Trust in Clinician'],
-                               df_reset['Care Seeking Behavior'],
-                               c=df_reset['Misinformation Exposure'],
-                               cmap='viridis', alpha=0.6, s=50)
-        ax3b.set_xlabel('Trust in Clinician')
-        ax3b.set_ylabel('Care Seeking Behavior')
-        ax3b.set_title('Trust vs Care-Seeking\n(Color = Misinformation Level)')
-        plt.colorbar(scatter2, ax=ax3b, label='Misinformation Exposure', shrink=0.8)
-
-        plt.tight_layout()
-        st.pyplot(fig3)
+        with col4:
+            buffer2 = regression_plot(
+                x="Trust in Clinician",
+                y="Care Seeking Behavior",
+                data=df_reset,
+                xlabel="Trust in Clinician",
+                ylabel="Care Seeking Behavior",
+                title="Trust vs Care-Seeking Behavior"
+            )
+            st.image(buffer2)
 
     # Simulation Summary Statistics Table
     st.markdown("### 📋 Simulation Summary Statistics")
@@ -1473,7 +1503,7 @@ if simulate_button:
 
 else:
     # Show placeholder when simulation hasn't been run
-    st.info("Use the sidebar controls above to configure and run the agent-based simulation.")
+    st.info("👆 Use the sidebar controls above to configure and run the agent-based simulation.")
 
 # =======================
 # FOOTER
@@ -1490,6 +1520,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
