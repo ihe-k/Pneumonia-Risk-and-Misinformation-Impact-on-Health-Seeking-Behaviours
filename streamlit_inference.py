@@ -1347,60 +1347,75 @@ if st.sidebar.button("Run Regression Analysis", key="run_regression"):
     df_sim.index = df_sim.index + 1
 
   
+import io
+import base64
+import matplotlib.pyplot as plt
+import seaborn as sns
+import streamlit as st
 
+# Define the regression plot function
+def regression_plot(x, y, data, xlabel, ylabel, title):
+    plt.figure(figsize=(8, 6))
+    sns.regplot(x=x, y=y, data=data, scatter_kws={'s': 50}, line_kws={'color': 'red'})
+    plt.title(title)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
 
-    # Your regression plotting function calls, for example:
-    if len(df_sim) > 10:
-        st.markdown("### 🎯 2D Relationship Analysis")
-        col1, col2 = st.columns(2)
+    # Save plot to a BytesIO buffer
+    buf = io.BytesIO()
+    plt.savefig(buf, format="png")
+    buf.seek(0)
+    plt.close()  # Close the plot to free up memory
 
-        with col1:
-            buffer1 = regression_plot(
-                x="misinformation_exposure",
-                y="care_seeking_behavior",
-                data=df_sim,
-                xlabel="Misinformation Exposure",
-                ylabel="Care Seeking Behavior",
-                title="Misinformation vs Care-Seeking Behavior"
-            )
-            st.image(buffer1)
+    # Convert buffer to base64 for Streamlit display
+    img_str = base64.b64encode(buf.read()).decode("utf-8")
+    return f"data:image/png;base64,{img_str}"
 
-        with col2:
-            buffer2 = regression_plot(
-                x="symptom_severity",
-                y="care_seeking_behavior",
-                data=df_sim,
-                xlabel="Symptom Severity",
-                ylabel="Care Seeking Behavior",
-                title="Symptom Severity vs Care-Seeking Behavior"
-            )
-            st.image(buffer2)
+# Your simulation and plotting logic
+if len(df_sim) > 10:
+    st.markdown("### 🎯 2D Relationship Analysis")
+    col1, col2 = st.columns(2)
 
-    df_sim.columns = df_sim.columns.str.strip()
-    df_sim.rename(columns={
+    with col1:
+        buffer1 = regression_plot(
+            x="misinformation_exposure",
+            y="care_seeking_behavior",
+            data=df_sim,
+            xlabel="Misinformation Exposure",
+            ylabel="Care Seeking Behavior",
+            title="Misinformation vs Care-Seeking Behavior"
+        )
+        st.image(buffer1)
+
+    with col2:
+        buffer2 = regression_plot(
+            x="symptom_severity",
+            y="care_seeking_behavior",
+            data=df_sim,
+            xlabel="Symptom Severity",
+            ylabel="Care Seeking Behavior",
+            title="Symptom Severity vs Care-Seeking Behavior"
+        )
+        st.image(buffer2)
+
+df_sim.columns = df_sim.columns.str.strip()
+df_sim.rename(columns={
     "symptom_severity": "Symptom Severity",
     "care_seeking_behavior": "Care Seeking Behavior",
     "trust_in_clinician": "Trust in Clinician",
     "misinformation_exposure": "Misinformation Exposure"
-    }, inplace=True)
-   
- 
-    
-    # Show the simulation results
-    st.write("### 📈 Simulation Results & Analysis")
-    #st.dataframe(df_sim)
-    display_simulation_results(df_sim)    
+}, inplace=True)
 
+# Show the simulation results
+st.write("### 📈 Simulation Results & Analysis")
+#st.dataframe(df_sim)
+display_simulation_results(df_sim)
 
-        # Add more regression plots as you like
+# Summary stats table
+st.markdown("### 📋 Simulation Summary Statistics")
+summary_stats = df_sim[["Symptom Severity", "Care Seeking Behavior", "Trust in Clinician", "Misinformation Exposure"]].describe()
+st.dataframe(summary_stats.round(3))
 
-    # Summary stats table
-    st.markdown("### 📋 Simulation Summary Statistics")
-    summary_stats = df_sim[["Symptom Severity", "Care Seeking Behavior", "Trust in Clinician", "Misinformation Exposure"]].describe()
-    st.dataframe(summary_stats.round(3))
-
-else:
-    st.info("👈 Use the sidebar controls on the left to configure and run the agent-based simulation and a regression analysis")
 
 
 # =======================
@@ -1418,6 +1433,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
