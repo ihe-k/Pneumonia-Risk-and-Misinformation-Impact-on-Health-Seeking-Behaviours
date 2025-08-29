@@ -1425,7 +1425,7 @@ def scatter_plots_2d(df_reset):
                             cmap='viridis', alpha=0.6, s=50)
     ax1.set_xlabel('Symptom Severity')
     ax1.set_ylabel('Care Seeking Behavior')
-    plt.title('Stepped Simulation: Symptoms Severity vs Care-Seeking)
+    plt.title('Stepped Simulation: Symptoms Severity vs Care-Seeking')
     plt.colorbar(scatter1, ax=ax1, label='Misinformation Exposure', shrink=0.8)
 
     fig2, ax2 = plt.subplots(figsize=(6, 4))  # Right Plot
@@ -1515,6 +1515,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
