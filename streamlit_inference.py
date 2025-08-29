@@ -1311,6 +1311,7 @@ import seaborn as sns
 import numpy as np
 import statsmodels.api as sm
 import os
+import random
 
 # === Simulation Setup ===
 # Sidebar Inputs for Stepped Simulation
@@ -1464,11 +1465,9 @@ def display_simulation_results():
     col1, col2 = st.columns([1, 1])
 
     with col1:
-     #   st.write("#### Stepped Simulation: Symptoms vs Care-Seeking")
         st.image(symptom_vs_care_seeking_img, use_container_width=True)
 
     with col2:
-      #  st.write("#### Stepped Simulation: Trust vs Care-Seeking")
         st.image(trust_vs_care_seeking_img, use_container_width=True)
 
     # Bottom row: Logistic Regression (Non-Stepped Simulation)
@@ -1480,10 +1479,11 @@ def display_simulation_results():
 
     with col2:
         st.write("#### Non-Stepped Simulation: Logistic Regression (Trust vs Care-Seeking)")
-        st.pyplot(regression_plot("Trust in Clinician", "Care Seeking Behavior", df_S, "Trust in Clinician", "Care Seeking Behavior", df_S, "Trust in Clinician", "Care Seeking Behavior", "Trust vs Care-Seeking Behavior"))
+        st.pyplot(regression_plot("Trust in Clinician", "Care Seeking Behavior", df_S, "Trust in Clinician", "Care Seeking Behavior", "Trust vs Care-Seeking Behavior"))
 
 # Run the simulation results display function
-    display_simulation_results()
+display_simulation_results()
+
 
 # =======================
 # FOOTER
@@ -1500,6 +1500,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
