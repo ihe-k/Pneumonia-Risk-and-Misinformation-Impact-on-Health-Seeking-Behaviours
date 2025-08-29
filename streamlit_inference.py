@@ -1488,6 +1488,10 @@ def display_simulation_results():
         st.write("#### Non-Stepped Simulation (Logistic Regression): Trust vs Care-Seeking")
         st.pyplot(regression_plot("Trust in Clinician", "Care Seeking Behavior", df_S, "Trust in Clinician", "Care Seeking Behavior", "Trust vs Care-Seeking (Non-Stepped Simulation)"))
 
+# Run the simulation display
+if __name__ == "__main__":
+    display_simulation_results()
+
 
 # =======================
 # FOOTER
@@ -1504,6 +1508,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
