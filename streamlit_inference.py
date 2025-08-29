@@ -1424,6 +1424,7 @@ if 'df_sim' in st.session_state:
 
 # Your simulation and plotting logic
 if 'df_sim' in locals() and isinstance(df_sim, pd.DataFrame) and not df_sim.empty:
+    # your existing code
     if len(df_sim) > 10:
         st.markdown("### 🎯 Relationship Analysis")
         col1, col2 = st.columns(2)
@@ -1450,24 +1451,25 @@ if 'df_sim' in locals() and isinstance(df_sim, pd.DataFrame) and not df_sim.empt
             )
             st.image(buffer2)
 
+    # Clean column names
     df_sim.columns = df_sim.columns.str.strip()
+
+    # Rename columns for clarity
     df_sim.rename(columns={
-    "symptom_severity": "Symptom Severity",
-    "care_seeking_behavior": "Care Seeking Behavior",
-    "trust_in_clinician": "Trust in Clinician",
-    "misinformation_exposure": "Misinformation Exposure"
+        "symptom_severity": "Symptom Severity",
+        "care_seeking_behavior": "Care Seeking Behavior",
+        "trust_in_clinician": "Trust in Clinician",
+        "misinformation_exposure": "Misinformation Exposure"
     }, inplace=True)
 
-# Show the simulation results
-#    st.write("### 📈 Simulation Results & Analysis")
-st.dataframe(df_sim)
-display_simulation_results(df_sim)
+    # Show the DataFrame and analysis
+    st.dataframe(df_sim)
+    display_simulation_results(df_sim)
 
-# Summary stats table
-st.markdown("### 📋 Simulation Summary Statistics")
-summary_stats = df_sim[["Symptom Severity", "Care Seeking Behavior", "Trust in Clinician", "Misinformation Exposure"]].describe()
-st.dataframe(summary_stats.round(3))
-
+    # Show summary stats
+    st.markdown("### 📋 Simulation Summary Statistics")
+    summary_stats = df_sim[["Symptom Severity", "Care Seeking Behavior", "Trust in Clinician", "Misinformation Exposure"]].describe()
+    st.dataframe(summary_stats.round(3))
 else:
     st.info("Please run the simulation")
 
@@ -1488,6 +1490,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
