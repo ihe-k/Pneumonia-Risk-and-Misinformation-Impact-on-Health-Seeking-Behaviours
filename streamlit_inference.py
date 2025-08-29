@@ -1323,6 +1323,20 @@ def display_simulation_results(df):
         "trust_in_clinician": "{:.3f}"
     }))
 
+# Define the regression plot function
+def regression_plot(x, y, data, xlabel, ylabel, title):
+    plt.figure(figsize=(8, 6))
+    sns.regplot(x=x, y=y, data=data, scatter_kws={'s': 50}, line_kws={'color': 'red'})
+    plt.title(title)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+
+    # Save plot to a BytesIO buffer
+    buf = io.BytesIO()
+    plt.savefig(buf, format="png")
+    buf.seek(0)
+    plt.close()  # Close the plot to free up memory
+
 if st.sidebar.button("Run Regression Analysis", key="run_regression"):
   #  if simulate_button:
    # st.session_state.simulation_run = True
@@ -1331,9 +1345,10 @@ if st.sidebar.button("Run Regression Analysis", key="run_regression"):
     model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinformation_exposure)
     for i in range(30):
         model.step()
-    df_sim = model.get_agent_vars_dataframe().reset_index(drop=True)
-    st.session_state['df_sim'] = df_sim
-
+    #df_sim = model.get_agent_vars_dataframe().reset_index(drop=True)
+    #st.session_state['df_sim'] = df_sim
+    st.session_state['df_sim'] = model.get_agent_vars_dataframe().reset_index(drop=True)
+    
     print(f"Step {i+1}:")
     print(model.get_agent_vars_dataframe().head())
     
@@ -1355,35 +1370,13 @@ if 'df_sim' in st.session_state:
 # Drop NaNs to avoid errors
     df_plot = df_sim.dropna(subset=['Symptom Severity', 'Care Seeking Behavior', 'Misinformation Exposure', 'Trust in Clinician'])
 
-# Plot
-buffer1 = regression_plot(
-    x="Misinformation Exposure",
-    y="Care Seeking Behavior",
-    data=df_plot,
-    xlabel="Misinformation Exposure",
-    ylabel="Care Seeking Behavior",
-    title="Misinformation vs Care-Seeking Behavior"
-)
-st.image(buffer1)  
+
 import io
 import base64
 import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
 
-# Define the regression plot function
-def regression_plot(x, y, data, xlabel, ylabel, title):
-    plt.figure(figsize=(8, 6))
-    sns.regplot(x=x, y=y, data=data, scatter_kws={'s': 50}, line_kws={'color': 'red'})
-    plt.title(title)
-    plt.xlabel(xlabel)
-    plt.ylabel(ylabel)
-
-    # Save plot to a BytesIO buffer
-    buf = io.BytesIO()
-    plt.savefig(buf, format="png")
-    buf.seek(0)
-    plt.close()  # Close the plot to free up memory
 
     # Convert buffer to base64 for Streamlit display
     img_str = base64.b64encode(buf.read()).decode("utf-8")
@@ -1453,6 +1446,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
