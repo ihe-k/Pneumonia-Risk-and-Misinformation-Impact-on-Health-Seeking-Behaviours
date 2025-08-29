@@ -1419,25 +1419,40 @@ class ClinicianAgent(Agent):
 simulate_button = st.sidebar.button("Run Simulation")
 
 if simulate_button:
-    model = MisinformationModel(
+    try:
+        model = MisinformationModel(
         num_agents=num_agents,
         num_clinicians=num_clinicians,
         width=10,
         height=10,
         misinformation_exposure=misinformation_exposure
     )
+    # Show a spinner or loading indicator
+    progress_bar = st.empty()
+    st.session_state.simulation_run = True  # Use session state for proper tracking
+    
     for _ in range(30):
-        model.step()
+        with progress_bar:
+            model.step()
+            progress = (_ + 1) / 30 * 100
+            progress_bar.progress(progress)
+            
     df = model.get_agent_vars_dataframe()
     st.write("Relationship Analysis")
-
-if simulate_button:
-    st.session_state.simulation_run = True
+    st.dataframe(df)
+except Exception as e:
+    st.error(f"An error occurred: {e}")
+    if "progress_bar" in locals():
+        progress_bar.progress(0)
+    st.session_state.simulation_run = False
 
     # Create and run the model
     model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinformation_exposure)
     for _ in range(30):
+        progress_bar.write(f"Step {_ + 1}")  # Update progress
         model.step()
+
+       # model.step()
 
     # Collect simulation data
     df_sim = model.get_agent_vars_dataframe()
@@ -1701,6 +1716,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
