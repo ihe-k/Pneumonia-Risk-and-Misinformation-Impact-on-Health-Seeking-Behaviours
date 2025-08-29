@@ -1329,9 +1329,10 @@ if st.sidebar.button("Run Regression Analysis", key="run_regression"):
     "misinformation_exposure": "Misinformation Exposure"
     }, inplace=True)
     
-    df_sim[["Symptom Severity", "Care Seeking Behavior", "Trust in Clinician", "Misinformation Exposure"]] = df_sim[
-        ["Symptom Severity", "Care Seeking Behavior", "Trust in Clinician", "Misinformation Exposure"]
-    ].round(3)
+    df_sim["Symptom Severity"] = df_sim["Symptom Severity"].round(3).astype(str)
+    df_sim["Care Seeking Behavior"] = df_sim["Care Seeking Behavior"].round(3).astype(str)
+    df_sim["Misinformation Exposure"] = df_sim["Misinformation Exposure"].round(3).astype(str)
+    df_sim["Trust in Clinician"] = df_sim["Trust in Clinician"].round(3).astype(str)
     
     # Show the simulation results
     st.write("### 📈 Simulation Results & Analysis")
@@ -1394,6 +1395,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
