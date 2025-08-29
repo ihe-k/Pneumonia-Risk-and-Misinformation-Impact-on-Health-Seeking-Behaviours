@@ -1408,8 +1408,7 @@ def generate_simulation_data(num_agents, num_clinicians, misinfo_exposure):
 
 # **Visualization 1: 2D Scatter Plots for Relationships**
 def scatter_plots_2d(df_reset):
-    # Symptoms vs Care-Seeking (Left plot)
-    fig1, ax1 = plt.subplots(figsize=(6, 4))
+    fig1, ax1 = plt.subplots(figsize=(6, 4))  # Left Plot
     scatter1 = ax1.scatter(df_reset['Symptom Severity'],
                             df_reset['Care Seeking Behavior'],
                             c=df_reset['Misinformation Exposure'],
@@ -1419,8 +1418,7 @@ def scatter_plots_2d(df_reset):
     ax1.set_title('Symptoms vs Care-Seeking\n(Color = Misinformation Level)')
     plt.colorbar(scatter1, ax=ax1, label='Misinformation Exposure', shrink=0.8)
 
-    # Trust vs Care-Seeking (Right plot)
-    fig2, ax2 = plt.subplots(figsize=(6, 4))
+    fig2, ax2 = plt.subplots(figsize=(6, 4))  # Right Plot
     scatter2 = ax2.scatter(df_reset['Trust in Clinician'],
                             df_reset['Care Seeking Behavior'],
                             c=df_reset['Misinformation Exposure'],
@@ -1486,6 +1484,9 @@ def display_simulation_results():
         st.write("#### Logistic Regression for Non-Stepped Simulation: Trust vs Care-Seeking")
         st.pyplot(regression_plot("Trust in Clinician", "Care Seeking Behavior", df_S, "Trust in Clinician", "Care Seeking Behavior", "Trust vs Care-Seeking Behavior"))
 
+# Call the function to display the simulation results
+display_simulation_results()
+
 # =======================
 # FOOTER
 # =======================
@@ -1501,6 +1502,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
