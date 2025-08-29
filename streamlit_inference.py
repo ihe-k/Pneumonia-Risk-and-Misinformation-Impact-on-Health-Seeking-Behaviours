@@ -1349,7 +1349,7 @@ def regression_plot(x, y, data, xlabel, ylabel, title):
 buffer1 = regression_plot(
     x="Misinformation Exposure",
     y="Care Seeking Behavior",
-    data=df_plot,
+    data=df_sim,
     xlabel="Misinformation Exposure",
     ylabel="Care Seeking Behavior",
     title="Misinformation vs Care-Seeking Behavior"
@@ -1465,6 +1465,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
