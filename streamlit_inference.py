@@ -1360,7 +1360,73 @@ def regression_plot(x, y, data, xlabel, ylabel, title):
         return None
 
 
+
+
 ###
+
+if st.sidebar.button("Run Simulation and Regression Analysis", key="run_regression"):
+  #  if simulate_button:
+   # st.session_state.simulation_run = True
+
+
+                 model = MisinformationModel(
+                    num_patients=st.session_state['num_agents'],
+                    #num_patients=num_patients,
+                    num_clinicians=st.session_state['num_clinicians'],   # or another control if you want
+                    misinformation_exposure=st.session_state['misinformation_exposure'],
+                    width=10,
+                    height=10,
+                
+                )
+                for _ in range(30):
+                    model.step()
+                df = model.datacollector.get_agent_vars_dataframe()
+                st.session_state['simulation_results'] = df
+                st.success("Simulation completed!")
+            except Exception as e:
+                st.error(f"An error occurred: {e}")
+
+    # Save results in session state
+            if 'model' in locals():
+                df = model.datacollector.get_agent_vars_dataframe()
+                st.session_state['simulation_results'] = df
+
+                st.success("Simulation completed!")
+            else:
+                st.error("Model was not initialised successfully.")
+
+
+    
+    
+    # Run your Mesa simulation
+  #  model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinformation_exposure)
+  #  for i in range(30):
+  #      model.step()
+    #df_sim = model.get_agent_vars_dataframe().reset_index(drop=True)
+    #st.session_state['df_sim'] = df_sim
+  #  st.session_state['df_sim'] = model.get_agent_vars_dataframe().reset_index(drop=True)
+    
+    print(f"Step {i+1}:")
+    print(model.get_agent_vars_dataframe().head())
+    
+    # Get the simulation data as a DataFrame
+    df_sim = model.get_agent_vars_dataframe().reset_index(drop=True)
+    
+    st.write("First few rows of simulation data:")
+    st.write(df_sim.head())
+    st.write("Column names in df_sim:")
+    st.write(df_sim.columns)
+
+    
+    # Reset index to start at 1 (optional)
+    df_sim.index = df_sim.index + 1
+
+if 'df_sim' in st.session_state:
+    df_sim = st.session_state['df_sim']
+
+# Drop NaNs to avoid errors
+    df_plot = df_sim.dropna(subset=['Symptom Severity', 'Care Seeking Behavior', 'Misinformation Exposure', 'Trust in Clinician'])
+
 
 # Your simulation and plotting logic
 if 'df_sim' in locals() and isinstance(df_sim, pd.DataFrame) and not df_sim.empty:
@@ -1411,42 +1477,6 @@ if 'df_sim' in locals() and isinstance(df_sim, pd.DataFrame) and not df_sim.empt
 else:
     st.info("Please run the simulation")
 
-###
-
-if st.sidebar.button("Run Simulation and Regression Analysis", key="run_regression"):
-  #  if simulate_button:
-   # st.session_state.simulation_run = True
-
-    # Run your Mesa simulation
-    model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinformation_exposure)
-    for i in range(30):
-        model.step()
-    #df_sim = model.get_agent_vars_dataframe().reset_index(drop=True)
-    #st.session_state['df_sim'] = df_sim
-    st.session_state['df_sim'] = model.get_agent_vars_dataframe().reset_index(drop=True)
-    
-    print(f"Step {i+1}:")
-    print(model.get_agent_vars_dataframe().head())
-    
-    # Get the simulation data as a DataFrame
-    df_sim = model.get_agent_vars_dataframe().reset_index(drop=True)
-    
-    st.write("First few rows of simulation data:")
-    st.write(df_sim.head())
-    st.write("Column names in df_sim:")
-    st.write(df_sim.columns)
-
-    
-    # Reset index to start at 1 (optional)
-    df_sim.index = df_sim.index + 1
-
-if 'df_sim' in st.session_state:
-    df_sim = st.session_state['df_sim']
-
-# Drop NaNs to avoid errors
-    df_plot = df_sim.dropna(subset=['Symptom Severity', 'Care Seeking Behavior', 'Misinformation Exposure', 'Trust in Clinician'])
-
-
 
 
 # =======================
@@ -1464,6 +1494,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
