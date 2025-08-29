@@ -1405,8 +1405,8 @@ if st.sidebar.button("Run Simulation and Regression Analysis", key="run_regressi
     #st.session_state['df_sim'] = df_sim
   #  st.session_state['df_sim'] = model.get_agent_vars_dataframe().reset_index(drop=True)
     
-    print(f"Step {i+1}:")
-    print(model.get_agent_vars_dataframe().head())
+  #  print(f"Step {i+1}:")
+  #  print(model.get_agent_vars_dataframe().head())
     
     # Get the simulation data as a DataFrame
     df_sim = model.get_agent_vars_dataframe().reset_index(drop=True)
@@ -1493,6 +1493,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
