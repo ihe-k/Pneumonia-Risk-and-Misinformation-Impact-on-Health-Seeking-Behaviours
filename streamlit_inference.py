@@ -1319,6 +1319,8 @@ if st.sidebar.button("Run Regression Analysis", key="run_regression"):
     st.write("First few rows of simulation data:")
     st.write(df_sim.head())
 
+    df_sim = pd.DataFrame(df_sim_dict).transpose()
+
     # Reset index to start at 1 (optional)
     df_sim.index = df_sim.index + 1
 
@@ -1328,16 +1330,18 @@ if st.sidebar.button("Run Regression Analysis", key="run_regression"):
     "trust_in_clinician": "Trust in Clinician",
     "misinformation_exposure": "Misinformation Exposure"
     }, inplace=True)
-    
-    df_sim["Symptom Severity"] = df_sim["Symptom Severity"].round(3).astype(str)
-    df_sim["Care Seeking Behavior"] = df_sim["Care Seeking Behavior"].round(3).astype(str)
-    df_sim["Misinformation Exposure"] = df_sim["Misinformation Exposure"].round(3).astype(str)
-    df_sim["Trust in Clinician"] = df_sim["Trust in Clinician"].round(3).astype(str)
+   
+     # Round numeric values to 3 decimal places
+    numeric_columns = ['Symptom Severity', 'Care Seeking Behavior', 'Misinformation Exposure', 'Trust in Clinician']
+    for col in numeric_columns:
+        if col in df_sim.columns:
+            df_sim[col] = df_sim[col].round(3)
+
     
     # Show the simulation results
     st.write("### 📈 Simulation Results & Analysis")
-    st.dataframe(df_sim)
-        
+    #st.dataframe(df_sim)
+    display_simulation_results(df_sim)    
 
 
 
@@ -1395,6 +1399,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
