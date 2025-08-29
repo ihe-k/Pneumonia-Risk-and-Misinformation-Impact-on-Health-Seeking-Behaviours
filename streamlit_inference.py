@@ -348,7 +348,7 @@ class Patient(Agent):
         self.care_seeking_behavior = min(1.0, max(0.0,
             0.6 * self.symptom_severity + 
             0.3 * self.trust_in_clinician - 
-            0.5 * self.misinfo_exposure +
+            0.5 * self.misinformation_exposure +
             random.uniform(-0.1, 0.1)
         )) 
 
@@ -509,14 +509,14 @@ uploaded_file = st.sidebar.file_uploader("Upload Chest X-Ray Image", type=["jpg"
 # st.subheader("3⃣ Agent-Based Misinformation Simulation")
 num_agents = st.sidebar.slider("Number of Patient Agents", 5, 200, 50)
 num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 3)
-misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.5, 0.05)
+misinformation_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.5, 0.05)
 # simulate_button = st.sidebar.button("Run Simulation")
 # Place in sidebar
 
 if 'num_agents' not in st.session_state:
     st.session_state['num_agents'] = num_agents
     st.session_state['num_clinicians'] = num_clinicians
-    st.session_state['misinfo_exposure'] = misinfo_exposure
+    st.session_state['misinformation_exposure'] = misinformation_exposure
 
 width = 200  # Set width for layout
 
@@ -530,13 +530,13 @@ if False:
             # Update session state with new values
                 st.session_state['num_agents'] = num_agents
                 st.session_state['num_clinicians'] = num_clinicians
-                st.session_state['misinfo_exposure'] = misinfo_exposure
+                st.session_state['misinformation_exposure'] = misinformation_exposure
 
                 model = MisinformationModel(
                     num_patients=st.session_state['num_agents'],
                     #num_patients=num_patients,
                     num_clinicians=st.session_state['num_clinicians'],   # or another control if you want
-                    misinformation_exposure=st.session_state['misinfo_exposure'],
+                    misinformation_exposure=st.session_state['misinformation_exposure'],
                     width=10,
                     height=10,
                 
@@ -1031,7 +1031,7 @@ class Patient(Agent):
         self.care_seeking_behavior = min(1.0, max(0.0,
             0.6 * self.symptom_severity + 
             0.3 * self.trust_in_clinician - 
-            0.5 * self.misinfo_exposure +
+            0.5 * self.misinformation_exposure +
             random.uniform(-0.1, 0.1)
         )) 
 
@@ -1328,7 +1328,7 @@ if st.sidebar.button("Run Regression Analysis", key="run_regression"):
     st.session_state.simulation_run = True
 
     # Run your Mesa simulation
-    model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinfo_exposure)
+    model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinformation_exposure)
     for _ in range(30):
         model.step()
         print(f"Step {i+1}:")
@@ -1418,6 +1418,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
