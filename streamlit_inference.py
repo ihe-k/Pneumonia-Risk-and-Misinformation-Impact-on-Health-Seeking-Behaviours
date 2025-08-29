@@ -1501,7 +1501,10 @@ def display_simulation_results():
         st.write("#### Logistic Regression: Symptoms vs Care-Seeking (Non-Stepped Simulation)")
         st.pyplot(regression_plot("Symptom Severity", "Care Seeking Behavior", df_A, "Symptom Severity", "Care Seeking Behavior", "Symptoms vs Care-Seeking Behavior (Non-Stepped Simulation)"))
 
-# Run the simulation
+    # Ensure proper spacing for the second row by keeping a small gap
+    st.write("")
+
+# Running the display function
 if __name__ == "__main__":
     display_simulation_results()
 
@@ -1521,6 +1524,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
