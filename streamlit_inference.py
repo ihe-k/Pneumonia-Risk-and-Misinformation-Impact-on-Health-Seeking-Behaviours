@@ -1320,9 +1320,9 @@ import random
 # === Simulation Setup ===
 # Sidebar Inputs for Stepped Simulation
 st.sidebar.subheader("Stepped Simulation")
-num_agents = st.sidebar.slider("Number of Patient Agents", 5, 100, 10, key="S_agents")
-num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 5, key="S_clinicians")
-misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.3, 0.05, key="S_misinfo")
+num_agents_stepped = st.sidebar.slider("Number of Patient Agents (Stepped)", 5, 100, 10, key="S_agents")
+num_clinicians_stepped = st.sidebar.slider("Number of Clinician Agents (Stepped)", 1, 20, 5, key="S_clinicians")
+misinfo_exposure_stepped = st.sidebar.slider("Baseline Misinformation Exposure (Stepped)", 0.0, 1.0, 0.3, 0.05, key="S_misinfo")
 
 # === Simulation Model ===
 class MisinformationModel(Model):
@@ -1399,11 +1399,11 @@ class ClinicianAgent(Agent):
         pass
 
 # === Simulation Data Generation ===
-@st.cache_data  # Use Streamlit's new caching mechanism for data
-def generate_simulation_data(num_agents, num_clinicians, misinfo_exposure):
+@st.cache_data  # Cache non-stepped simulation data to make it static
+def generate_non_stepped_simulation_data(num_agents, num_clinicians, misinfo_exposure):
     model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinfo_exposure)
     
-    # Run the model for 30 steps
+    # Run the model for 30 steps to generate data
     for _ in range(30):
         model.step()
     
@@ -1461,8 +1461,8 @@ def regression_plot(x, y, data, xlabel, ylabel, title):
 
 # **Main App Logic**
 def display_simulation_results():
-    # Get Simulation data (Non-Stepped)
-    df_S = generate_simulation_data(num_agents, num_clinicians, misinfo_exposure)
+    # Get the non-stepped simulation data (cached)
+    df_S = generate_non_stepped_simulation_data(num_agents_stepped, num_clinicians_stepped, misinfo_exposure_stepped)
     
     # Display Non-Stepped Simulation Data Table
     st.write("### 📊 Non-Stepped Simulation Results")
@@ -1481,7 +1481,7 @@ def display_simulation_results():
         _, fig2 = scatter_plots_2d(df_S)  # Right plot
         st.pyplot(fig2)
 
-    # Bottom row: Logistic Regression Plots
+    # Bottom row: Logistic Regression Plots (fixed, based on non-stepped simulation)
     col1, col2 = st.columns([1, 1])
 
     with col1:
@@ -1492,12 +1492,9 @@ def display_simulation_results():
         st.write("#### Non-Stepped Simulation (Logistic Regression): Trust vs Care-Seeking")
         st.pyplot(regression_plot("Trust in Clinician", "Care Seeking Behavior", df_S, "Trust in Clinician", "Care Seeking Behavior", "Trust vs Care-Seeking (Non-Stepped Simulation)"))
 
-# Run the simulation display
+# **Run the App**
 if __name__ == "__main__":
     display_simulation_results()
-
-
-
 # =======================
 # FOOTER
 # =======================
@@ -1513,6 +1510,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
