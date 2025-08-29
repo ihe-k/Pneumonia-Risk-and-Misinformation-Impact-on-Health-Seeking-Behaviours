@@ -1433,7 +1433,13 @@ if simulate_button:
     st.session_state.simulation_run = True  # Use session state for proper tracking
     
     for i in range(30):
-        model.step()
+        try: 
+            model.step()
+        except Exception as e:
+             st.error(f"An error occurred: {e}")
+             progress_bar.progress(1.0)
+            return
+        
         progress = (i + 1) / 30 
         progress_bar.progress(progress)
     progress_bar.progress(1.0)
@@ -1443,6 +1449,7 @@ if simulate_button:
     
 except Exception as e:
     st.error(f"An error occurred: {e}")
+    return
   #  if "progress_bar" in locals():
   #      progress_bar.progress(0)
     st.session_state.simulation_run = False
@@ -1717,6 +1724,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
