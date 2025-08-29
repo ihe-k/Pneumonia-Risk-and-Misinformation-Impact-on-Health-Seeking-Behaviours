@@ -1508,6 +1508,7 @@ def display_simulation_results():
 display_simulation_results()
 
 
+
 # =======================
 # FOOTER
 # =======================
@@ -1523,6 +1524,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
