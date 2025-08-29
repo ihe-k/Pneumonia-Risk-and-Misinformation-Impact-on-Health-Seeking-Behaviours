@@ -1484,15 +1484,20 @@ def display_simulation_results():
     st.dataframe(df_A.round(3))
 
     # Plot for Simulation (Side-by-side)
-    col1, col2 = st.columns(2)
+    col1, col2 = st.columns([2, 2])
     
+    # Left side: 2D Relationship Analysis
     with col1:
         st.write("#### 2D Relationship Analysis for Simulation in Steps")
         st.pyplot(scatter_plots_2d(df_A))
     
+    # Right side: Logistic Regression Comparison
     with col2:
         st.write("#### Logistic Regression: Symptom Severity vs Care Seeking Behavior (Simulation in Steps)")
         st.pyplot(regression_plot("Symptom Severity", "Care Seeking Behavior", df_A, "Symptom Severity", "Care Seeking Behavior", "Symptoms vs Care-Seeking Behavior (Simulation in Steps)"))
+
+        st.write("#### Logistic Regression: Symptoms vs Care-Seeking (Comparison)")
+        st.pyplot(regression_plot("Symptom Severity", "Care Seeking Behavior", df_A, "Symptom Severity", "Care Seeking Behavior", "Symptoms vs Care-Seeking Behavior (Comparison)"))
 
 # **Run the App**
 display_simulation_results()
@@ -1513,6 +1518,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
