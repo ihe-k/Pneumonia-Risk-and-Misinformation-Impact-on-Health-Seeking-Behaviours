@@ -1304,7 +1304,6 @@ class MisinformationModel(Model):
 #    st.info("👈 Use the sidebar controls above to configure and run an agent-based simulation and a regression analysis.")
 
 ### Graph
-### Graph
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -1312,9 +1311,14 @@ import seaborn as sns
 import numpy as np
 import statsmodels.api as sm
 import os
+import random  # Import random module for generating random values
+from mesa import Agent, Model
+from mesa.time import RandomActivation
+from mesa.space import MultiGrid
+from mesa.datacollection import DataCollector
 
 # === Simulation Setup ===
-# Sidebar Inputs for Stepped Simulation
+# Sidebar Inputs for Stepped Simulation (Dynamic Inputs)
 st.sidebar.subheader("Stepped Simulation")
 num_agents_stepped = st.sidebar.slider("Number of Patient Agents (Stepped)", 5, 100, 10, key="S_agents")
 num_clinicians_stepped = st.sidebar.slider("Number of Clinician Agents (Stepped)", 1, 20, 5, key="S_clinicians")
@@ -1346,14 +1350,14 @@ class MisinformationModel:
         for i in range(self.num_agents):
             a = PatientAgent(i, self)
             self.schedule.add(a)
-            x = self.random.randint(0, self.grid.width - 1)
-            y = self.random.randint(0, self.grid.height - 1)
+            x = random.randint(0, self.grid.width - 1)
+            y = random.randint(0, self.grid.height - 1)
             self.grid.place_agent(a, (x, y))
         for i in range(self.num_clinicians):
             c = ClinicianAgent(i, self)
             self.schedule.add(c)
-            x = self.random.randint(0, self.grid.width - 1)
-            y = self.random.randint(0, self.grid.height - 1)
+            x = random.randint(0, self.grid.width - 1)
+            y = random.randint(0, self.grid.height - 1)
             self.grid.place_agent(c, (x, y))
 
     def step(self):
@@ -1363,10 +1367,9 @@ class MisinformationModel:
     def get_agent_vars_dataframe(self):
         return self.datacollector.get_agent_vars_dataframe()
 
-class PatientAgent:
+class PatientAgent(Agent):
     def __init__(self, unique_id, model):
-        self.unique_id = unique_id
-        self.model = model
+        super().__init__(unique_id, model)
         self.symptom_severity = random.uniform(0, 1)
         self.care_seeking_behavior = random.uniform(0, 1)
         self.trust_in_clinician = random.uniform(0, 1)
@@ -1374,10 +1377,9 @@ class PatientAgent:
         self.age = random.randint(18, 80)
         self.location = random.choice(['Urban', 'Rural'])
 
-class ClinicianAgent:
+class ClinicianAgent(Agent):
     def __init__(self, unique_id, model):
-        self.unique_id = unique_id
-        self.model = model
+        super().__init__(unique_id, model)
         self.trust_in_clinician = random.uniform(0, 1)
 
 # === Simulation Data Generation ===
@@ -1444,19 +1446,16 @@ def display_simulation_results():
     # Get the non-stepped simulation data (cached)
     df_S = generate_non_stepped_simulation_data(100, 5, 0.3)  # Static data with 100 patients, 5 clinicians, 0.3 misinformation exposure
     
-    # Save the graphs as PNG images
-    if not os.path.exists("graphs"):
-        os.makedirs("graphs")
-    
-    # Create and save the 2D Relationship Analysis graphs
-    fig1, fig2 = scatter_plots_2d(df_S)
-    fig1.savefig("graphs/symptom_vs_care_seeking.png")
-    fig2.savefig("graphs/trust_vs_care_seeking.png")
+    # **Top Row: Dynamic Scatter Plots** 
+    # Re-run simulation with updated parameters
+    model = MisinformationModel(num_agents_stepped, num_clinicians_stepped, 10, 10, misinfo_exposure_stepped)
+    for _ in range(30):
+        model.step()
+    df_dynamic = model.get_agent_vars_dataframe()
 
-    # Load the saved PNG graphs
-    symptom_vs_care_seeking_img = "graphs/symptom_vs_care_seeking.png"
-    trust_vs_care_seeking_img = "graphs/trust_vs_care_seeking.png"
-    
+    # Create scatter plots dynamically for updated simulation data
+    fig1, fig2 = scatter_plots_2d(df_dynamic)
+
     # Display Non-Stepped Simulation Data Table
     st.write("### 📊 Non-Stepped Simulation Results")
     st.dataframe(df_S[['Symptom Severity', 'Care Seeking Behavior', 'Trust in Clinician', 'Misinformation Exposure', 'Age', 'Location']].round(3))
@@ -1465,26 +1464,30 @@ def display_simulation_results():
     col1, col2 = st.columns([1, 1])
 
     with col1:
-     #   st.write("#### Stepped Simulation: Symptoms vs Care-Seeking")
-        st.image(symptom_vs_care_seeking_img, use_container_width=True)
+        st.write("#### Dynamic Simulation: Symptoms vs Care-Seeking")
+        st.pyplot(fig1)
 
     with col2:
-      #  st.write("#### Stepped Simulation: Trust vs Care-Seeking")
-        st.image(trust_vs_care_seeking_img, use_container_width=True)
+        st.write("#### Dynamic Simulation: Trust vs Care-Seeking")
+        st.pyplot(fig2)
 
-    # Bottom row: Logistic Regression (Non-Stepped Simulation)
+    # **Bottom Row: Cached Regression Plots**
     col1, col2 = st.columns([1, 1])
 
     with col1:
-        st.write("#### Non-Stepped Simulation: Logistic Regression (Symptoms vs Care-Seeking)")
-        st.pyplot(regression_plot("Symptom Severity", "Care Seeking Behavior", df_S, "Symptom Severity", "Care Seeking Behavior", "Symptoms vs Care-Seeking Behavior"))
+        reg_fig = regression_plot('Symptom Severity', 'Care Seeking Behavior', df_S, 'Symptom Severity', 'Care Seeking Behavior', 'Regression: Symptoms vs Care Seeking')
+        st.write("#### Cached Regression: Symptoms vs Care Seeking")
+        st.pyplot(reg_fig)
 
     with col2:
-        st.write("#### Non-Stepped Simulation: Logistic Regression (Trust vs Care-Seeking)")
-        st.pyplot(regression_plot("Trust in Clinician", "Care Seeking Behavior", df_S, "Trust in Clinician", "Care Seeking Behavior", df_S, "Trust in Clinician", "Care Seeking Behavior", "Trust vs Care-Seeking Behavior"))
+        reg_fig2 = regression_plot('Trust in Clinician', 'Care Seeking Behavior', df_S, 'Trust in Clinician', 'Care Seeking Behavior', 'Regression: Trust vs Care Seeking')
+        st.write("#### Cached Regression: Trust vs Care Seeking")
+        st.pyplot(reg_fig2)
 
-# Run the simulation results display function
+# Run the app
+if __name__ == "__main__":
     display_simulation_results()
+
 
 # =======================
 # FOOTER
@@ -1501,6 +1504,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
