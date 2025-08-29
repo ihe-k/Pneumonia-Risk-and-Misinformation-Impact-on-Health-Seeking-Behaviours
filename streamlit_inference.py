@@ -1372,51 +1372,53 @@ def regression_plot(x, y, data, xlabel, ylabel, title):
     return f"data:image/png;base64,{img_str}"
 
 # Your simulation and plotting logic
-if len(df_sim) > 10:
-    st.markdown("### 🎯 2D Relationship Analysis")
-    col1, col2 = st.columns(2)
+if 'df_sim' in locals() and isinstance(df_sim, pd.DataFrame) and not df_sim.empty:
+    if len(df_sim) > 10:
+        st.markdown("### 🎯 2D Relationship Analysis")
+        col1, col2 = st.columns(2)
 
-    with col1:
-        buffer1 = regression_plot(
-            x="misinformation_exposure",
-            y="care_seeking_behavior",
-            data=df_sim,
-            xlabel="Misinformation Exposure",
-            ylabel="Care Seeking Behavior",
-            title="Misinformation vs Care-Seeking Behavior"
-        )
-        st.image(buffer1)
+        with col1:
+            buffer1 = regression_plot(
+                x="misinformation_exposure",
+                y="care_seeking_behavior",
+                data=df_sim,
+                xlabel="Misinformation Exposure",
+                ylabel="Care Seeking Behavior",
+                title="Misinformation vs Care-Seeking Behavior"
+            )
+            st.image(buffer1)
 
-    with col2:
-        buffer2 = regression_plot(
-            x="symptom_severity",
-            y="care_seeking_behavior",
-            data=df_sim,
-            xlabel="Symptom Severity",
-            ylabel="Care Seeking Behavior",
-            title="Symptom Severity vs Care-Seeking Behavior"
-        )
-        st.image(buffer2)
+        with col2:
+            buffer2 = regression_plot(
+                x="symptom_severity",
+                y="care_seeking_behavior",
+                data=df_sim,
+                xlabel="Symptom Severity",
+                ylabel="Care Seeking Behavior",
+                title="Symptom Severity vs Care-Seeking Behavior"
+            )
+            st.image(buffer2)
 
-df_sim.columns = df_sim.columns.str.strip()
-df_sim.rename(columns={
+    df_sim.columns = df_sim.columns.str.strip()
+    df_sim.rename(columns={
     "symptom_severity": "Symptom Severity",
     "care_seeking_behavior": "Care Seeking Behavior",
     "trust_in_clinician": "Trust in Clinician",
     "misinformation_exposure": "Misinformation Exposure"
-}, inplace=True)
+    }, inplace=True)
 
 # Show the simulation results
-st.write("### 📈 Simulation Results & Analysis")
+    st.write("### 📈 Simulation Results & Analysis")
 #st.dataframe(df_sim)
-display_simulation_results(df_sim)
+#display_simulation_results(df_sim)
 
 # Summary stats table
-st.markdown("### 📋 Simulation Summary Statistics")
-summary_stats = df_sim[["Symptom Severity", "Care Seeking Behavior", "Trust in Clinician", "Misinformation Exposure"]].describe()
-st.dataframe(summary_stats.round(3))
+    st.markdown("### 📋 Simulation Summary Statistics")
+    summary_stats = df_sim[["Symptom Severity", "Care Seeking Behavior", "Trust in Clinician", "Misinformation Exposure"]].describe()
+    st.dataframe(summary_stats.round(3))
 
-
+else:
+    st.info("Simulation data not available or empty.")
 
 # =======================
 # FOOTER
@@ -1433,6 +1435,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
