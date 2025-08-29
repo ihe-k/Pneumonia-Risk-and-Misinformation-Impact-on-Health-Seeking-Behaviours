@@ -1321,8 +1321,14 @@ import random
 
 # === Simulation Setup ===
 # Sidebar inputs (MUST be defined before button is pressed)
-if st.slidebar.button("Run Simulation"):
-model = MisinformationModel(num_agents=num_agents, num_clinicians=num_clinicians, width=10, width=10, misinformation_exposure=misinformation_exposure)
+if st.sidebar.button("Run Simulation"):
+    model = MisinformationModel(
+        num_agents=num_agents,
+        num_clinicians=num_clinicians,
+        width=10,
+        height=10,
+        misinformation_exposure=misinformation_exposure
+    )
     for _ in range(30):
         model.step()
 
@@ -1680,6 +1686,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
