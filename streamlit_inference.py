@@ -1483,7 +1483,7 @@ def display_simulation_results():
         st.pyplot(regression_plot("Trust in Clinician", "Care Seeking Behavior", df_S, "Trust in Clinician", "Care Seeking Behavior", df_S, "Trust in Clinician", "Care Seeking Behavior", "Trust vs Care-Seeking Behavior"))
 
 # Run the simulation results display function
-display_simulation_results()
+    display_simulation_results()
 
 
 # =======================
@@ -1501,6 +1501,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
