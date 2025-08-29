@@ -1373,8 +1373,8 @@ if 'df_sim' in st.session_state:
     if len(df_plot) > 10:
         # Misinformation Exposure vs Care Seeking Behavior
         buf1 = regression_plot(
-            x='misinformation_exposure',
-            y='care_seeking_behavior',
+            x='Misinformation Exposure',
+            y='Care Seeking Behavior',
             data=df_plot,
             xlabel='Misinformation Exposure',
             ylabel='Care Seeking Behavior',
@@ -1401,7 +1401,7 @@ if 'df_sim' in st.session_state:
     else:
         st.info("Not enough data points for regression plots.")
 else:
-    st.info("Please run your simulation first.")
+    st.info("Please run the simulation.")
 
 ###
 
@@ -1478,7 +1478,7 @@ if 'df_sim' in locals() and isinstance(df_sim, pd.DataFrame) and not df_sim.empt
     }, inplace=True)
 
 # Show the simulation results
-    st.write("### 📈 Simulation Results & Analysis")
+#    st.write("### 📈 Simulation Results & Analysis")
 #st.dataframe(df_sim)
 #display_simulation_results(df_sim)
 
@@ -1505,6 +1505,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
