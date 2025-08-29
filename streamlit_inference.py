@@ -1406,7 +1406,7 @@ if 'df_sim' in locals() and isinstance(df_sim, pd.DataFrame) and not df_sim.empt
 
         with col1:
             buffer1 = regression_plot(
-                x="Misinformation Exposure",
+                x="misinformation_exposure",
                 y="Care Seeking Behavior",
                 data=df_sim,
                 xlabel="Misinformation Exposure",
@@ -1445,7 +1445,7 @@ if 'df_sim' in locals() and isinstance(df_sim, pd.DataFrame) and not df_sim.empt
     st.dataframe(summary_stats.round(3))
 
 else:
-    st.info("Simulation data not available or empty.")
+    st.info("Please run the simulation")
 
 # =======================
 # FOOTER
@@ -1462,6 +1462,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
