@@ -1399,6 +1399,7 @@ class ClinicianAgent(Agent):
         pass
 
 # === Simulation Data Generation ===
+@st.cache(allow_output_mutation=True)  # Cache this function so data remains the same on slider change
 def generate_simulation_data(num_agents, num_clinicians, misinfo_exposure):
     model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinfo_exposure)
     
@@ -1408,6 +1409,7 @@ def generate_simulation_data(num_agents, num_clinicians, misinfo_exposure):
     
     # Get the data from the simulation
     df_sim = model.get_agent_vars_dataframe()
+    df_sim.index = df_sim.index + 1  # Adjust index to start from 1
     return df_sim.reset_index()
 
 # **Visualization 1: 2D Scatter Plots for Relationships**
@@ -1457,11 +1459,10 @@ def regression_plot(x, y, data, xlabel, ylabel, title):
 
 # **Main App Logic**
 def display_simulation_results():
-    # Get Simulation data (non-stepped data)
+    # Get Simulation data (Non-Stepped)
     df_S = generate_simulation_data(num_agents, num_clinicians, misinfo_exposure)
-    df_S.index = df_S.index + 1  # Adjust index to start from 1
-
-    # Display tables and plots
+    
+    # Display Non-Stepped Simulation Data Table
     st.write("### 📊 Non-Stepped Simulation Results")
     st.dataframe(df_S[['Symptom Severity', 'Care Seeking Behavior', 'Trust in Clinician', 'Misinformation Exposure', 'Age', 'Location']].round(3))
 
@@ -1489,10 +1490,6 @@ def display_simulation_results():
         st.write("#### Logistic Regression for Non-Stepped Simulation: Trust vs Care-Seeking")
         st.pyplot(regression_plot("Trust in Clinician", "Care Seeking Behavior", df_S, "Trust in Clinician", "Care Seeking Behavior", "Trust vs Care-Seeking (Non-Stepped Simulation)"))
 
-# Run the function to display results in Streamlit
-if __name__ == "__main__":
-    display_simulation_results()
-
 # =======================
 # FOOTER
 # =======================
@@ -1508,6 +1505,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
