@@ -1519,35 +1519,35 @@ else:
         ax1.set_ylabel("Care Seeking Behavior")
         st.pyplot(fig1)
 
-    # Visualization 2: Relationship Analysis
-    if len(df_reset) > 10:
-        st.markdown("### 🎯 Relationship Analysis")
-        fig3, (ax3a, ax3b) = plt.subplots(1, 2, figsize=(15, 6))
 
-        # First 2D plot: Symptom Severity vs Care Seeking Behavior
-        scatter1 = ax3a.scatter(df_reset['Symptom Severity'],
-                               df_reset['Care Seeking Behavior'],
-                               c=df_reset['Misinformation Exposure'],
-                               cmap='viridis', alpha=0.6, s=50)
-        ax3a.set_xlabel('Symptom Severity')
-        ax3a.set_ylabel('Care Seeking Behavior')
-        ax3a.set_title('Symptoms vs Care-Seeking\n(Color = Misinformation Level)')
-        plt.colorbar(scatter1, ax=ax3a, label='Misinformation Exposure', shrink=0.8)
+# Visualization 2: Relationship Analysis
 
-        # Second 2D plot: Trust vs Care Seeking Behavior
-        scatter2 = ax3b.scatter(df_reset['Trust in Clinician'],
-                               df_reset['Care Seeking Behavior'],
-                               c=df_reset['Misinformation Exposure'],
-                               cmap='viridis', alpha=0.6, s=50)
-        ax3b.set_xlabel('Trust in Clinician')
-        ax3b.set_ylabel('Care Seeking Behavior')
-        ax3b.set_title('Trust vs Care-Seeking\n(Color = Misinformation Level)')
-        plt.colorbar(scatter2, ax=ax3b, label='Misinformation Exposure', shrink=0.8)
+if len(df_reset) > 10:
+    st.markdown("### 🎯 Relationship Analysis")
+    fig3, (ax3a, ax3b) = plt.subplots(1, 2, figsize=(15, 6))
 
-        plt.tight_layout()
-        st.pyplot(fig3)
+    # First 2D plot: Symptom Severity vs Care Seeking Behavior
+    scatter1 = ax3a.scatter(df_reset['Symptom Severity'],
+                            df_reset['Care Seeking Behavior'],
+                            c=df_reset['Misinformation Exposure'],
+                            cmap='viridis', alpha=0.6, s=50)
+    ax3a.set_xlabel('Symptom Severity')
+    ax3a.set_ylabel('Care Seeking Behavior')
+    ax3a.set_title('Symptoms vs Care-Seeking\n(Color = Misinformation Level)')
+    plt.colorbar(scatter1, ax=ax3a, label='Misinformation Exposure', shrink=0.8)
 
- 
+    # Second 2D plot: Trust vs Care Seeking Behavior
+    scatter2 = ax3b.scatter(df_reset['Trust in Clinician'],
+                            df_reset['Care Seeking Behavior'],
+                            c=df_reset['Misinformation Exposure'],
+                            cmap='viridis', alpha=0.6, s=50)
+    ax3b.set_xlabel('Trust in Clinician')
+    ax3b.set_ylabel('Care Seeking Behavior')
+    ax3b.set_title('Trust vs Care-Seeking\n(Color = Misinformation Level)')
+    plt.colorbar(scatter2, ax=ax3b, label='Misinformation Exposure', shrink=0.8)
+
+    plt.tight_layout()
+    st.pyplot(fig3)
 
     # Simulation Summary Statistics Table
     st.markdown("### 📋 Simulation Summary Statistics")
@@ -1566,7 +1566,8 @@ r_squared = model.rsquared  # R-squared value
 st.write(f"**P-value:** {p_value:.4f}")
 st.write(f"**R-squared:** {r_squared:.4f}")
 
-         
+
+
 ###
 import io
 import base64
@@ -1751,6 +1752,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
