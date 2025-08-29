@@ -1428,22 +1428,22 @@ if simulate_button:
         misinformation_exposure=misinformation_exposure
     )
     # Show a spinner or loading indicator
+    max_steps = 200  # Or whatever the maximum steps in your simulation are 
     progress_bar = st.progress()
     st.session_state.simulation_run = True  # Use session state for proper tracking
     
-    for _ in range(30):
-        
-            model.step()
-            progress = (_ + 1) / 30 
-            progress_bar.progress(progress)
-            
+    for i in range(30):
+        model.step()
+        progress = (i + 1) / 30 
+        progress_bar.progress(progress)
+    progress_bar.progress(1.0)
     df = model.get_agent_vars_dataframe()
     st.write("Relationship Analysis")
     st.dataframe(df)
 except Exception as e:
     st.error(f"An error occurred: {e}")
-    if "progress_bar" in locals():
-        progress_bar.progress(0)
+  #  if "progress_bar" in locals():
+  #      progress_bar.progress(0)
     st.session_state.simulation_run = False
 
     # Create and run the model
@@ -1716,6 +1716,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
