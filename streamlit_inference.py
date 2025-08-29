@@ -1305,13 +1305,13 @@ class MisinformationModel(Model):
 
 ### Graph
 
+
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 from io import BytesIO
-import statsmodels.api as sm
 from mesa import Model
 from mesa.time import RandomActivation
 from mesa.space import MultiGrid
@@ -1348,7 +1348,7 @@ class MisinformationModel(Model):
         # Set up data collection (track these variables for each agent)
         self.datacollector = DataCollector(
             agent_reporters={
-                "Symptom Severity": "symptom_severity",
+                "Symptom Severity": "symptom_severity",  # Example agent attribute to collect
                 "Care Seeking Behavior": "care_seeking_behavior",
                 "Trust in Clinician": "trust_in_clinician",
                 "Misinformation Exposure": "misinfo_exposure"
@@ -1401,6 +1401,89 @@ class ClinicianAgent(Agent):
         # Optionally, clinician behavior logic could be added here (e.g., interactions with patients)
         pass
 
+# === Running the Simulation ===
+if simulate_button:
+    st.session_state.simulation_run = True
+
+    # Create and run the model
+    model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinfo_exposure)
+    for _ in range(30):
+        model.step()
+
+    # Collect simulation data
+    df_sim = model.get_agent_vars_dataframe()
+
+    # Display simulation results
+    st.write("### 📈 Simulation Results & Analysis")
+
+    # Reset index for easier plotting
+    df_reset = df_sim.reset_index()
+
+    # Visualization 1: 2D Scatter Plots for Relationships
+    if len(df_reset) > 10:
+        st.markdown("### 🎯 2D Relationship Analysis")
+        fig3, (ax3a, ax3b) = plt.subplots(1, 2, figsize=(15, 6))
+
+        # First 2D plot: Symptom Severity vs Care Seeking Behavior
+        scatter1 = ax3a.scatter(df_reset['Symptom Severity'],
+                               df_reset['Care Seeking Behavior'],
+                               c=df_reset['Misinformation Exposure'],
+                               cmap='viridis', alpha=0.6, s=50)
+        ax3a.set_xlabel('Symptom Severity')
+        ax3a.set_ylabel('Care Seeking Behavior')
+        ax3a.set_title('Symptoms vs Care-Seeking\n(Color = Misinformation Level)')
+        plt.colorbar(scatter1, ax=ax3a, label='Misinformation Exposure', shrink=0.8)
+
+        # Second 2D plot: Trust vs Care Seeking Behavior
+        scatter2 = ax3b.scatter(df_reset['Trust in Clinician'],
+                               df_reset['Care Seeking Behavior'],
+                               c=df_reset['Misinformation Exposure'],
+                               cmap='viridis', alpha=0.6, s=50)
+        ax3b.set_xlabel('Trust in Clinician')
+        ax3b.set_ylabel('Care Seeking Behavior')
+        ax3b.set_title('Trust vs Care-Seeking\n(Color = Misinformation Level)')
+        plt.colorbar(scatter2, ax=ax3b, label='Misinformation Exposure', shrink=0.8)
+
+        plt.tight_layout()
+        st.pyplot(fig3)
+
+    # Visualization 2: Regression Plots for Significance
+    if len(df_reset) > 10:
+        st.markdown("### 📊 Regression Analysis")
+
+        # Regression 1: Symptom Severity vs Care Seeking Behavior
+        st.markdown("#### Symptoms vs Care-Seeking Behavior")
+        buffer1 = regression_plot(
+            x="Symptom Severity",
+            y="Care Seeking Behavior",
+            data=df_reset,
+            xlabel="Symptom Severity",
+            ylabel="Care Seeking Behavior",
+            title="Symptoms vs Care-Seeking Behavior"
+        )
+        st.image(buffer1)
+
+        # Regression 2: Trust vs Care Seeking Behavior
+        st.markdown("#### Trust vs Care-Seeking Behavior")
+        buffer2 = regression_plot(
+            x="Trust in Clinician",
+            y="Care Seeking Behavior",
+            data=df_reset,
+            xlabel="Trust in Clinician",
+            ylabel="Care Seeking Behavior",
+            title="Trust vs Care-Seeking Behavior"
+        )
+        st.image(buffer2)
+
+    # Simulation Summary Statistics Table
+    st.markdown("### 📋 Simulation Summary Statistics")
+    summary_stats = df_reset[["Symptom Severity", "Care Seeking Behavior", "Trust in Clinician", "Misinformation Exposure"]].describe()
+    st.dataframe(summary_stats.round(3))
+
+else:
+    # Show placeholder when simulation hasn't been run
+    st.info("👆 Use the sidebar controls above to configure and run the agent-based simulation.")
+
 # === Regression Plot with Data Cleaning ===
 def regression_plot(x, y, data, xlabel, ylabel, title):
     # Replace NaN and Inf values with the mean of the respective columns
@@ -1431,81 +1514,6 @@ def regression_plot(x, y, data, xlabel, ylabel, title):
     plt.close(fig)
     return buffer
 
-# === Running the Simulation ===
-if simulate_button:
-    st.session_state.simulation_run = True
-
-    # Create and run the model
-    model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinfo_exposure)
-    for _ in range(30):
-        model.step()
-
-    # Collect simulation data
-    df_sim = model.get_agent_vars_dataframe()
-
-    # Display simulation results
-    st.write("### 📈 Simulation Results & Analysis")
-
-    # Reset index for easier plotting
-    df_reset = df_sim.reset_index()
-
-    # Visualization 1: Scatter Plot (Impact of Misinformation & Trust on Care-Seeking)
-    col1, col2 = st.columns(2)
-
-    with col1:
-        fig1, ax1 = plt.subplots(figsize=(8, 6))
-        sns.scatterplot(
-            data=df_reset,
-            x="Symptom Severity",
-            y="Care Seeking Behavior",
-            hue="Trust in Clinician",
-            size="Misinformation Exposure",
-            alpha=0.7,
-            ax=ax1,
-            palette="coolwarm",
-            sizes=(20, 200)
-        )
-        ax1.set_title("Impact of Misinformation & Trust on Care-Seeking")
-        ax1.set_xlabel("Symptom Severity")
-        ax1.set_ylabel("Care Seeking Behavior")
-        st.pyplot(fig1)
-
-    # Visualization 2: Regression Plots for Significance
-    if len(df_reset) > 10:
-        st.markdown("### 🎯 2D Relationship Analysis")
-        col3, col4 = st.columns(2)
-
-        with col3:
-            buffer1 = regression_plot(
-                x="Symptom Severity",
-                y="Care Seeking Behavior",
-                data=df_reset,
-                xlabel="Symptom Severity",
-                ylabel="Care Seeking Behavior",
-                title="Symptoms vs Care-Seeking Behavior"
-            )
-            st.image(buffer1)
-
-        with col4:
-            buffer2 = regression_plot(
-                x="Trust in Clinician",
-                y="Care Seeking Behavior",
-                data=df_reset,
-                xlabel="Trust in Clinician",
-                ylabel="Care Seeking Behavior",
-                title="Trust vs Care-Seeking Behavior"
-            )
-            st.image(buffer2)
-
-    # Simulation Summary Statistics Table
-    st.markdown("### 📋 Simulation Summary Statistics")
-    summary_stats = df_reset[["Symptom Severity", "Care Seeking Behavior", "Trust in Clinician", "Misinformation Exposure"]].describe()
-    st.dataframe(summary_stats.round(3))
-
-else:
-    # Show placeholder when simulation hasn't been run
-    st.info("👈 Use the sidebar controls above to configure and run the agent-based simulation.")
-
 
 
 # =======================
@@ -1523,6 +1531,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
