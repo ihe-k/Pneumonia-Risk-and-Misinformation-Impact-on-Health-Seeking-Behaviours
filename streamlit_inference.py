@@ -1316,6 +1316,7 @@ from mesa.space import MultiGrid
 from mesa.datacollection import DataCollector
 from mesa.agent import Agent
 import random
+import os
 
 # === Simulation Setup ===
 # Sidebar Inputs for Stepped Simulation
@@ -1462,7 +1463,20 @@ def regression_plot(x, y, data, xlabel, ylabel, title):
 # **Main App Logic**
 def display_simulation_results():
     # Get the non-stepped simulation data (cached)
-    df_S = generate_non_stepped_simulation_data(num_agents_stepped, num_clinicians_stepped, misinfo_exposure_stepped)
+    df_S = generate_non_stepped_simulation_data(100, 5, 0.3)  # Static data with 100 patients, 5 clinicians, 0.3 misinformation exposure
+    
+    # Save the graphs as PNG images
+    if not os.path.exists("graphs"):
+        os.makedirs("graphs")
+    
+    # Create and save the 2D Relationship Analysis graphs
+    fig1, fig2 = scatter_plots_2d(df_S)
+    fig1.savefig("graphs/symptom_vs_care_seeking.png")
+    fig2.savefig("graphs/trust_vs_care_seeking.png")
+
+    # Load the saved PNG graphs
+    symptom_vs_care_seeking_img = "graphs/symptom_vs_care_seeking.png"
+    trust_vs_care_seeking_img = "graphs/trust_vs_care_seeking.png"
     
     # Display Non-Stepped Simulation Data Table
     st.write("### 📊 Non-Stepped Simulation Results")
@@ -1473,28 +1487,26 @@ def display_simulation_results():
 
     with col1:
         st.write("#### Stepped Simulation: Symptoms vs Care-Seeking")
-        fig1, _ = scatter_plots_2d(df_S)  # Left plot
-        st.pyplot(fig1)
+        st.image(symptom_vs_care_seeking_img, use_column_width=True)
 
     with col2:
         st.write("#### Stepped Simulation: Trust vs Care-Seeking")
-        _, fig2 = scatter_plots_2d(df_S)  # Right plot
-        st.pyplot(fig2)
+        st.image(trust_vs_care_seeking_img, use_column_width=True)
 
-    # Bottom row: Logistic Regression Plots (fixed, based on non-stepped simulation)
+    # Bottom row: Logistic Regression (Non-Stepped Simulation)
     col1, col2 = st.columns([1, 1])
 
     with col1:
-        st.write("#### Non-Stepped Simulation (Logistic Regression): Symptoms vs Care-Seeking")
-        st.pyplot(regression_plot("Symptom Severity", "Care Seeking Behavior", df_S, "Symptom Severity", "Care Seeking Behavior", "Symptoms vs Care-Seeking (Non-Stepped Simulation)"))
+        st.write("#### Non-Stepped Simulation: Logistic Regression (Symptoms vs Care-Seeking)")
+        st.pyplot(regression_plot("Symptom Severity", "Care Seeking Behavior", df_S, "Symptom Severity", "Care Seeking Behavior", "Symptoms vs Care-Seeking Behavior"))
 
     with col2:
-        st.write("#### Non-Stepped Simulation (Logistic Regression): Trust vs Care-Seeking")
-        st.pyplot(regression_plot("Trust in Clinician", "Care Seeking Behavior", df_S, "Trust in Clinician", "Care Seeking Behavior", "Trust vs Care-Seeking (Non-Stepped Simulation)"))
+        st.write("#### Non-Stepped Simulation: Logistic Regression (Trust vs Care-Seeking)")
+        st.pyplot(regression_plot("Trust in Clinician", "Care Seeking Behavior", df_S, "Trust in Clinician", "Care Seeking Behavior", "Trust vs Care-Seeking Behavior"))
 
-# **Run the App**
-if __name__ == "__main__":
-    display_simulation_results()
+# Run the simulation results display function
+display_simulation_results()
+
 # =======================
 # FOOTER
 # =======================
@@ -1510,6 +1522,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
