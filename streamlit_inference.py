@@ -1304,6 +1304,15 @@ class MisinformationModel(Model):
 #    st.info("👈 Use the sidebar controls above to configure and run an agent-based simulation and a regression analysis.")
 
 ###
+
+
+
+import io
+import base64
+import matplotlib.pyplot as plt
+import seaborn as sns
+import streamlit as st
+
 def display_simulation_results(df):
     if df is None:
         return  # Handle the case where run_simulation returned None
@@ -1325,10 +1334,7 @@ def display_simulation_results(df):
 
 # Define the regression plot function
 def regression_plot(x, y, data, xlabel, ylabel, title):
-    import io
-    import matplotlib.pyplot as plt
-    import seaborn as sns
-    buf = io.BytesIO()
+      buf = io.BytesIO()
     try:
         plt.figure(figsize=(8, 6))
         sns.regplot(x=x, y=y, data=data, scatter_kws={'s': 50}, line_kws={'color': 'red'})
@@ -1393,12 +1399,6 @@ if 'df_sim' in st.session_state:
 # Drop NaNs to avoid errors
     df_plot = df_sim.dropna(subset=['Symptom Severity', 'Care Seeking Behavior', 'Misinformation Exposure', 'Trust in Clinician'])
 
-
-import io
-import base64
-import matplotlib.pyplot as plt
-import seaborn as sns
-import streamlit as st
 
 
 # Your simulation and plotting logic
@@ -1465,6 +1465,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
