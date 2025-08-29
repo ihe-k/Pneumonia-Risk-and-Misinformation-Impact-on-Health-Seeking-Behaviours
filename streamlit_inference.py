@@ -1310,7 +1310,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 import statsmodels.api as sm
-import os
 import random
 from mesa import Agent, Model
 from mesa.time import RandomActivation
@@ -1383,6 +1382,7 @@ class ClinicianAgent(Agent):
         self.trust_in_clinician = random.uniform(0, 1)
 
 # === Simulation Data Generation (No Caching for Steps) ===
+@st.cache_data  # Cache only non-stepped data
 def generate_non_stepped_simulation_data(num_agents, num_clinicians, misinfo_exposure):
     model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinfo_exposure)
     for _ in range(30):  # Run 30 steps of the simulation
@@ -1443,7 +1443,7 @@ def regression_plot(x, y, data, xlabel, ylabel, title):
 # **Main App Logic**
 def display_simulation_results():
     # **Top Row: Dynamic Scatter Plots**
-    # Re-run simulation with updated parameters
+    # Re-run simulation with updated parameters (for the stepped simulation)
     model = MisinformationModel(num_agents_stepped, num_clinicians_stepped, 10, 10, misinfo_exposure_stepped)
     for _ in range(30):
         model.step()
@@ -1452,35 +1452,22 @@ def display_simulation_results():
     # Create scatter plots dynamically for updated simulation data
     fig1, fig2 = scatter_plots_2d(df_dynamic)
 
-    # **Bottom Row: Cached Regression Plots**
+    # **Bottom Row: Cached Regression Plots (Static Non-Stepped Data)**
     df_S = generate_non_stepped_simulation_data(100, 5, 0.3)  # Static data with 100 patients, 5 clinicians, 0.3 misinformation exposure
 
     col1, col2 = st.columns([1, 1])
 
     with col1:
-        st.write("#### Dynamic Simulation: Symptoms vs Care-Seeking")
-        st.pyplot(fig1)
+        st.write("#### Non-Stepped Simulation: Logistic Regression (Symptoms vs Care-Seeking)")
+        st.pyplot(regression_plot("Symptom Severity", "Care Seeking Behavior", df_S, "Symptom Severity", "Care Seeking Behavior", "Symptoms vs Care-Seeking Behavior"))
 
     with col2:
-        st.write("#### Dynamic Simulation: Trust vs Care-Seeking")
-        st.pyplot(fig2)
+        st.write("#### Non-Stepped Simulation: Logistic Regression (Trust vs Care-Seeking)")
+        st.pyplot(regression_plot("Trust in Clinician", "Care Seeking Behavior", df_S, "Trust in Clinician", "Care Seeking Behavior", "Trust vs Care-Seeking Behavior"))
 
-    # Bottom row: Logistic Regression (Cached)
-    col1, col2 = st.columns([1, 1])
+# Call the display function to run the simulation and display the results
+display_simulation_results()
 
-    with col1:
-        reg_fig = regression_plot('Symptom Severity', 'Care Seeking Behavior', df_S, 'Symptom Severity', 'Care Seeking Behavior', 'Regression: Symptoms vs Care Seeking')
-        st.write("#### Cached Regression: Symptoms vs Care Seeking")
-        st.pyplot(reg_fig)
-
-    with col2:
-        reg_fig2 = regression_plot('Trust in Clinician', 'Care Seeking Behavior', df_S, 'Trust in Clinician', 'Care Seeking Behavior', 'Regression: Trust vs Care Seeking')
-        st.write("#### Cached Regression: Trust vs Care Seeking")
-        st.pyplot(reg_fig2)
-
-# Run the app
-if __name__ == "__main__":
-    display_simulation_results()
 
 # =======================
 # FOOTER
@@ -1497,6 +1484,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
