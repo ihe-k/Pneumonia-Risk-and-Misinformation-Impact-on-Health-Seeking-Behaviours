@@ -1429,7 +1429,7 @@ def scatter_plot(df_reset, title):
 
 # **2D Scatter Plots for Relationships**
 def scatter_plots_2d(df_reset):
-    fig, (ax3a, ax3b) = plt.subplots(1, 2, figsize=(12, 5))
+    fig, (ax3a, ax3b) = plt.subplots(1, 2, figsize=(14, 6))  # Increased size for better visibility
 
     # First 2D plot: Symptom Severity vs Care Seeking Behavior
     scatter1 = ax3a.scatter(df_reset['Symptom Severity'],
@@ -1483,24 +1483,25 @@ def display_simulation_results():
     st.write("### 📈 Simulation in Steps Results")
     st.dataframe(df_A.round(3))
 
-    # Plot for Simulation (Side-by-side)
-    col1, col2 = st.columns([2, 2])
+    # Plot for Simulation (Top: 2D Relationship Analysis, Below: Logistic Regressions)
+    col1, col2 = st.columns([1, 1])
     
-    # Left side: 2D Relationship Analysis
+    # Left side: 2D Relationship Analysis + Logistic Regression (Simulation in Steps)
     with col1:
         st.write("#### 2D Relationship Analysis for Simulation in Steps")
         st.pyplot(scatter_plots_2d(df_A))
-    
+
     # Right side: Logistic Regression Comparison
     with col2:
-        st.write("#### Logistic Regression: Symptom Severity vs Care Seeking Behavior (Simulation in Steps)")
-        st.pyplot(regression_plot("Symptom Severity", "Care Seeking Behavior", df_A, "Symptom Severity", "Care Seeking Behavior", "Symptoms vs Care-Seeking Behavior (Simulation in Steps)"))
-
         st.write("#### Logistic Regression: Symptoms vs Care-Seeking (Comparison)")
         st.pyplot(regression_plot("Symptom Severity", "Care Seeking Behavior", df_A, "Symptom Severity", "Care Seeking Behavior", "Symptoms vs Care-Seeking Behavior (Comparison)"))
+    
+    # Below the 2D Relationship, place the regression for Simulation in Steps
+    col1, col2 = st.columns([1, 1])
 
-# **Run the App**
-display_simulation_results()
+    with col1:
+        st.write("#### Logistic Regression: Symptom Severity vs Care Seeking Behavior (Simulation in Steps)")
+        st.pyplot(regression_plot("Symptom Severity", "Care Seeking Behavior", df_A, "Symptom Severity", "Care Seeking Behavior", "Symptoms vs Care-Seeking Behavior (Simulation in Steps)"))
 
 
 # =======================
@@ -1518,6 +1519,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
