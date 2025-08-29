@@ -1506,7 +1506,7 @@ else:
     # Show placeholder when simulation hasn't been run
     st.info("👈 Use the sidebar controls above to configure and run the agent-based simulation.")
 
-————
+
 
 # =======================
 # FOOTER
@@ -1523,6 +1523,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
