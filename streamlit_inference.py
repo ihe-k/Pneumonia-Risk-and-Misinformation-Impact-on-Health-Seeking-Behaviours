@@ -1415,7 +1415,7 @@ def generate_simulation_data(num_agents, num_clinicians, misinfo_exposure):
 
 # **Visualization 1: Scatter Plot (Impact of Misinformation & Trust on Care-Seeking)**
 def scatter_plot(df_reset, title):
-    fig, ax = plt.subplots(figsize=(8, 6))
+    fig, ax = plt.subplots(figsize=(6, 4))
     sns.scatterplot(
         data=df_reset,
         x="Symptom Severity",
@@ -1461,30 +1461,35 @@ def display_simulation_results():
     st.write("### 📈 Simulation A Results")
     st.dataframe(df_A.round(3))
 
-    # Plot for Simulation A
-    st.write("#### Scatter Plot for Simulation A")
-    st.pyplot(scatter_plot(df_A, "Impact of Misinformation & Trust on Care-Seeking (Simulation A)"))
-
-    # Regression Analysis for Simulation A
-    st.write("#### Logistic Regression: Symptom Severity vs Care Seeking Behavior (Simulation A)")
-    st.pyplot(regression_plot("Symptom Severity", "Care Seeking Behavior", df_A, "Symptom Severity", "Care Seeking Behavior", "Symptoms vs Care-Seeking Behavior (Simulation A)"))
+    # Plot for Simulation A (Side-by-side)
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.write("#### Scatter Plot for Simulation A")
+        st.pyplot(scatter_plot(df_A, "Impact of Misinformation & Trust on Care-Seeking (Simulation A)"))
+    
+    with col2:
+        st.write("#### Logistic Regression: Symptom Severity vs Care Seeking Behavior (Simulation A)")
+        st.pyplot(regression_plot("Symptom Severity", "Care Seeking Behavior", df_A, "Symptom Severity", "Care Seeking Behavior", "Symptoms vs Care-Seeking Behavior (Simulation A)"))
 
     # Get Simulation B (Comparator) data
     df_B = generate_simulation_data(num_agents_B, num_clinicians_B, misinfo_exposure_B)
     st.write("### 📈 Simulation B (Comparator) Results")
     st.dataframe(df_B.round(3))
 
-    # Plot for Simulation B
-    st.write("#### Scatter Plot for Simulation B")
-    st.pyplot(scatter_plot(df_B, "Impact of Misinformation & Trust on Care-Seeking (Simulation B)"))
-
-    # Regression Analysis for Simulation B
-    st.write("#### Logistic Regression: Symptom Severity vs Care Seeking Behavior (Simulation B)")
-    st.pyplot(regression_plot("Symptom Severity", "Care Seeking Behavior", df_B, "Symptom Severity", "Care Seeking Behavior", "Symptoms vs Care-Seeking Behavior (Simulation B)"))
+    # Plot for Simulation B (Side-by-side)
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.write("#### Scatter Plot for Simulation B")
+        st.pyplot(scatter_plot(df_B, "Impact of Misinformation & Trust on Care-Seeking (Simulation B)"))
+    
+    with col2:
+        st.write("#### Logistic Regression: Symptom Severity vs Care Seeking Behavior (Simulation B)")
+        st.pyplot(regression_plot("Symptom Severity", "Care Seeking Behavior", df_B, "Symptom Severity", "Care Seeking Behavior", "Symptoms vs Care-Seeking Behavior (Simulation B)"))
 
 # **Run the App**
 display_simulation_results()
-
 
 
 # =======================
@@ -1502,6 +1507,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
