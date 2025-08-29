@@ -1359,49 +1359,6 @@ def regression_plot(x, y, data, xlabel, ylabel, title):
         # Optionally, log the exception if needed
         return None
 
-# Usage example after your data processing:
-if 'df_sim' in st.session_state:
-    df_sim = st.session_state['df_sim']
-    
-    # Convert columns to numeric if needed
-    for col in ['Misinformation Exposure', 'Care Seeking Behavior', 'Symptom Severity', 'Trust in Clinician']:
-        if col in df_sim.columns:
-            df_sim[col] = pd.to_numeric(df_sim[col], errors='coerce')
-    
-      
-    # Check if enough data
-    if len(df_plot) > 10:
-        # Misinformation Exposure vs Care Seeking Behavior
-        buf1 = regression_plot(
-            x='Misinformation Exposure',
-            y='Care Seeking Behavior',
-            data=df_plot,
-            xlabel='Misinformation Exposure',
-            ylabel='Care Seeking Behavior',
-            title='Misinformation vs Care-Seeking Behavior'
-        )
-        if buf1:
-            st.image(buf1)
-        else:
-            st.warning("Failed to generate plot for Misinformation vs Care-Seeking Behavior.")
-        
-        # Symptom Severity vs Care Seeking Behavior
-        buf2 = regression_plot(
-            x='Symptom Severity',
-            y='Care Seeking Behavior',
-            data=df_plot,
-            xlabel='Symptom Severity',
-            ylabel='Care Seeking Behavior',
-            title='Symptom Severity vs Care-Seeking'
-        )
-        if buf2:
-            st.image(buf2)
-        else:
-            st.warning("Failed to generate plot for Symptom Severity vs Care-Seeking.")
-    else:
-        st.info("Not enough data points for regression plots.")
-else:
-    st.info("Please run the simulation.")
 
 ###
 
@@ -1505,6 +1462,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
