@@ -1463,8 +1463,8 @@ def logistic_regression_plot(x, y, data, xlabel, ylabel, title):
         return None
 
 # --- Streamlit UI ---
-num_agents = st.sidebar.slider("Number of Agents", min_value=10, max_value=200, value=50, step=10)
-num_clinicians = st.sidebar.slider("Number of Clinicians", min_value=1, max_value=20, value=5, step=1)
+num_agents = st.sidebar.slider("Number of Patient Agents", min_value=10, max_value=200, value=50, step=10)
+num_clinicians = st.sidebar.slider("Number of Clinician Agents", min_value=1, max_value=20, value=5, step=1)
 misinformation_exposure = st.sidebar.slider("Misinformation Exposure", min_value=0.0, max_value=1.0, value=0.2, step=0.05)
 simulate_button = st.sidebar.button("Run Simulation")
 
@@ -1565,13 +1565,34 @@ if 'simulation_run' in st.session_state and st.session_state['simulation_run']:
             if buffer5:
                 st.image(buffer5)
 
+        # New Graphs (Symptoms vs Care Seeking & Trust vs Care Seeking)
+        st.markdown("### 📊 Additional Visualizations")
+
+        # Symptom Severity vs Care Seeking Behavior (Colored by Misinformation Exposure)
+        plt.figure(figsize=(8, 6))
+        sns.scatterplot(x='Symptom Severity', y='Care Seeking Behavior', data=df_sim_clean,
+                        hue='Misinformation Exposure', palette='coolwarm', s=80, alpha=0.7)
+        plt.title('Symptom Severity vs Care-Seeking Behavior (Colored by Misinformation Exposure)')
+        plt.xlabel('Symptom Severity')
+        plt.ylabel('Care Seeking Behavior')
+        st.pyplot(plt)
+
+        # Trust in Clinician vs Care Seeking Behavior (Colored by Misinformation Exposure)
+        plt.figure(figsize=(8, 6))
+        sns.scatterplot(x='Trust in Clinician', y='Care Seeking Behavior', data=df_sim_clean,
+                        hue='Misinformation Exposure', palette='coolwarm', s=80, alpha=0.7)
+        plt.title('Trust in Clinician vs Care-Seeking Behavior (Colored by Misinformation Exposure)')
+        plt.xlabel('Trust in Clinician')
+        plt.ylabel('Care Seeking Behavior')
+        st.pyplot(plt)
+
         # Summary Statistics
         st.markdown("### 📋 Simulation Summary Statistics")
         summary_stats = df_sim_clean.describe()
         st.dataframe(summary_stats.round(3))
 
     else:
-        st.warning("No simulation data found. Please run the simulation.")
+        st.warning("No valid simulation data found. Please run the simulation again.")
 else:
     st.info("Please run the simulation")
 
@@ -1590,6 +1611,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
