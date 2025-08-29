@@ -1310,7 +1310,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 import statsmodels.api as sm
-import os
+import random
 
 # === Simulation Setup ===
 # Sidebar Inputs for Stepped Simulation
@@ -1380,8 +1380,7 @@ class ClinicianAgent:
         self.trust_in_clinician = random.uniform(0, 1)
 
 # === Simulation Data Generation ===
-@st.cache_data  # Cache non-stepped simulation data to make it static
-def generate_non_stepped_simulation_data(num_agents, num_clinicians, misinfo_exposure):
+def generate_stepped_simulation_data(num_agents, num_clinicians, misinfo_exposure):
     model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinfo_exposure)
     for _ in range(30):
         model.step()
@@ -1440,38 +1439,25 @@ def regression_plot(x, y, data, xlabel, ylabel, title):
 
 # **Main App Logic**
 def display_simulation_results():
-    # Get the non-stepped simulation data (cached)
-    df_S = generate_non_stepped_simulation_data(100, 5, 0.3)  # Static data with 100 patients, 5 clinicians, 0.3 misinformation exposure
+    # Re-run simulation with updated parameters (for the stepped simulation)
+    df_dynamic = generate_stepped_simulation_data(num_agents_stepped, num_clinicians_stepped, misinfo_exposure_stepped)
     
-    # Save the graphs as PNG images
-    if not os.path.exists("graphs"):
-        os.makedirs("graphs")
-    
-    # Create and save the 2D Relationship Analysis graphs
-    fig1, fig2 = scatter_plots_2d(df_S)
-    fig1.savefig("graphs/symptom_vs_care_seeking.png")
-    fig2.savefig("graphs/trust_vs_care_seeking.png")
+    # Create scatter plots dynamically for updated simulation data
+    fig1, fig2 = scatter_plots_2d(df_dynamic)
 
-    # Load the saved PNG graphs
-    symptom_vs_care_seeking_img = "graphs/symptom_vs_care_seeking.png"
-    trust_vs_care_seeking_img = "graphs/trust_vs_care_seeking.png"
-    
-    # Display Non-Stepped Simulation Data Table
-    st.write("### 📊 Non-Stepped Simulation Results")
-    st.dataframe(df_S[['Symptom Severity', 'Care Seeking Behavior', 'Trust in Clinician', 'Misinformation Exposure', 'Age', 'Location']].round(3))
-
-    # Top row: 2D Relationship Analysis (Symptoms vs Care-Seeking and Trust vs Care-Seeking)
+    # Display 2D Scatter Plots
     col1, col2 = st.columns([1, 1])
-
     with col1:
-     #   st.write("#### Stepped Simulation: Symptoms vs Care-Seeking")
-        st.image(symptom_vs_care_seeking_img, use_container_width=True)
+        st.write("#### Symptoms vs Care-Seeking Behavior")
+        st.pyplot(fig1)
 
     with col2:
-      #  st.write("#### Stepped Simulation: Trust vs Care-Seeking")
-        st.image(trust_vs_care_seeking_img, use_container_width=True)
+        st.write("#### Trust vs Care-Seeking Behavior")
+        st.pyplot(fig2)
 
-    # Bottom row: Logistic Regression (Non-Stepped Simulation)
+    # Logistic Regression (Non-Stepped Simulation)
+    df_S = generate_non_stepped_simulation_data(100, 5, 0.3)  # Static data with 100 patients, 5 clinicians, 0.3 misinformation exposure
+
     col1, col2 = st.columns([1, 1])
 
     with col1:
@@ -1480,10 +1466,10 @@ def display_simulation_results():
 
     with col2:
         st.write("#### Non-Stepped Simulation: Logistic Regression (Trust vs Care-Seeking)")
-        st.pyplot(regression_plot("Trust in Clinician", "Care Seeking Behavior", df_S, "Trust in Clinician", "Care Seeking Behavior", df_S, "Trust in Clinician", "Care Seeking Behavior", "Trust vs Care-Seeking Behavior"))
+        st.pyplot(regression_plot("Trust in Clinician", "Care Seeking Behavior", df_S, "Trust in Clinician", "Care Seeking Behavior", "Trust vs Care-Seeking Behavior"))
 
 # Run the simulation results display function
-    display_simulation_results()
+display_simulation_results()
 
 
 # =======================
@@ -1501,6 +1487,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
