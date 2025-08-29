@@ -1319,7 +1319,7 @@ if st.sidebar.button("Run Regression Analysis", key="run_regression"):
     st.write("First few rows of simulation data:")
     st.write(df_sim.head())
 
-    df_sim = pd.DataFrame(df_sim_dict).transpose()
+    df_sim = pd.DataFrame(sim_dict).transpose()
 
     # Reset index to start at 1 (optional)
     df_sim.index = df_sim.index + 1
@@ -1399,6 +1399,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
