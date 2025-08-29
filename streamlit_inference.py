@@ -1321,22 +1321,30 @@ import random
 
 # === Simulation Setup ===
 # Sidebar inputs (MUST be defined before button is pressed)
-num_agents = st.sidebar.slider("Number of Patient Agents", 5, 100, 10)
-num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 5)
-misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.3, 0.05)
+if st.slidebar.button("Run Simulation")
+model = MisinformationModel(num_agents=num_agents, num_clinicians=num_clinicians, width=10, width=10, misinformation_exposure=misinformation_exposure)
+    for _ in range(30):
+        model.step()
 
-simulate_button = st.sidebar.button("Run Simulation")  # Button to trigger the simulation
+    df = model.get_agent_vars_dataframe()
+    st.write("Relationship Analysis")
+#num_agents = st.sidebar.slider("Number of Patient Agents", 5, 200, 50)
+#num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 5)
+#misinformation_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.5, 0.05)
+
+width = 200
+#simulate_button = st.sidebar.button("Run Simulation")  # Button to trigger the simulation
 
 # === Simulation Model ===
 class MisinformationModel(Model):
-    def __init__(self, num_agents, num_clinicians, width, height, misinfo_exposure):
+    def __init__(self, num_agents, num_clinicians, width, height, misinformation_exposure):
         super().__init__()
 
         self.num_agents = num_agents
         self.num_clinicians = num_clinicians
         self.width = width
         self.height = height
-        self.misinfo_exposure = misinfo_exposure
+        self.misinformation_exposure = misinformation_exposure
         
         # Create grid and scheduler
         self.grid = MultiGrid(width, height, True)
@@ -1440,9 +1448,9 @@ if simulate_button:
         ax1.set_ylabel("Care Seeking Behavior")
         st.pyplot(fig1)
 
-    # Visualization 2: 2D Scatter Plots for Relationships
+    # Visualization 2: Relationship Analysis
     if len(df_reset) > 10:
-        st.markdown("### 🎯 2D Relationship Analysis")
+        st.markdown("### 🎯 Relationship Analysis")
         fig3, (ax3a, ax3b) = plt.subplots(1, 2, figsize=(15, 6))
 
         # First 2D plot: Symptom Severity vs Care Seeking Behavior
@@ -1485,7 +1493,7 @@ r_squared = model.rsquared  # R-squared value
 
 # Display p-value and R-squared
 st.write(f"**P-value:** {p_value:.4f}")
-st.write(f"**R-squared:** {r_squared:.4f}"
+st.write(f"**R-squared:** {r_squared:.4f}")
 
          
 ###
@@ -1672,6 +1680,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
