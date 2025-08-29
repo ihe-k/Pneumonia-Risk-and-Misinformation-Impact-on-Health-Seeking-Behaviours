@@ -1418,7 +1418,7 @@ class ClinicianAgent(Agent):
 # === Running the Simulation ===
 simulate_button = st.sidebar.button("Run Simulation")
 
-if simulate_button:
+if st.button("Simulate", key="simulate_button_1"):  # Use a unique key for the button
     try:
         # Initialize the model
         model = MisinformationModel(
@@ -1457,9 +1457,6 @@ if simulate_button:
     except Exception as e:
         st.error(f"An error occurred in the simulation: {e}")
         st.session_state.simulation_run = False  # Reset simulation flag if error happens
-
-    # Optional: Additional clean-up or resetting logic can go here
-    st.session_state.simulation_run = False
 
     # Create and run the model again (if necessary)
     model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinformation_exposure)
@@ -1728,6 +1725,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
