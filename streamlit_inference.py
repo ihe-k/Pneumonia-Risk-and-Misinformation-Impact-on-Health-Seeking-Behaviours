@@ -1479,7 +1479,15 @@ else:
     # Show placeholder when simulation hasn't been run
     st.info("Use the sidebar controls above to configure and run the agent-based simulation.")
 
+# Alternatively, you can extract specific statistics:
+p_value = model.pvalues[1]  # P-value of the independent variable
+r_squared = model.rsquared  # R-squared value
 
+# Display p-value and R-squared
+st.write(f"**P-value:** {p_value:.4f}")
+st.write(f"**R-squared:** {r_squared:.4f}"
+
+         
 ###
 import io
 import base64
@@ -1664,6 +1672,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
