@@ -1378,10 +1378,6 @@ import seaborn as sns
 import streamlit as st
 
 
-# Convert buffer to base64 for Streamlit display
-img_str = base64.b64encode(buf.read()).decode("utf-8")
-return f"data:image/png;base64,{img_str}"
-
 # Your simulation and plotting logic
 if 'df_sim' in locals() and isinstance(df_sim, pd.DataFrame) and not df_sim.empty:
     if len(df_sim) > 10:
@@ -1446,6 +1442,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
