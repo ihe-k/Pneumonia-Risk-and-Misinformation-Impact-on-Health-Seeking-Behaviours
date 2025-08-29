@@ -1333,7 +1333,7 @@ model = MisinformationModel(num_agents=num_agents, num_clinicians=num_clinicians
 #misinformation_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.5, 0.05)
 
 width = 200
-#simulate_button = st.sidebar.button("Run Simulation")  # Button to trigger the simulation
+#simulate_button = st.sidebar.button("Run Simulation_2")  # Button to trigger the simulation
 
 # === Simulation Model ===
 class MisinformationModel(Model):
@@ -1680,6 +1680,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
