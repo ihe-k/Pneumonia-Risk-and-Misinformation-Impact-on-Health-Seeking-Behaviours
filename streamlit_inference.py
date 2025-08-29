@@ -1407,9 +1407,9 @@ if st.sidebar.button("Run Simulation and Regression Analysis", key="run_regressi
     df_sim = model.get_agent_vars_dataframe().reset_index(drop=True)
     
     st.write("First few rows of simulation data:")
-    st.write(df_sim.head())
-    st.write("Column names in df_sim:")
-    st.write(df_sim.columns)
+  #  st.write(df_sim.head())
+   # st.write("Column names in df_sim:")
+   # st.write(df_sim.columns)
 
     
     # Reset index to start at 1 (optional)
@@ -1432,7 +1432,7 @@ if 'df_sim' in locals() and isinstance(df_sim, pd.DataFrame) and not df_sim.empt
             buffer1 = regression_plot(
                 x="Misinformation Exposure",
                 y="Care Seeking Behavior",
-                data=df,
+                data=df_sim,
                 xlabel="Misinformation Exposure",
                 ylabel="Care Seeking Behavior",
                 title="Misinformation vs Care-Seeking Behavior"
@@ -1443,7 +1443,7 @@ if 'df_sim' in locals() and isinstance(df_sim, pd.DataFrame) and not df_sim.empt
             buffer2 = regression_plot(
                 x="Symptom Severity",
                 y="Care Seeking Behavior",
-                data=df,
+                data=df_sim,
                 xlabel="Symptom Severity",
                 ylabel="Care Seeking Behavior",
                 title="Symptom Severity vs Care-Seeking Behavior"
@@ -1460,8 +1460,8 @@ if 'df_sim' in locals() and isinstance(df_sim, pd.DataFrame) and not df_sim.empt
 
 # Show the simulation results
 #    st.write("### 📈 Simulation Results & Analysis")
-#st.dataframe(df_sim)
-#display_simulation_results(df_sim)
+st.dataframe(df_sim)
+display_simulation_results(df_sim)
 
 # Summary stats table
     st.markdown("### 📋 Simulation Summary Statistics")
@@ -1488,6 +1488,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
