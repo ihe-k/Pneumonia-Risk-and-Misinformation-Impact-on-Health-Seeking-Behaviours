@@ -1440,6 +1440,7 @@ if simulate_button:
             except Exception as e:
                 st.error(f"An error occurred during step {i+1}: {e}")
                 progress_bar.progress(1.0)
+                st.stop()  # Stops the Streamlit app execution
                 return
             
             progress = (i + 1) / max_steps
@@ -1724,6 +1725,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
