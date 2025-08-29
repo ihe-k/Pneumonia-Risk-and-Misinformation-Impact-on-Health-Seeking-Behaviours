@@ -1363,7 +1363,7 @@ def regression_plot(x, y, data, xlabel, ylabel, title):
 ###
 
 
-if st.sidebar.button("Run Regression Analysis", key="run_regression"):
+if st.sidebar.button("Run Simulation and Regression Analysis", key="run_regression"):
   #  if simulate_button:
    # st.session_state.simulation_run = True
 
@@ -1406,9 +1406,9 @@ if 'df_sim' in locals() and isinstance(df_sim, pd.DataFrame) and not df_sim.empt
 
         with col1:
             buffer1 = regression_plot(
-                x="misinformation_exposure",
+                x="Misinformation Exposure",
                 y="Care Seeking Behavior",
-                data=df_sim,
+                data=df_plot,
                 xlabel="Misinformation Exposure",
                 ylabel="Care Seeking Behavior",
                 title="Misinformation vs Care-Seeking Behavior"
@@ -1462,6 +1462,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
