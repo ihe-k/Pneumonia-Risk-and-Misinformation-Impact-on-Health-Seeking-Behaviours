@@ -1428,13 +1428,13 @@ if simulate_button:
         misinformation_exposure=misinformation_exposure
     )
     # Show a spinner or loading indicator
-    progress_bar = st.empty()
+    progress_bar = st.progress()
     st.session_state.simulation_run = True  # Use session state for proper tracking
     
     for _ in range(30):
-        with progress_bar:
+        
             model.step()
-            progress = (_ + 1) / 30 * 100
+            progress = (_ + 1) / 30 
             progress_bar.progress(progress)
             
     df = model.get_agent_vars_dataframe()
@@ -1716,6 +1716,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
