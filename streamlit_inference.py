@@ -1369,30 +1369,30 @@ if st.sidebar.button("Run Simulation and Regression Analysis", key="run_regressi
    # st.session_state.simulation_run = True
 
     try:
-                 model = MisinformationModel(
-                    num_patients=st.session_state['num_agents'],
-                    #num_patients=num_patients,
-                    num_clinicians=st.session_state['num_clinicians'],   # or another control if you want
-                    misinformation_exposure=st.session_state['misinformation_exposure'],
-                    width=10,
-                    height=10,
-                )
-                for _ in range(30):
-                    model.step()
-                #df = model.datacollector.get_agent_vars_dataframe()
-                #st.session_state['simulation_results'] = df
-                #st.success("Simulation completed!")
-            except Exception as e:
-                st.error(f"An error occurred: {e}")
+        model = MisinformationModel(
+            num_patients=st.session_state['num_agents'],
+            #num_patients=num_patients,
+            num_clinicians=st.session_state['num_clinicians'],   # or another control if you want
+            misinformation_exposure=st.session_state['misinformation_exposure'],
+            width=10,
+            height=10,
+        )
+        for _ in range(30):
+            model.step()
+        #df = model.datacollector.get_agent_vars_dataframe()
+        #st.session_state['simulation_results'] = df
+        #st.success("Simulation completed!")
+    except Exception as e:
+        st.error(f"An error occurred: {e}")
 
     # Save results in session state
-            if 'model' in locals():
-                df = model.datacollector.get_agent_vars_dataframe()
-                st.session_state['simulation_results'] = df
+    if 'model' in locals():
+        df = model.datacollector.get_agent_vars_dataframe()
+        st.session_state['simulation_results'] = df
 
-                st.success("Simulation completed!")
-            else:
-                st.error("Model was not initialised successfully.")
+        st.success("Simulation completed!")
+    else:
+        st.error("Model was not initialised successfully.")
 
 
     
@@ -1493,6 +1493,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
