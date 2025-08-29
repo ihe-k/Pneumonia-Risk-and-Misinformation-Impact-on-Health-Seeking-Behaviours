@@ -1487,11 +1487,11 @@ def display_simulation_results():
 
     with col1:
         st.write("#### Stepped Simulation: Symptoms vs Care-Seeking")
-        st.image(symptom_vs_care_seeking_img, use_column_width=True)
+        st.image(symptom_vs_care_seeking_img, use_container_width=True)
 
     with col2:
         st.write("#### Stepped Simulation: Trust vs Care-Seeking")
-        st.image(trust_vs_care_seeking_img, use_column_width=True)
+        st.image(trust_vs_care_seeking_img, use_container_width=True)
 
     # Bottom row: Logistic Regression (Non-Stepped Simulation)
     col1, col2 = st.columns([1, 1])
@@ -1506,6 +1506,7 @@ def display_simulation_results():
 
 # Run the simulation results display function
 display_simulation_results()
+
 
 # =======================
 # FOOTER
@@ -1522,6 +1523,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
