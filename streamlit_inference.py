@@ -1297,10 +1297,10 @@ def display_simulation_results(df):
  #           df_sim[col] = df_sim[col].round(3)
  
     st.dataframe(df.style.format({
-        "Symptom Severity": "{:.3f}",
-        "Care Seeking Behavior": "{:.3f}",
-        "Misinformation Exposure": "{:.3f}",
-        "Trust in Clinician": "{:.3f}"
+        "symptom_severity": "{:.3f}",
+        "care_seeking_behavior": "{:.3f}",
+        "misinformation_exposure": "{:.3f}",
+        "trust in_clinician": "{:.3f}"
     }))
 
 if st.sidebar.button("Run Regression Analysis", key="run_regression"):
@@ -1317,11 +1317,14 @@ if st.sidebar.button("Run Regression Analysis", key="run_regression"):
 
     st.write("First few rows of simulation data:")
     st.write(df_sim.head())
+    st.write("Column names in df_sim:")
+    st.write(df_sim.columns)
 
     
     # Reset index to start at 1 (optional)
     df_sim.index = df_sim.index + 1
 
+    df_sim.columns = df_sim.columns.str.strip()
     df_sim.rename(columns={
     "symptom_severity": "Symptom Severity",
     "care_seeking_behavior": "Care Seeking Behavior",
@@ -1369,9 +1372,9 @@ if st.sidebar.button("Run Regression Analysis", key="run_regression"):
         # Add more regression plots as you like
 
     # Summary stats table
-    st.markdown("### 📋 Simulation Summary Statistics")
-    summary_stats = df_sim[["symptom_severity", "care_seeking_behavior", "trust_in_clinician", "misinformation_exposure"]].describe()
-    st.dataframe(summary_stats.round(3))
+   # st.markdown("### 📋 Simulation Summary Statistics")
+  #  summary_stats = df_sim[["symptom_severity", "care_seeking_behavior", "trust_in_clinician", "misinformation_exposure"]].describe()
+  #  st.dataframe(summary_stats.round(3))
 
 else:
     st.info("👈 Use the sidebar controls on the left to configure and run the agent-based simulation and a regression analysis")
@@ -1392,6 +1395,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
