@@ -1362,7 +1362,7 @@ class MisinformationModel(Model):
             y = self.random.randint(0, self.grid.height - 1)
             self.grid.place_agent(a, (x, y))
 
-        # Create clinician agents
+        # Create clinician agents based on the slider value
         for i in range(self.num_clinicians):
             c = ClinicianAgent(i, self)
             self.schedule.add(c)
@@ -1403,7 +1403,7 @@ class ClinicianAgent(Agent):
 if simulate_button:
     st.session_state.simulation_run = True
 
-    # Create and run the model
+    # Create and run the model using the current slider values
     model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinfo_exposure)
     for _ in range(30):
         model.step()
@@ -1486,6 +1486,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
