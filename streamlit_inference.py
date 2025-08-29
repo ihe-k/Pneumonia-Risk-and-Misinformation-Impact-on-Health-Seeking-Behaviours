@@ -1325,18 +1325,21 @@ def display_simulation_results(df):
 
 if st.sidebar.button("Run Regression Analysis", key="run_regression"):
   #  if simulate_button:
-    st.session_state.simulation_run = True
+   # st.session_state.simulation_run = True
 
     # Run your Mesa simulation
     model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinformation_exposure)
     for i in range(30):
         model.step()
+    df_sim = model.get_agent_vars_dataframe().reset_index(drop=True)
+    st.session_state['df_sim'] = df_sim
+
         print(f"Step {i+1}:")
         print(model.get_agent_vars_dataframe().head())
     
     # Get the simulation data as a DataFrame
     df_sim = model.get_agent_vars_dataframe().reset_index(drop=True)
-
+    
     st.write("First few rows of simulation data:")
     st.write(df_sim.head())
     st.write("Column names in df_sim:")
@@ -1346,13 +1349,16 @@ if st.sidebar.button("Run Regression Analysis", key="run_regression"):
     # Reset index to start at 1 (optional)
     df_sim.index = df_sim.index + 1
 
+if 'df_sim' in st.session_state:
+    df_sim = st.session_state['df_sim']
+
 # Drop NaNs to avoid errors
-df_plot = df_sim.dropna(subset=['misinformation_exposure', 'care_seeking_behavior', 'symptom_severity', 'age','location','trust_in_clinican'])
+    df_plot = df_sim.dropna(subset=['Symptom Severity', 'Care Seeking Behavior', 'Misinformation Exposure', 'Trust in Clinician'])
 
 # Plot
 buffer1 = regression_plot(
-    x="misinformation_exposure",
-    y="care_seeking_behavior",
+    x="Misinformation Exposure",
+    y="Care Seeking Behavior",
     data=df_plot,
     xlabel="Misinformation Exposure",
     ylabel="Care Seeking Behavior",
@@ -1391,8 +1397,8 @@ if 'df_sim' in locals() and isinstance(df_sim, pd.DataFrame) and not df_sim.empt
 
         with col1:
             buffer1 = regression_plot(
-                x="misinformation_exposure",
-                y="care_seeking_behavior",
+                x="Misinformation Exposure",
+                y="Care Seeking Behavior",
                 data=df_sim,
                 xlabel="Misinformation Exposure",
                 ylabel="Care Seeking Behavior",
@@ -1402,8 +1408,8 @@ if 'df_sim' in locals() and isinstance(df_sim, pd.DataFrame) and not df_sim.empt
 
         with col2:
             buffer2 = regression_plot(
-                x="symptom_severity",
-                y="care_seeking_behavior",
+                x="Symptom Severity",
+                y="Care Seeking Behavior",
                 data=df_sim,
                 xlabel="Symptom Severity",
                 ylabel="Care Seeking Behavior",
@@ -1447,6 +1453,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
