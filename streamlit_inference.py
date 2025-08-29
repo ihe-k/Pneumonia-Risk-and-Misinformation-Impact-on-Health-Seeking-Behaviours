@@ -1089,18 +1089,27 @@ class Clinician(Agent):
                 
 # Define the MisinformationModel
 class MisinformationModel(Model):
-    def __init__(self, num_patients, num_clinicians, width, height, misinformation_exposure):
-        super().__init__()
-        self.grid = MultiGrid(width, height, torus=True)
-        self.schedule = RandomActivation(self)
-        self.datacollector = DataCollector(
-            agent_reporters={
-                "Symptom Severity": "symptom_severity",
-                "Care Seeking Behavior": "care_seeking_behavior",
-                "Trust in Clinician": "trust_in_clinician",
-                "Misinformation Exposure": "misinformation_exposure"
-            }
-        )
+    #def __init__(self, num_patients, num_clinicians, width, height, misinformation_exposure):
+    def __init__(self, num_agents, num_clinicians, *args):
+        self.num_agents = num_agents
+        self.num_clinicians = num_clinicians
+        self.agents = [Agent() for _ in range(num_agents)]
+        
+        #super().__init__()
+    def step(self):
+        for agent in self.agents:
+            agent.update_state()
+            
+     #   self.grid = MultiGrid(width, height, torus=True)
+     #   self.schedule = RandomActivation(self)
+     #   self.datacollector = DataCollector(
+      #      agent_reporters={
+      #          "Symptom Severity": "symptom_severity",
+      #          "Care Seeking Behavior": "care_seeking_behavior",
+      #          "Trust in Clinician": "trust_in_clinician",
+      #          "Misinformation Exposure": "misinformation_exposure"
+      #      }
+    #    )
     def step(self):
         self.datacollector.collect(self)
         self.schedule.step()
@@ -1311,7 +1320,9 @@ if st.sidebar.button("Run Regression Analysis", key="run_regression"):
     model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinfo_exposure)
     for _ in range(30):
         model.step()
-
+        print(f"Step {i+1}:")
+        print(model.get_agent_vars_dataframe().head())
+    
     # Get the simulation data as a DataFrame
     df_sim = model.get_agent_vars_dataframe().reset_index(drop=True)
 
@@ -1396,6 +1407,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
