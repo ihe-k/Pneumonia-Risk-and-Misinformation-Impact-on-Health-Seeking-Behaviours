@@ -1325,17 +1325,40 @@ def display_simulation_results(df):
 
 # Define the regression plot function
 def regression_plot(x, y, data, xlabel, ylabel, title):
-    plt.figure(figsize=(8, 6))
-    sns.regplot(x=x, y=y, data=data, scatter_kws={'s': 50}, line_kws={'color': 'red'})
-    plt.title(title)
-    plt.xlabel(xlabel)
-    plt.ylabel(ylabel)
-
-    # Save plot to a BytesIO buffer
+    import io
+    import matplotlib.pyplot as plt
+    import seaborn as sns
     buf = io.BytesIO()
-    plt.savefig(buf, format="png")
-    buf.seek(0)
-    plt.close()  # Close the plot to free up memory
+    try:
+        plt.figure(figsize=(8, 6))
+        sns.regplot(x=x, y=y, data=data, scatter_kws={'s': 50}, line_kws={'color': 'red'})
+        plt.title(title)
+        plt.xlabel(xlabel)
+        plt.ylabel(ylabel)
+        plt.tight_layout()
+        plt.savefig(buf, format='png')
+        plt.close()
+        buf.seek(0)
+        return buf
+    except Exception as e:
+        plt.close()
+        # Log or print the exception if needed
+        return None
+
+# Usage with check
+buffer1 = regression_plot(
+    x="Misinformation Exposure",
+    y="Care Seeking Behavior",
+    data=df_plot,
+    xlabel="Misinformation Exposure",
+    ylabel="Care Seeking Behavior",
+    title="Misinformation vs Care-Seeking Behavior"
+)
+
+if buffer1:
+    st.image(buffer1)
+else:
+    st.warning("Failed to generate the plot for Misinformation vs Care-Seeking Behavior.")
 
 if st.sidebar.button("Run Regression Analysis", key="run_regression"):
   #  if simulate_button:
@@ -1442,6 +1465,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
