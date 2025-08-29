@@ -1416,6 +1416,21 @@ class ClinicianAgent(Agent):
         pass
 
 # === Running the Simulation ===
+simulate_button = st.sidebar.button("Run Simulation")
+
+if simulate_button:
+    model = MisinformationModel(
+        num_agents=num_agents,
+        num_clinicians=num_clinicians,
+        width=10,
+        height=10,
+        misinformation_exposure=misinformation_exposure
+    )
+    for _ in range(30):
+        model.step()
+    df = model.get_agent_vars_dataframe()
+    st.write("Relationship Analysis")
+
 if simulate_button:
     st.session_state.simulation_run = True
 
@@ -1563,7 +1578,7 @@ if st.sidebar.button("Run Simulation and Regression Analysis", key="run_regressi
         model = MisinformationModel(
             num_patients=st.session_state['num_agents'],
             #num_patients=num_patients,
-            num_clinicians=st.session_state['num_clinicians'],   # or another control if you want
+            num_clinicians=st.session_state['num_clinicians'],   
             misinformation_exposure=st.session_state['misinformation_exposure'],
             width=10,
             height=10,
@@ -1686,6 +1701,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
