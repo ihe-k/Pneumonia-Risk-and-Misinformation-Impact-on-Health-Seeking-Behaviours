@@ -1425,7 +1425,7 @@ if 'df_sim' in st.session_state:
 # Your simulation and plotting logic
 if 'df_sim' in locals() and isinstance(df_sim, pd.DataFrame) and not df_sim.empty:
     if len(df_sim) > 10:
-        st.markdown("### 🎯 2D Relationship Analysis")
+        st.markdown("### 🎯 Relationship Analysis")
         col1, col2 = st.columns(2)
 
         with col1:
@@ -1464,9 +1464,9 @@ st.dataframe(df_sim)
 display_simulation_results(df_sim)
 
 # Summary stats table
-    st.markdown("### 📋 Simulation Summary Statistics")
-    summary_stats = df_sim[["Symptom Severity", "Care Seeking Behavior", "Trust in Clinician", "Misinformation Exposure"]].describe()
-    st.dataframe(summary_stats.round(3))
+st.markdown("### 📋 Simulation Summary Statistics")
+summary_stats = df_sim[["Symptom Severity", "Care Seeking Behavior", "Trust in Clinician", "Misinformation Exposure"]].describe()
+st.dataframe(summary_stats.round(3))
 
 else:
     st.info("Please run the simulation")
@@ -1488,6 +1488,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
