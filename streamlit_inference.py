@@ -1374,16 +1374,16 @@ if st.sidebar.button("Run Simulation and Regression Analysis", key="run_regressi
         )
         for _ in range(30):
             model.step()
-        #df = model.datacollector.get_agent_vars_dataframe()
-        #st.session_state['simulation_results'] = df
-        #st.success("Simulation completed!")
+        df = model.datacollector.get_agent_vars_dataframe()
+        st.session_state['simulation_results'] = df
+        st.success("Simulation completed!")
     except Exception as e:
         st.error(f"An error occurred: {e}")
 
     # Save results in session state
     if 'model' in locals():
         df_sim = model.datacollector.get_agent_vars_dataframe()
-        st.session_state['df_sim'] = df_sim
+        st.session_state['simulation_results'] = df_sim
 
         st.success("Simulation completed!")
     else:
@@ -1490,6 +1490,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
