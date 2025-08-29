@@ -1409,8 +1409,12 @@ def generate_simulation_data(num_agents, num_clinicians, misinfo_exposure):
     
     # Get the data from the simulation
     df_sim = model.get_agent_vars_dataframe()
-    df_sim.index = df_sim.index + 1  # Adjust index to start from 1
-    return df_sim.reset_index()
+    
+    # Reset index and start from 1 (fixing the previous issue)
+    df_sim = df_sim.reset_index(drop=True)  # Reset the index without keeping the old index
+    df_sim.index = df_sim.index + 1  # Adjust the index to start at 1
+
+    return df_sim
 
 # **Visualization 1: 2D Scatter Plots for Relationships**
 def scatter_plots_2d(df_reset):
@@ -1493,6 +1497,7 @@ if __name__ == "__main__":
     display_simulation_results()
 
 
+
 # =======================
 # FOOTER
 # =======================
@@ -1508,6 +1513,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
