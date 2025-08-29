@@ -1311,7 +1311,7 @@ import seaborn as sns
 import numpy as np
 import statsmodels.api as sm
 import os
-import random  # Import random module for generating random values
+import random
 from mesa import Agent, Model
 from mesa.time import RandomActivation
 from mesa.space import MultiGrid
@@ -1382,11 +1382,10 @@ class ClinicianAgent(Agent):
         super().__init__(unique_id, model)
         self.trust_in_clinician = random.uniform(0, 1)
 
-# === Simulation Data Generation ===
-@st.cache_data  # Cache non-stepped simulation data to make it static
+# === Simulation Data Generation (No Caching for Steps) ===
 def generate_non_stepped_simulation_data(num_agents, num_clinicians, misinfo_exposure):
     model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinfo_exposure)
-    for _ in range(30):
+    for _ in range(30):  # Run 30 steps of the simulation
         model.step()
     df_sim = model.get_agent_vars_dataframe()
     df_sim = df_sim.reset_index(drop=True)  # Reset the index without keeping the old index
@@ -1443,10 +1442,7 @@ def regression_plot(x, y, data, xlabel, ylabel, title):
 
 # **Main App Logic**
 def display_simulation_results():
-    # Get the non-stepped simulation data (cached)
-    df_S = generate_non_stepped_simulation_data(100, 5, 0.3)  # Static data with 100 patients, 5 clinicians, 0.3 misinformation exposure
-    
-    # **Top Row: Dynamic Scatter Plots** 
+    # **Top Row: Dynamic Scatter Plots**
     # Re-run simulation with updated parameters
     model = MisinformationModel(num_agents_stepped, num_clinicians_stepped, 10, 10, misinfo_exposure_stepped)
     for _ in range(30):
@@ -1456,11 +1452,9 @@ def display_simulation_results():
     # Create scatter plots dynamically for updated simulation data
     fig1, fig2 = scatter_plots_2d(df_dynamic)
 
-    # Display Non-Stepped Simulation Data Table
-    st.write("### 📊 Non-Stepped Simulation Results")
-    st.dataframe(df_S[['Symptom Severity', 'Care Seeking Behavior', 'Trust in Clinician', 'Misinformation Exposure', 'Age', 'Location']].round(3))
+    # **Bottom Row: Cached Regression Plots**
+    df_S = generate_non_stepped_simulation_data(100, 5, 0.3)  # Static data with 100 patients, 5 clinicians, 0.3 misinformation exposure
 
-    # Top row: 2D Relationship Analysis (Symptoms vs Care-Seeking and Trust vs Care-Seeking)
     col1, col2 = st.columns([1, 1])
 
     with col1:
@@ -1471,7 +1465,7 @@ def display_simulation_results():
         st.write("#### Dynamic Simulation: Trust vs Care-Seeking")
         st.pyplot(fig2)
 
-    # **Bottom Row: Cached Regression Plots**
+    # Bottom row: Logistic Regression (Cached)
     col1, col2 = st.columns([1, 1])
 
     with col1:
@@ -1488,7 +1482,6 @@ def display_simulation_results():
 if __name__ == "__main__":
     display_simulation_results()
 
-
 # =======================
 # FOOTER
 # =======================
@@ -1504,6 +1497,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
