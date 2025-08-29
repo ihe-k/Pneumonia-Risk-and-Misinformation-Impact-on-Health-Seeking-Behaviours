@@ -1295,12 +1295,13 @@ def display_simulation_results(df):
     for col in numeric_columns:
         if col in df.columns:
             df_sim[col] = df_sim[col].round(3)
-    st.dataframe(df.style.format({
-        "Symptom Severity": "{:.3f}",
-        "Care Seeking Behavior": "{:.3f}",
-        "Misinformation Exposure": "{:.3f}",
-        "Trust in Clinician": "{:.3f}"
-    }))
+ 
+#    st.dataframe(df.style.format({
+#        "Symptom Severity": "{:.3f}",
+#        "Care Seeking Behavior": "{:.3f}",
+#        "Misinformation Exposure": "{:.3f}",
+#        "Trust in Clinician": "{:.3f}"
+#    }))
 
 if st.sidebar.button("Run Regression Analysis", key="run_regression"):
   #  if simulate_button:
@@ -1345,8 +1346,8 @@ if st.sidebar.button("Run Regression Analysis", key="run_regression"):
 
         with col1:
             buffer1 = regression_plot(
-                x="Misinformation Exposure",
-                y="Care Seeking Behavior",
+                x="misinformation_exposure",
+                y="care_seeking_behavior",
                 data=df_sim,
                 xlabel="Misinformation Exposure",
                 ylabel="Care Seeking Behavior",
@@ -1356,8 +1357,8 @@ if st.sidebar.button("Run Regression Analysis", key="run_regression"):
 
         with col2:
             buffer2 = regression_plot(
-                x="Symptom Severity",
-                y="Care Seeking Behavior",
+                x="symptom_severity",
+                y="care_seeking_behavior",
                 data=df_sim,
                 xlabel="Symptom Severity",
                 ylabel="Care Seeking Behavior",
@@ -1369,7 +1370,7 @@ if st.sidebar.button("Run Regression Analysis", key="run_regression"):
 
     # Summary stats table
     st.markdown("### 📋 Simulation Summary Statistics")
-    summary_stats = df_sim[["Symptom Severity", "Care Seeking Behavior", "Trust in Clinician", "Misinformation Exposure"]].describe()
+    summary_stats = df_sim[["symptom_severity", "care_seeking_behavior", "trust_in_clinician", "misinformation_exposure"]].describe()
     st.dataframe(summary_stats.round(3))
 
 else:
@@ -1391,6 +1392,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
