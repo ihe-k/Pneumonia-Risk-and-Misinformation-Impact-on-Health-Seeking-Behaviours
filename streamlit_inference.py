@@ -1346,11 +1346,8 @@ if st.sidebar.button("Run Regression Analysis", key="run_regression"):
     # Reset index to start at 1 (optional)
     df_sim.index = df_sim.index + 1
 
-# Ensure columns are numeric
-df_sim['misinformation_exposure'] = pd.to_numeric(df_sim['misinformation_exposure'], errors='coerce')
-df_sim['care_seeking_behavior'] = pd.to_numeric(df_sim['care_seeking_behavior'], errors='coerce')
 # Drop NaNs to avoid errors
-df_plot = df_sim.dropna(subset=['misinformation_exposure', 'care_seeking_behavior'])
+df_plot = df_sim.dropna(subset=['misinformation_exposure', 'care_seeking_behavior', 'symptom_severity', 'age','location','trust_in_clinican'])
 
 # Plot
 buffer1 = regression_plot(
@@ -1450,6 +1447,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
