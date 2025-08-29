@@ -1411,13 +1411,35 @@ if simulate_button:
     # Collect simulation data
     df_sim = model.get_agent_vars_dataframe()
 
-    # Display simulation results
-    st.write("### 📈 Simulation Results & Analysis")
-
     # Reset index for easier plotting
     df_reset = df_sim.reset_index()
 
-    # Visualization 1: 2D Scatter Plots for Relationships
+    # Display simulation data as table
+    st.markdown("### 📋 Simulation Data Table")
+    st.dataframe(df_reset.round(3))
+
+    # Visualization 1: Scatter Plot (Impact of Misinformation & Trust on Care-Seeking)
+    col1, col2 = st.columns(2)
+
+    with col1:
+        fig1, ax1 = plt.subplots(figsize=(8, 6))
+        sns.scatterplot(
+            data=df_reset,
+            x="Symptom Severity",
+            y="Care Seeking Behavior",
+            hue="Trust in Clinician",
+            size="Misinformation Exposure",
+            alpha=0.7,
+            ax=ax1,
+            palette="coolwarm",
+            sizes=(20, 200)
+        )
+        ax1.set_title("Impact of Misinformation & Trust on Care-Seeking")
+        ax1.set_xlabel("Symptom Severity")
+        ax1.set_ylabel("Care Seeking Behavior")
+        st.pyplot(fig1)
+
+    # Visualization 2: 2D Scatter Plots for Relationships
     if len(df_reset) > 10:
         st.markdown("### 🎯 2D Relationship Analysis")
         fig3, (ax3a, ax3b) = plt.subplots(1, 2, figsize=(15, 6))
@@ -1445,72 +1467,9 @@ if simulate_button:
         plt.tight_layout()
         st.pyplot(fig3)
 
-    # Visualization 2: Regression Plots for Significance
-    if len(df_reset) > 10:
-        st.markdown("### 📊 Regression Analysis")
-
-        # Regression 1: Symptom Severity vs Care Seeking Behavior
-        st.markdown("#### Symptoms vs Care-Seeking Behavior")
-        buffer1 = regression_plot(
-            x="Symptom Severity",
-            y="Care Seeking Behavior",
-            data=df_reset,
-            xlabel="Symptom Severity",
-            ylabel="Care Seeking Behavior",
-            title="Symptoms vs Care-Seeking Behavior"
-        )
-        st.image(buffer1)
-
-        # Regression 2: Trust vs Care Seeking Behavior
-        st.markdown("#### Trust vs Care-Seeking Behavior")
-        buffer2 = regression_plot(
-            x="Trust in Clinician",
-            y="Care Seeking Behavior",
-            data=df_reset,
-            xlabel="Trust in Clinician",
-            ylabel="Care Seeking Behavior",
-            title="Trust vs Care-Seeking Behavior"
-        )
-        st.image(buffer2)
-
-    # Simulation Summary Statistics Table
-    st.markdown("### 📋 Simulation Summary Statistics")
-    summary_stats = df_reset[["Symptom Severity", "Care Seeking Behavior", "Trust in Clinician", "Misinformation Exposure"]].describe()
-    st.dataframe(summary_stats.round(3))
-
 else:
     # Show placeholder when simulation hasn't been run
     st.info("👆 Use the sidebar controls above to configure and run the agent-based simulation.")
-
-# === Regression Plot with Data Cleaning ===
-def regression_plot(x, y, data, xlabel, ylabel, title):
-    # Replace NaN and Inf values with the mean of the respective columns
-    data_cleaned = data.copy()
-    
-    # Replace NaN and infinite values with the mean of the respective columns
-    data_cleaned[x] = data_cleaned[x].replace([np.inf, -np.inf], np.nan).fillna(data_cleaned[x].mean())
-    data_cleaned[y] = data_cleaned[y].replace([np.inf, -np.inf], np.nan).fillna(data_cleaned[y].mean())
-    
-    # Linear regression model
-    X = sm.add_constant(data_cleaned[x])  # Add constant term (intercept)
-    model = sm.OLS(data_cleaned[y], X).fit()
-    r_squared = model.rsquared
-    p_value = model.pvalues[1]
-
-    # Plot
-    fig, ax = plt.subplots(figsize=(6, 4))
-    sns.regplot(x=x, y=y, data=data_cleaned, ax=ax, scatter_kws={'alpha': 0.6}, line_kws={'color': 'red'})
-    ax.set_title(f"{title}\nR² = {r_squared:.3f}, p = {p_value:.3f}")
-    ax.set_xlabel(xlabel)
-    ax.set_ylabel(ylabel)
-
-    # Save to buffer
-    buffer = BytesIO()
-    fig.tight_layout()
-    fig.savefig(buffer, format='png')
-    buffer.seek(0)
-    plt.close(fig)
-    return buffer
 
 # =======================
 # FOOTER
@@ -1527,6 +1486,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
