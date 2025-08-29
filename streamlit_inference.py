@@ -1483,30 +1483,32 @@ def display_simulation_results():
     st.write("### 📈 Stepped Simulation Results")
     st.dataframe(df_A.round(3))
 
-    # Create layout for the top row (2D scatter and logistic regression for Stepped Simulation)
+    # Create layout for the top row (2D scatter for Stepped Simulation)
     col1, col2 = st.columns([1, 1])
-    
+
     with col1:
-        st.write("#### 2D Relationship Analysis for Stepped Simulation")
+        st.write("#### 2D Relationship Analysis for Stepped Simulation (1)")
         st.pyplot(scatter_plots_2d(df_A))  # Display the 2D relationship analysis
 
     with col2:
-        st.write("#### Logistic Regression: Symptoms vs Care-Seeking (Stepped Simulation)")
-        st.pyplot(regression_plot("Symptom Severity", "Care Seeking Behavior", df_A, "Symptom Severity", "Care Seeking Behavior", "Symptoms vs Care-Seeking Behavior (Stepped Simulation)"))
+        st.write("#### 2D Relationship Analysis for Stepped Simulation (2)")
+        st.pyplot(scatter_plots_2d(df_A))  # Same graph on the right side
 
-    # Create layout for the second row (Logistic Regression for Non-Stepped Simulation)
+    # Create layout for the bottom row (Logistic Regression for Non-Stepped and Stepped Simulation)
     col1, col2 = st.columns([1, 1])
 
     with col1:
         st.write("#### Logistic Regression: Symptoms vs Care-Seeking (Non-Stepped Simulation)")
         st.pyplot(regression_plot("Symptom Severity", "Care Seeking Behavior", df_A, "Symptom Severity", "Care Seeking Behavior", "Symptoms vs Care-Seeking Behavior (Non-Stepped Simulation)"))
 
-    # Ensure proper spacing for the second row by keeping a small gap
-    st.write("")
+    with col2:
+        st.write("#### Logistic Regression: Symptoms vs Care-Seeking (Stepped Simulation)")
+        st.pyplot(regression_plot("Symptom Severity", "Care Seeking Behavior", df_A, "Symptom Severity", "Care Seeking Behavior", "Symptoms vs Care-Seeking Behavior (Stepped Simulation)"))
 
 # Running the display function
 if __name__ == "__main__":
     display_simulation_results()
+
 
 
 # =======================
@@ -1524,6 +1526,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
