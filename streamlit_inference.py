@@ -1480,34 +1480,22 @@ def regression_plot(x, y, data, xlabel, ylabel, title):
 def display_simulation_results():
     # Generate Stepped Simulation data
     df_A = generate_stepped_simulation_data(num_agents, num_clinicians, misinfo_exposure)
-    st.write("### 📈 Stepped Simulation Results")
+    st.write("### 📈 Agent-based Misinformation Simulation")
+    
+    # First Table: Non-Stepped Simulation Results (Table with first column starting at 1)
+    st.write("### Non-Stepped Simulation Results")
+    df_A.index += 1  # Start the index at 1
     st.dataframe(df_A.round(3))
-
+    
     # Create layout for the top row (2D scatter for Stepped Simulation)
     col1, col2 = st.columns([1, 1])
 
     with col1:
-        st.write("#### 2D Relationship Analysis for Stepped Simulation (1)")
-        st.pyplot(scatter_plots_2d(df_A))  # Display the 2D relationship analysis
+        st.write("#### 2D Relationship Analysis for Stepped Simulation: Symptoms vs Care-Seeking")
+        st.pyplot(scatter_plots_2d(df_A))  # Display the Symptoms vs Care-Seeking plot
 
     with col2:
-        st.write("#### 2D Relationship Analysis for Stepped Simulation (2)")
-        st.pyplot(scatter_plots_2d(df_A))  # Same graph on the right side
-
-    # Create layout for the bottom row (Logistic Regression for Non-Stepped and Stepped Simulation)
-    col1, col2 = st.columns([1, 1])
-
-    with col1:
-        st.write("#### Logistic Regression: Symptoms vs Care-Seeking (Non-Stepped Simulation)")
-        st.pyplot(regression_plot("Symptom Severity", "Care Seeking Behavior", df_A, "Symptom Severity", "Care Seeking Behavior", "Symptoms vs Care-Seeking Behavior (Non-Stepped Simulation)"))
-
-    with col2:
-        st.write("#### Logistic Regression: Symptoms vs Care-Seeking (Stepped Simulation)")
-        st.pyplot(regression_plot("Symptom Severity", "Care Seeking Behavior", df_A, "Symptom Severity", "Care Seeking Behavior", "Symptoms vs Care-Seeking Behavior (Stepped Simulation)"))
-
-# Running the display function
-if __name__ == "__main__":
-    display_simulation_results()
+        st.write("#### 2D Relationship Analysis for Stepped Simulation: Trust
 
 
 
@@ -1526,6 +1514,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
