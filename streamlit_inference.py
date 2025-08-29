@@ -1332,11 +1332,6 @@ def display_simulation_results(df):
         "trust_in_clinician": "{:.3f}"
     }))
 
-import io
-import matplotlib.pyplot as plt
-import seaborn as sns
-import streamlit as st
-
 def regression_plot(x, y, data, xlabel, ylabel, title):
     buf = io.BytesIO()
     try:
@@ -1437,7 +1432,7 @@ if 'df_sim' in locals() and isinstance(df_sim, pd.DataFrame) and not df_sim.empt
             buffer1 = regression_plot(
                 x="Misinformation Exposure",
                 y="Care Seeking Behavior",
-                data=df_sim,
+                data=df,
                 xlabel="Misinformation Exposure",
                 ylabel="Care Seeking Behavior",
                 title="Misinformation vs Care-Seeking Behavior"
@@ -1448,7 +1443,7 @@ if 'df_sim' in locals() and isinstance(df_sim, pd.DataFrame) and not df_sim.empt
             buffer2 = regression_plot(
                 x="Symptom Severity",
                 y="Care Seeking Behavior",
-                data=df_sim,
+                data=df,
                 xlabel="Symptom Severity",
                 ylabel="Care Seeking Behavior",
                 title="Symptom Severity vs Care-Seeking Behavior"
@@ -1493,6 +1488,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
