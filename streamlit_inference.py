@@ -1408,30 +1408,29 @@ def generate_simulation_data(num_agents, num_clinicians, misinfo_exposure):
 
 # **Visualization 1: 2D Scatter Plots for Relationships**
 def scatter_plots_2d(df_reset):
-    fig, (ax3a, ax3b) = plt.subplots(1, 2, figsize=(14, 6))  # Adjusted size for better view
-
-    # Symptoms vs Care-Seeking
-    scatter1 = ax3a.scatter(df_reset['Symptom Severity'],
+    # Symptoms vs Care-Seeking (Left plot)
+    fig1, ax1 = plt.subplots(figsize=(6, 4))
+    scatter1 = ax1.scatter(df_reset['Symptom Severity'],
                             df_reset['Care Seeking Behavior'],
                             c=df_reset['Misinformation Exposure'],
                             cmap='viridis', alpha=0.6, s=50)
-    ax3a.set_xlabel('Symptom Severity')
-    ax3a.set_ylabel('Care Seeking Behavior')
-    ax3a.set_title('Symptoms vs Care-Seeking\n(Color = Misinformation Level)')
-    plt.colorbar(scatter1, ax=ax3a, label='Misinformation Exposure', shrink=0.8)
+    ax1.set_xlabel('Symptom Severity')
+    ax1.set_ylabel('Care Seeking Behavior')
+    ax1.set_title('Symptoms vs Care-Seeking\n(Color = Misinformation Level)')
+    plt.colorbar(scatter1, ax=ax1, label='Misinformation Exposure', shrink=0.8)
 
-    # Trust vs Care-Seeking
-    scatter2 = ax3b.scatter(df_reset['Trust in Clinician'],
+    # Trust vs Care-Seeking (Right plot)
+    fig2, ax2 = plt.subplots(figsize=(6, 4))
+    scatter2 = ax2.scatter(df_reset['Trust in Clinician'],
                             df_reset['Care Seeking Behavior'],
                             c=df_reset['Misinformation Exposure'],
                             cmap='viridis', alpha=0.6, s=50)
-    ax3b.set_xlabel('Trust in Clinician')
-    ax3b.set_ylabel('Care Seeking Behavior')
-    ax3b.set_title('Trust vs Care-Seeking\n(Color = Misinformation Level)')
-    plt.colorbar(scatter2, ax=ax3b, label='Misinformation Exposure', shrink=0.8)
+    ax2.set_xlabel('Trust in Clinician')
+    ax2.set_ylabel('Care Seeking Behavior')
+    ax2.set_title('Trust vs Care-Seeking\n(Color = Misinformation Level)')
+    plt.colorbar(scatter2, ax=ax2, label='Misinformation Exposure', shrink=0.8)
 
-    plt.tight_layout()
-    return fig
+    return fig1, fig2
 
 # **Regression Plot (Logistic Regression)**
 def regression_plot(x, y, data, xlabel, ylabel, title):
@@ -1463,16 +1462,18 @@ def display_simulation_results():
     st.write("### 📊 Non-Stepped Simulation Results")
     st.dataframe(df_S.round(3))
 
-    # Top row: 2D Relationship Analysis (Split Symptoms vs Care-Seeking and Trust vs Care-Seeking)
+    # Top row: 2D Relationship Analysis (Symptoms vs Care-Seeking and Trust vs Care-Seeking)
     col1, col2 = st.columns([1, 1])
 
     with col1:
         st.write("#### Symptoms vs Care-Seeking")
-        st.pyplot(scatter_plots_2d(df_S)[0])  # Left side
+        fig1, _ = scatter_plots_2d(df_S)  # Left plot
+        st.pyplot(fig1)
 
     with col2:
         st.write("#### Trust vs Care-Seeking")
-        st.pyplot(scatter_plots_2d(df_S)[1])  # Right side
+        _, fig2 = scatter_plots_2d(df_S)  # Right plot
+        st.pyplot(fig2)
 
     # Bottom row: Logistic Regression Plots
     col1, col2 = st.columns([1, 1])
@@ -1500,6 +1501,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
