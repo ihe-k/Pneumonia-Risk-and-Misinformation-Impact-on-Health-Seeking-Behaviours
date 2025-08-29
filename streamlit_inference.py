@@ -1304,44 +1304,6 @@ class MisinformationModel(Model):
 #    st.info("👈 Use the sidebar controls above to configure and run an agent-based simulation and a regression analysis.")
 
 ###
-# Drop rows with NaN or infinite values in the relevant columns
-df_sim_clean = df_sim[['Symptom Severity', 'Care Seeking Behavior', 'Misinformation Exposure', 'Trust in Clinician']]
-df_sim_clean = df_sim_clean.replace([np.inf, -np.inf], np.nan)  # Replace infinities with NaN
-df_sim_clean = df_sim_clean.dropna()  # Drop rows with NaN values
-
-# Check if the DataFrame is empty after cleaning
-if df_sim_clean.empty:
-    st.error("The data has too many missing or invalid values to run the regression.")
-else:
-    # Now proceed with the regression plot
-    st.markdown("### 🎯 Relationship Analysis")
-    col1, col2 = st.columns(2)
-
-    with col1:
-        buffer1 = regression_plot(
-            x="Misinformation Exposure",
-            y="Care Seeking Behavior",
-            data=df_sim_clean,
-            xlabel="Misinformation Exposure",
-            ylabel="Care Seeking Behavior",
-            title="Misinformation vs Care-Seeking Behavior"
-        )
-        if buffer1:
-            st.image(buffer1)
-
-    with col2:
-        buffer2 = regression_plot(
-            x="Symptom Severity",
-            y="Care Seeking Behavior",
-            data=df_sim_clean,
-            xlabel="Symptom Severity",
-            ylabel="Care Seeking Behavior",
-            title="Symptom Severity vs Care-Seeking Behavior"
-        )
-        if buffer2:
-            st.image(buffer2)
-
-##
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -1354,6 +1316,7 @@ from mesa.datacollection import DataCollector
 from mesa.agent import Agent
 import random
 import io
+import numpy as np
 
 # --- Simulation Model ---
 class MisinformationModel(Model):
@@ -1524,81 +1487,91 @@ if simulate_button:
 # --- Display Results After Simulation ---
 if 'simulation_run' in st.session_state and st.session_state['simulation_run']:
     df_sim = st.session_state['df_sim']
-    df_sim_clean = df_sim.dropna(subset=['Symptom Severity', 'Care Seeking Behavior', 'Misinformation Exposure', 'Trust in Clinician'])
+    
+    # Ensure data exists and is valid
+    if df_sim is not None and not df_sim.empty:
+        # Drop rows with NaN or infinite values in the relevant columns
+        df_sim_clean = df_sim[['Symptom Severity', 'Care Seeking Behavior', 'Misinformation Exposure', 'Trust in Clinician']]
 
-    # Relationship Analysis (Regression Plots)
-    st.markdown("### 🎯 Relationship Analysis")
-    col1, col2 = st.columns(2)
+        # Replace infinities with NaN, and drop rows with NaN values
+        df_sim_clean = df_sim_clean.replace([np.inf, -np.inf], np.nan)
+        df_sim_clean = df_sim_clean.dropna()  # Drop rows with NaN values
 
-    with col1:
-        buffer1 = regression_plot(
-            x="Misinformation Exposure",
-            y="Care Seeking Behavior",
-            data=df_sim_clean,
-            xlabel="Misinformation Exposure",
-            ylabel="Care Seeking Behavior",
-            title="Misinformation vs Care-Seeking Behavior"
-        )
-        if buffer1:
-            st.image(buffer1)
+        # Relationship Analysis (Regression Plots)
+        st.markdown("### 🎯 Relationship Analysis")
+        col1, col2 = st.columns(2)
 
-    with col2:
-        buffer2 = regression_plot(
-            x="Symptom Severity",
-            y="Care Seeking Behavior",
-            data=df_sim_clean,
-            xlabel="Symptom Severity",
-            ylabel="Care Seeking Behavior",
-            title="Symptom Severity vs Care-Seeking Behavior"
-        )
-        if buffer2:
-            st.image(buffer2)
+        with col1:
+            buffer1 = regression_plot(
+                x="Misinformation Exposure",
+                y="Care Seeking Behavior",
+                data=df_sim_clean,
+                xlabel="Misinformation Exposure",
+                ylabel="Care Seeking Behavior",
+                title="Misinformation vs Care-Seeking Behavior"
+            )
+            if buffer1:
+                st.image(buffer1)
 
-    # Logistic Regression Plots
-    st.markdown("### 🧑‍🔬 Logistic Regression Analysis")
-    col3, col4, col5 = st.columns(3)
+        with col2:
+            buffer2 = regression_plot(
+                x="Symptom Severity",
+                y="Care Seeking Behavior",
+                data=df_sim_clean,
+                xlabel="Symptom Severity",
+                ylabel="Care Seeking Behavior",
+                title="Symptom Severity vs Care-Seeking Behavior"
+            )
+            if buffer2:
+                st.image(buffer2)
 
-    with col3:
-        buffer3 = logistic_regression_plot(
-            x="Misinformation Exposure",
-            y="Care Seeking Behavior",
-            data=df_sim_clean,
-            xlabel="Misinformation Exposure",
-            ylabel="Care Seeking Behavior",
-            title="Logistic Misinformation vs Care-Seeking"
-        )
-        if buffer3:
-            st.image(buffer3)
+        # Logistic Regression Plots
+        st.markdown("### 🧑‍🔬 Logistic Regression Analysis")
+        col3, col4, col5 = st.columns(3)
 
-    with col4:
-        buffer4 = logistic_regression_plot(
-            x="Symptom Severity",
-            y="Care Seeking Behavior",
-            data=df_sim_clean,
-            xlabel="Symptom Severity",
-            ylabel="Care Seeking Behavior",
-            title="Logistic Symptom Severity vs Care-Seeking"
-        )
-        if buffer4:
-            st.image(buffer4)
+        with col3:
+            buffer3 = logistic_regression_plot(
+                x="Misinformation Exposure",
+                y="Care Seeking Behavior",
+                data=df_sim_clean,
+                xlabel="Misinformation Exposure",
+                ylabel="Care Seeking Behavior",
+                title="Logistic Misinformation vs Care-Seeking"
+            )
+            if buffer3:
+                st.image(buffer3)
 
-    with col5:
-        buffer5 = logistic_regression_plot(
-            x="Misinformation Exposure",
-            y="Trust in Clinician",
-            data=df_sim_clean,
-            xlabel="Misinformation Exposure",
-            ylabel="Trust in Clinician",
-            title="Logistic Misinformation vs Trust"
-        )
-        if buffer5:
-            st.image(buffer5)
+        with col4:
+            buffer4 = logistic_regression_plot(
+                x="Symptom Severity",
+                y="Care Seeking Behavior",
+                data=df_sim_clean,
+                xlabel="Symptom Severity",
+                ylabel="Care Seeking Behavior",
+                title="Logistic Symptom Severity vs Care-Seeking"
+            )
+            if buffer4:
+                st.image(buffer4)
 
-    # Summary Statistics
-    st.markdown("### 📋 Simulation Summary Statistics")
-    summary_stats = df_sim_clean.describe()
-    st.dataframe(summary_stats.round(3))
+        with col5:
+            buffer5 = logistic_regression_plot(
+                x="Misinformation Exposure",
+                y="Trust in Clinician",
+                data=df_sim_clean,
+                xlabel="Misinformation Exposure",
+                ylabel="Trust in Clinician",
+                title="Logistic Misinformation vs Trust"
+            )
+            if buffer5:
+                st.image(buffer5)
 
+        # Summary Statistics
+        st.markdown("### 📋 Simulation Summary Statistics")
+        summary_stats = df_sim_clean.describe()
+        st.dataframe(summary_stats.round(3))
+
+    else:
+        st.warning("No simulation data found. Please run the simulation.")
 else:
     st.info("Please run the simulation")
 
@@ -1617,6 +1590,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
