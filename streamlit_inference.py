@@ -1305,7 +1305,7 @@ class MisinformationModel(Model):
 
 ###
 
-Graphs
+# Graphs
 
 import streamlit as st
 import pandas as pd
@@ -1664,6 +1664,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
