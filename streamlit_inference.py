@@ -556,7 +556,7 @@ if False:
 
                 st.success("Simulation completed!")
             else:
-                st.error("Model was not initialized successfully.")
+                st.error("Model was not initialised successfully.")
 
 # ===============================
 # 6. HealthVer Dataset Evaluation (unchanged)
@@ -936,12 +936,12 @@ def run_simulation(num_agents):
     df.index = df.index + 1
     
     df = df.rename(columns={
-        'symptom_severity': 'Symptom Severity',
-        'care_seeking_behavior': 'Care Seeking Behavior',
-        'trust_in_clinician': 'Trust in Clinician',
-        'misinformation_exposure': 'Misinformation Exposure',
-        'age': 'Age',
-        'location': 'Location'
+        'Symptom Severity': 'symptom_severity',
+        'Care Seeking Behavior': 'care_seeking_behavior',
+        'Trust in Clinician': 'trust_in_clinician',
+        'Misinformation Exposure': 'misinformation_exposure',
+        'Age': 'age',
+        'Location': 'location'
     })
 
     return df
@@ -1322,10 +1322,10 @@ if st.sidebar.button("Run Regression Analysis", key="run_regression"):
     df_sim.index = df_sim.index + 1
 
     df_sim.rename(columns={
-    "symptom_severity": "Symptom Severity",
-    "care_seeking_behavior": "Care Seeking Behavior",
-    "trust_in_clinician": "Trust in Clinician",
-    "misinformation_exposure": "Misinformation Exposure"
+    "Symptom Severity": "symptom_severity",
+    "Care Seeking Behavior": "care_seeking_behavior",
+    "Trust in Clinician": "trust_in_clinician",
+    "Misinformation Exposure": "misinformation_exposure"
     }, inplace=True)
    
  
@@ -1391,6 +1391,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
