@@ -1304,18 +1304,14 @@ class MisinformationModel(Model):
 #    st.info("👈 Use the sidebar controls above to configure and run an agent-based simulation and a regression analysis.")
 
 ### Graph
+### Graph
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 import statsmodels.api as sm
-import random
 import os
-from mesa import Agent, Model
-from mesa.time import RandomActivation
-from mesa.space import MultiGrid
-from mesa.datacollection import DataCollector
 
 # === Simulation Setup ===
 # Sidebar Inputs for Stepped Simulation
@@ -1325,56 +1321,52 @@ num_clinicians_stepped = st.sidebar.slider("Number of Clinician Agents (Stepped)
 misinfo_exposure_stepped = st.sidebar.slider("Baseline Misinformation Exposure (Stepped)", 0.0, 1.0, 0.3, 0.05, key="S_misinfo")
 
 # === Simulation Model ===
-class MisinformationModel(Model):
+class MisinformationModel:
     def __init__(self, num_agents, num_clinicians, width, height, misinfo_exposure):
         self.num_agents = num_agents
         self.num_clinicians = num_clinicians
         self.width = width
         self.height = height
         self.misinfo_exposure = misinfo_exposure
-        self.grid = MultiGrid(width, height, True)  # Initialize the grid
-        self.schedule = RandomActivation(self)  # Initialize the schedule
-        self.create_agents()  # Create agents
+        self.grid = MultiGrid(width, height, True)
+        self.schedule = RandomActivation(self)
+        self.create_agents()
         self.datacollector = DataCollector(
             agent_reporters={
-                "Symptom Severity": "symptom_severity",
+                "Symptom Severity": "symptom_severity",  
                 "Care Seeking Behavior": "care_seeking_behavior",
                 "Trust in Clinician": "trust_in_clinician",
                 "Misinformation Exposure": "misinformation_exposure",
-                "Age": "age",
-                "Location": "location"
+                "Age": "age",  
+                "Location": "location"  
             }
         )
 
     def create_agents(self):
-        # Create patient agents
         for i in range(self.num_agents):
             a = PatientAgent(i, self)
             self.schedule.add(a)
-            x = random.randint(0, self.grid.width - 1)
-            y = random.randint(0, self.grid.height - 1)
+            x = self.random.randint(0, self.grid.width - 1)
+            y = self.random.randint(0, self.grid.height - 1)
             self.grid.place_agent(a, (x, y))
-
-        # Create clinician agents
         for i in range(self.num_clinicians):
             c = ClinicianAgent(i, self)
             self.schedule.add(c)
-            x = random.randint(0, self.grid.width - 1)
-            y = random.randint(0, self.grid.height - 1)
+            x = self.random.randint(0, self.grid.width - 1)
+            y = self.random.randint(0, self.grid.height - 1)
             self.grid.place_agent(c, (x, y))
 
     def step(self):
-        # Collect data and advance the model by one step
         self.datacollector.collect(self)
         self.schedule.step()
 
     def get_agent_vars_dataframe(self):
-        # Return collected data as dataframe
         return self.datacollector.get_agent_vars_dataframe()
 
-class PatientAgent(Agent):
+class PatientAgent:
     def __init__(self, unique_id, model):
-        super().__init__(unique_id, model)
+        self.unique_id = unique_id
+        self.model = model
         self.symptom_severity = random.uniform(0, 1)
         self.care_seeking_behavior = random.uniform(0, 1)
         self.trust_in_clinician = random.uniform(0, 1)
@@ -1382,9 +1374,10 @@ class PatientAgent(Agent):
         self.age = random.randint(18, 80)
         self.location = random.choice(['Urban', 'Rural'])
 
-class ClinicianAgent(Agent):
+class ClinicianAgent:
     def __init__(self, unique_id, model):
-        super().__init__(unique_id, model)
+        self.unique_id = unique_id
+        self.model = model
         self.trust_in_clinician = random.uniform(0, 1)
 
 # === Simulation Data Generation ===
@@ -1472,11 +1465,11 @@ def display_simulation_results():
     col1, col2 = st.columns([1, 1])
 
     with col1:
-        # st.write("#### Stepped Simulation: Symptoms vs Care-Seeking")
+     #   st.write("#### Stepped Simulation: Symptoms vs Care-Seeking")
         st.image(symptom_vs_care_seeking_img, use_container_width=True)
 
     with col2:
-        # st.write("#### Stepped Simulation: Trust vs Care-Seeking")
+      #  st.write("#### Stepped Simulation: Trust vs Care-Seeking")
         st.image(trust_vs_care_seeking_img, use_container_width=True)
 
     # Bottom row: Logistic Regression (Non-Stepped Simulation)
@@ -1488,12 +1481,10 @@ def display_simulation_results():
 
     with col2:
         st.write("#### Non-Stepped Simulation: Logistic Regression (Trust vs Care-Seeking)")
-        st.pyplot(regression_plot("Trust in Clinician", "Care Seeking Behavior", df_S, "Trust in Clinician", "Care Seeking Behavior", "Trust vs Care-Seeking Behavior"))
+        st.pyplot(regression_plot("Trust in Clinician", "Care Seeking Behavior", df_S, "Trust in Clinician", "Care Seeking Behavior", df_S, "Trust in Clinician", "Care Seeking Behavior", "Trust vs Care-Seeking Behavior"))
 
 # Run the simulation results display function
-display_simulation_results()
-
-
+    display_simulation_results()
 
 # =======================
 # FOOTER
@@ -1510,6 +1501,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
