@@ -1597,8 +1597,15 @@ class MisinformationModel(Model):
 #@st.cache_data
 def my_function():
   # Get the data from the simulation
-    df_sim2 = model.get_agent_vars_dataframe()
-    
+  #  global model
+    try:
+        df_sim2 = model.get_agent_vars_dataframe()
+        print(df_sim2.head())  # Example: print the first few rows
+    except AttributeError as e:
+        print(f"Error: {e}.  Ensure 'model' is defined and has a 'get_agent_vars_dataframe' method.")
+    except Exception as e:
+    print(f"An unexpected error occurred: {e}")    
+   
     # Reset index and start from 1 (fixing the previous issue)
     df_sim2 = df_sim.reset_index(drop=True)  # Reset the index without keeping the old index
     df_sim2.index = df_sim2.index + 1  # Adjust the index to start at 1
@@ -1621,13 +1628,13 @@ def display_simulation_results():
     for _ in range(30):
         model.step()
   #  df_sim2 = model.get_agent_vars_dataframe()
-   # df_reset = df_sim2.reset_index(drop=True)
-   # df_sim2.index = df_sim2.index + 1  # start index at 1
-  #  return df_sim2
+    df_sim2 = df_sim2.reset_index(drop=True)
+    df_sim2.index = df_sim2.index + 1  # start index at 1
+    return df_sim2
 # ----------------------------------
 # 4. Plot the data
 # ----------------------------------
-df_reset = df_sim2.reset_index()
+#df_reset = df_sim2.reset_index()
 
 col1, col2 = st.columns(2)
 # Plot: Misinformation & Trust vs Care-Seeking
@@ -1681,6 +1688,7 @@ with col1:
         Reach out on Github to colabborate.
         """
     )
+
 
 
 
