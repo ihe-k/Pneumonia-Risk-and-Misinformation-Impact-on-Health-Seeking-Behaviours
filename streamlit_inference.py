@@ -1520,7 +1520,7 @@ import random
 #misinformation_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, value=0.5, step=0.05)
 
 # Generate data based on slider values
-simulation_data_new = generate_simulation_data_new(num_agents, num_clinicians, misinformation_exposure)
+simulation_data = generate_simulation_data_new(num_agents, num_clinicians, misinformation_exposure)
 
 # Optional: Add a button to re-run simulation if needed
 # run_sim = st.sidebar.button("Run Simulation")
@@ -1665,6 +1665,7 @@ st.markdown(
     Reach out on Github to colabborate.
     """
 )
+
 
 
 
