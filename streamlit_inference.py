@@ -1508,9 +1508,9 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Sliders controlling simulation parameters
-num_agents = st.sidebar.slider("Number of Patient Agents", 5, 200, 50)
-num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 3)
-misinformation_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, value=0.5,step=0.05)
+num_pagents = st.sidebar.slider("Number of Patient Agents", 5, 200, 50)
+num_pclinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 3)
+misinformation_pexposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, value=0.5,step=0.05)
 
 # Generate simulation data based on sliders
 @st.cache_data
@@ -1570,6 +1570,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
