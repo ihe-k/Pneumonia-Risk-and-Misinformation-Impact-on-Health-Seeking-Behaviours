@@ -1627,9 +1627,9 @@ def display_simulation_results():
 # ----------------------------------
 # 4. Plot the data
 # ----------------------------------
-    df_reset = df_sim2.reset_index()
+df_reset = df_sim2.reset_index()
 
-     col1, col2 = st.columns(2)
+col1, col2 = st.columns(2)
 # Plot: Misinformation & Trust vs Care-Seeking
 with col1:
 fig4, ax4 = plt.subplots(figsize=(6, 4))
@@ -1681,6 +1681,7 @@ st.markdown(
     Reach out on Github to colabborate.
     """
 )
+
 
 
 
