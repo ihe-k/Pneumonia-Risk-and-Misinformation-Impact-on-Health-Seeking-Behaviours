@@ -1322,9 +1322,9 @@ import random
 # === Simulation Setup ===
 # Sidebar Inputs for Stepped Simulation
 st.sidebar.subheader("Stepped Simulation")
-num_agents = st.sidebar.slider("Number of Patient Agents", 5, 100, 10, key="S_agents")
-num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 5, key="S_clinicians")
-misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.3, 0.05, key="S_misinfo")
+num_agents2 = st.sidebar.slider("Number of Patient Agents", 5, 100, 10, key="S_agents")
+num_clinicians2 = st.sidebar.slider("Number of Clinician Agents", 1, 20, 5, key="S_clinicians")
+misinfo_exposure2 = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.3, 0.05, key="S_misinfo")
 
 # === Simulation Model ===
 class MisinformationModel(Model):
@@ -1570,6 +1570,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
