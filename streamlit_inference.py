@@ -1617,7 +1617,7 @@ def generate_simulation_data_new(num_agents, num_clinicians, misinformation_expo
 
 
 # Plot: Misinformation & Trust vs Care-Seeking
-fig, ax5 = plt.subplots(figsize=(6, 4))
+fig, ax = plt.subplots(figsize=(6, 4))
 sns.scatterplot(
     data=df_reset,
     x="symptom_severity",
@@ -1627,12 +1627,12 @@ sns.scatterplot(
     alpha=0.7,
     palette="coolwarm",
     sizes=(20, 200),
-    ax=ax5
+    ax=ax
 )
-ax5.set_title("Impact of Misinformation & Trust on Care-Seeking")
-ax5.set_xlabel("Symptom Severity")
-ax5.set_ylabel("Care Seeking Behavior")
-ax5.legend(
+ax.set_title("Impact of Misinformation & Trust on Care-Seeking")
+ax.set_xlabel("Symptom Severity")
+ax.set_ylabel("Care Seeking Behavior")
+ax.legend(
     bbox_to_anchor=(1.05, 1),
     loc='upper left',
     borderaxespad=0.,
@@ -1666,6 +1666,7 @@ st.markdown(
     Reach out on Github to colabborate.
     """
 )
+
 
 
 
