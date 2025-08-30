@@ -1510,7 +1510,7 @@ import seaborn as sns
 # Sliders controlling simulation parameters
 num_agents = st.sidebar.slider("Number of Patient Agents", 5, 200, 50)
 num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 3)
-misinformation_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.5,0.05)
+misinformation_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, value=0.5,step=0.05)
 
 # Generate simulation data based on sliders
 @st.cache_data
@@ -1529,7 +1529,7 @@ df_reset = simulation_data.reset_index()
 
 # Plotting the scatter plot
 # st.write("### Impact of Misinformation & Trust on Care-Seeking")
-fig, ax = plt.subplots(figsize=(8, 6))
+fig, ax = plt.subplots(figsize=(6, 4))
 sns.scatterplot(
     data=df_reset,
     x="Symptom Severity",
@@ -1544,6 +1544,15 @@ sns.scatterplot(
 ax.set_title("Impact of Misinformation & Trust on Care-Seeking")
 ax.set_xlabel("Symptom Severity")
 ax.set_ylabel("Care Seeking Behavior")
+
+# Place legend outside to the right (optional)
+ax.legend(
+    bbox_to_anchor=(1.05, 1),
+    loc='upper left',
+    borderaxespad=0.,
+    fontsize='small'
+)
+
 st.pyplot(fig)
 
 # =======================
@@ -1561,6 +1570,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
