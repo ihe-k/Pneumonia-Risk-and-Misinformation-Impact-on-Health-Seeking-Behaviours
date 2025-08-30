@@ -1800,19 +1800,20 @@ st.markdown("This app simulates how misinformation affects patient trust and the
 # FOOTER
 # =======================
 
-    st.markdown("---")
-    st.markdown(
-        """
-        This app integrates:
-        - Real Chest X-ray pneumonia classification with pretrained Logistic Regression and XGBoost models
-        - Multi-source misinformation detection: Reddit (free API), Tavily web search, Wikipedia, Hacker News, HealthVer and FullFact
-        - RAPHAEL-style claim scoring for health claims using sentiment analysis
-        - Agent-based simulation modelling the impact of misinformation on care-seeking behaviour with clinician interaction
-        - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
+st.markdown("---")
+st.markdown(
+    """
+    This app integrates:
+    - Real Chest X-ray pneumonia classification with pretrained Logistic Regression and XGBoost models
+    - Multi-source misinformation detection: Reddit (free API), Tavily web search, Wikipedia, Hacker News, HealthVer and FullFact
+    - RAPHAEL-style claim scoring for health claims using sentiment analysis
+    - Agent-based simulation modelling the impact of misinformation on care-seeking behaviour with clinician interaction
+    - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
 
-        Reach out on Github to colabborate.
-        """
-    )
+    Reach out on Github to colabborate.
+    """
+)
+
 
 
 
