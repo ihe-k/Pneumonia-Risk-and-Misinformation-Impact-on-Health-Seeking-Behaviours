@@ -1393,7 +1393,7 @@ class MisinformationModelBase(Model):
     def get_agent_vars_dataframe(self):
         return self.datacollector.get_agent_vars_dataframe()
 
-# === Specific Models (Stepped / Non-Stepped) ===
+# === Specific Models ===
 class MisinformationModelStepped(MisinformationModelBase):
     pass
 
@@ -1402,19 +1402,30 @@ class MisinformationModelNonStepped(MisinformationModelBase):
 
 # === Caching Simulation Data ===
 @st.cache_data
-def generate_data(model_class, num_agents, num_clinicians, misinfo_exposure):
-    model = model_class(num_agents, num_clinicians, 10, 10, misinfo_exposure)
+def generate_stepped_data(num_agents, num_clinicians, misinfo_exposure):
+    model = MisinformationModelStepped(num_agents, num_clinicians, 10, 10, misinfo_exposure)
+    for _ in range(30):
+        model.step()
+    df = model.get_agent_vars_dataframe().reset_index()
+    # Keep all steps, no filtering
+    df.index = df.index + 1
+    return df
+
+@st.cache_data
+def generate_non_stepped_data(num_agents, num_clinicians, misinfo_exposure):
+    model = MisinformationModelNonStepped(num_agents, num_clinicians, 10, 10, misinfo_exposure)
     for _ in range(30):
         model.step()
     df_full = model.get_agent_vars_dataframe().reset_index()
+    # Filter to final step only
     df_last = df_full[df_full["Step"] == df_full["Step"].max()].drop(columns=["Step"])
     df_last = df_last.reset_index(drop=True)
     df_last.index = df_last.index + 1
     return df_last
 
-# === Scatter Plot ===
-def scatter_plot(df, title):
-    fig, ax = plt.subplots(figsize=(7, 5))
+# === Plots ===
+def scatter_symptom_vs_care(df, title):
+    fig, ax = plt.subplots(figsize=(6, 5))
     sns.scatterplot(
         data=df,
         x="Symptom Severity",
@@ -1432,31 +1443,54 @@ def scatter_plot(df, title):
     ax.legend(loc="upper right", fontsize="small", bbox_to_anchor=(1.25, 1))
     return fig
 
+def scatter_trust_vs_care(df, title):
+    fig, ax = plt.subplots(figsize=(6, 5))
+    sns.scatterplot(
+        data=df,
+        x="Trust in Clinician",
+        y="Care Seeking Behavior",
+        hue="Misinformation Exposure",
+        size="Symptom Severity",
+        palette="coolwarm",
+        sizes=(20, 200),
+        alpha=0.7,
+        ax=ax,
+    )
+    ax.set_title(title)
+    ax.set_xlabel("Trust in Clinician")
+    ax.set_ylabel("Care Seeking Behavior")
+    ax.legend(loc="upper right", fontsize="small", bbox_to_anchor=(1.25, 1))
+    return fig
+
 # === Display Stepped Simulation ===
 def display_stepped():
     num_agents = st.sidebar.slider("Number of Patient Agents", 5, 100, 10, key="S_agents")
     num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 5, key="S_clinicians")
     misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.3, 0.05, key="S_misinfo")
 
-    df = generate_data(MisinformationModelStepped, num_agents, num_clinicians, misinfo_exposure)
+    df = generate_stepped_data(num_agents, num_clinicians, misinfo_exposure)
 
-    st.subheader("📊 Stepped Simulation Results (Final Step Only)")
+    st.subheader("📊 Stepped Simulation Results (All Steps)")
     st.dataframe(df.round(3))
 
-    st.pyplot(scatter_plot(df, "Stepped Simulation: Misinformation & Trust Impact"))
+    col1, col2 = st.columns(2)
+    with col1:
+        st.pyplot(scatter_symptom_vs_care(df, "Stepped: Symptom Severity vs Care Seeking"))
+    with col2:
+        st.pyplot(scatter_trust_vs_care(df, "Stepped: Trust in Clinician vs Care Seeking"))
 
 # === Display Non-Stepped Simulation ===
 def display_non_stepped():
     num_agents = st.sidebar.slider("Number of Patient Agents", 5, 200, 50, key="NS_agents")
     num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 3, key="NS_clinicians")
-    misinformation_exposure = st.sidebar.slider("Misinformation Exposure", 0.0, 1.0, 0.5, 0.05, key="NS_misinfo")
+    misinfo_exposure = st.sidebar.slider("Misinformation Exposure", 0.0, 1.0, 0.5, 0.05, key="NS_misinfo")
 
-    df = generate_data(MisinformationModelNonStepped, num_agents, num_clinicians, misinformation_exposure)
+    df = generate_non_stepped_data(num_agents, num_clinicians, misinfo_exposure)
 
     st.subheader("📊 Non-Stepped Simulation Results (Final Step Only)")
     st.dataframe(df.round(3))
 
-    st.pyplot(scatter_plot(df, "Non-Stepped Simulation: Misinformation & Trust Impact"))
+    st.pyplot(scatter_symptom_vs_care(df, "Non-Stepped: Impact of Misinformation & Trust on Care-Seeking"))
 
 # === Main App ===
 def main():
@@ -1500,6 +1534,7 @@ st.markdown(
     Reach out on Github to collaborate.
     """
 )
+
 
 
 
