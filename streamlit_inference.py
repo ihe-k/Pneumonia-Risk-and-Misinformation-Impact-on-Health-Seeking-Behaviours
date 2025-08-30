@@ -1613,7 +1613,7 @@ def generate_simulation_data_new(num_agents, num_clinicians, misinformation_expo
 # ----------------------------------
 # 4. Plot the data
 # ----------------------------------
-df_reset = simulation_data
+df_reset = generate_simulation_data_new
 
 # Plot: Misinformation & Trust vs Care-Seeking
 fig, ax = plt.subplots(figsize=(6, 4))
@@ -1665,6 +1665,7 @@ st.markdown(
     Reach out on Github to colabborate.
     """
 )
+
 
 
 
