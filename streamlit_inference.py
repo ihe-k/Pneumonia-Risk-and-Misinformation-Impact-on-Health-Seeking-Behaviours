@@ -1504,31 +1504,109 @@ if __name__ == "__main__":
 #### new
 import streamlit as st
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+import random
 
-# Sliders controlling simulation parameters
-num_pagents = st.sidebar.slider("Number of Patient Agents", 5, 200, 50)
-num_pclinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 3)
-misinformation_pexposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, value=0.5,step=0.05)
+# ----------------------------------
+# 1. Declare sliders once at the top
+# ----------------------------------
+st.sidebar.subheader("Simulation Parameters")
+num_agents = st.sidebar.slider("Number of Patient Agents", 5, 200, 50)
+num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 3)
+misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, value=0.5, step=0.05)
 
-# Generate simulation data based on sliders
+# Optional: Add a button to re-run simulation if needed
+# run_sim = st.sidebar.button("Run Simulation")
+
+# ----------------------------------
+# 2. Define your simulation model
+# ----------------------------------
+from mesa import Agent, Model
+from mesa.time import RandomActivation
+from mesa.space import MultiGrid
+from mesa.datacollection import DataCollector
+
+class Patient(Agent):
+    def __init__(self, unique_id, model, misinformation_score=None):
+        super().__init__(unique_id, model)
+        self.symptom_severity = random.uniform(0, 1)
+        self.trust_in_clinician = random.uniform(0, 1)
+        self.misinformation_exposure = misinformation_score if misinformation_score is not None else random.uniform(0, 1)
+        self.care_seeking_behavior = min(1.0, max(0.0,
+            0.6 * self.symptom_severity + 
+            0.3 * self.trust_in_clinician - 
+            0.5 * self.misinformation_exposure +
+            random.uniform(-0.1, 0.1)
+        )) 
+
+    def step(self):
+        pass
+
+class Clinician(Agent):
+    def __init__(self, unique_id, model):
+        super().__init__(unique_id, model)
+
+    def step(self):
+        pass
+
+class MisinformationModel(Model):
+    def __init__(self, num_agents, num_clinicians, width, height, misinfo_exposure):
+        super().__init__()
+        self.grid = MultiGrid(width, height, torus=True)
+        self.schedule = RandomActivation(self)
+        self.datacollector = DataCollector(
+            agent_reporters={
+                "Symptom Severity": "symptom_severity",
+                "Care Seeking Behavior": "care_seeking_behavior",
+                "Trust in Clinician": "trust_in_clinician",
+                "Misinformation Exposure": "misinformation_exposure"
+            }
+        )
+
+        # Create patients
+        for i in range(num_agents):
+            a = Patient(i, self, misinformation_score=misinfo_exposure)
+            self.schedule.add(a)
+            x, y = self.random.randrange(width), self.random.randrange(height)
+            self.grid.place_agent(a, (x, y))
+        # Create clinicians
+        for i in range(num_agents, num_agents + num_clinicians):
+            c = Clinician(i, self)
+            self.schedule.add(c)
+            x, y = self.random.randrange(width), self.random.randrange(height)
+            self.grid.place_agent(c, (x, y))
+
+    def step(self):
+        self.datacollector.collect(self)
+        self.schedule.step()
+
+    def get_agent_vars_dataframe(self):
+        return self.datacollector.get_agent_vars_dataframe()
+
+# ----------------------------------
+# 3. Run the simulation with current slider values
+# ----------------------------------
 @st.cache_data
-def generate_simulation_data(num_agents, num_clinicians, misinformation_exposure):
-    model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinformation_exposure)
+def generate_simulation_data(n_agents, n_clinicians, misinfo):
+    model = MisinformationModel(n_agents, n_clinicians, 10, 10, misinfo)
     for _ in range(30):
         model.step()
-    df_sim2 = model.get_agent_vars_dataframe()
-    return df_sim2
+    df = model.get_agent_vars_dataframe()
+    df = df.reset_index(drop=True)
+    df.index = df.index + 1  # start index at 1
+    return df
 
-# Generate the data whenever sliders are adjusted
-simulation_data = generate_simulation_datax(num_agents, num_clinicians, misinfo_exposure)
+# Generate data based on slider values
+simulation_data = generate_simulation_data(num_agents, num_clinicians, misinfo_exposure)
 
-# Reset index for plotting
-df_reset = simulation_datax.reset_index()
+# ----------------------------------
+# 4. Plot the data
+# ----------------------------------
+df_reset = simulation_data
 
-# Plotting the scatter plot
-# st.write("### Impact of Misinformation & Trust on Care-Seeking")
+# Plot: Misinformation & Trust vs Care-Seeking
 fig, ax = plt.subplots(figsize=(6, 4))
 sns.scatterplot(
     data=df_reset,
@@ -1537,23 +1615,29 @@ sns.scatterplot(
     hue="Trust in Clinician",
     size="Misinformation Exposure",
     alpha=0.7,
-    ax=ax,
     palette="coolwarm",
-    sizes=(20, 200)
+    sizes=(20, 200),
+    ax=ax
 )
 ax.set_title("Impact of Misinformation & Trust on Care-Seeking")
 ax.set_xlabel("Symptom Severity")
 ax.set_ylabel("Care Seeking Behavior")
-
-# Place legend outside to the right (optional)
 ax.legend(
     bbox_to_anchor=(1.05, 1),
     loc='upper left',
     borderaxespad=0.,
     fontsize='small'
 )
-
 st.pyplot(fig)
+
+# ----------------------------------
+# 5. Optional: Additional plots or analysis
+# ----------------------------------
+# (Your existing code for regression, relationships, etc., can follow here)
+
+# Footer or additional info
+st.markdown("---")
+st.markdown("This app demonstrates a simulation of misinformation's impact on health-seeking behaviors.")
 
 # =======================
 # FOOTER
@@ -1570,6 +1654,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
