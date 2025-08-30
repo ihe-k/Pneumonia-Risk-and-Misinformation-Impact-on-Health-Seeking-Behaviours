@@ -508,9 +508,9 @@ uploaded_file = st.sidebar.file_uploader("Upload Chest X-Ray Image", type=["jpg"
 # Agent-Based Simulation Controls (unchanged)
 # st.subheader("3⃣ Agent-Based Misinformation Simulation")
 st.sidebar.subheader("Non-Stepped Simulation")
-num_agents = st.sidebar.slider("Number of Patient Agents", 5, 200, 50)
-num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 3)
-misinformation_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.5, 0.05)
+num_agents = st.sidebar.slider("Number of Patient Agents", 5, 200, 50, key="non_stepped_agents")
+num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 3, key="non_stepped_clinicians")
+misinformation_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.5, 0.05, key="non_stepped_minsinformation")
 # simulate_button = st.sidebar.button("Run Simulation")
 # Place in sidebar
 
@@ -1515,7 +1515,29 @@ from mesa.time import RandomActivation
 from mesa.space import MultiGrid
 from mesa.datacollection import DataCollector
 
-# === Define Mesa Agents and Model ===
+# --- Your existing sliders (already declared somewhere at the top) ---
+# Using key arguments for uniqueness:
+num_agents = st.sidebar.slider("Number of Patient Agents", 5, 100, 10)
+num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 5)
+misinformation_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.3, 0.05)
+
+# Non-stepped simulation sliders (with keys)
+num_agents_non_stepped = st.sidebar.slider(
+    "Non-Stepped Simulation Agents", 5, 100, 10, key="non_stepped_agents"
+)
+num_clinicians_non_stepped = st.sidebar.slider(
+    "Non-Stepped Simulation Clinicians", 1, 20, 5, key="non_stepped_clinicians"
+)
+misinformation_exposure_non_stepped = st.sidebar.slider(
+    "Non-Stepped Simulation Misinformation",
+    0.0,
+    1.0,
+    0.3,
+    0.05,
+    key="non_stepped_misinfo",
+)
+
+# --- Mesa Model Definitions ---
 class Patient(Agent):
     def __init__(self, unique_id, model, misinformation_score=None):
         super().__init__(unique_id, model)
@@ -1560,14 +1582,12 @@ class MisinformationModel(Model):
             }
         )
 
-        # Create Patient Agents
         for i in range(num_agents):
             patient = Patient(i, self, misinformation_score=misinformation_exposure)
             self.schedule.add(patient)
             x, y = self.random.randrange(width), self.random.randrange(height)
             self.grid.place_agent(patient, (x, y))
 
-        # Create Clinician Agents
         for i in range(num_agents, num_agents + num_clinicians):
             clinician = Clinician(i, self)
             self.schedule.add(clinician)
@@ -1581,30 +1601,27 @@ class MisinformationModel(Model):
     def get_agent_vars_dataframe(self):
         return self.datacollector.get_agent_vars_dataframe()
 
-# === Simulation runner function using slider values ===
+# --- Run simulation function ---
 @st.cache_data
-def run_simulation(num_agents, num_clinicians, misinformation_exposure):
+def run_simulation(num_agents, num_clinicians, misinformation_exposure, steps=30):
     model = MisinformationModel(num_agents, num_clinicians, misinformation_exposure)
-    for _ in range(30):
+    for _ in range(steps):
         model.step()
     df = model.get_agent_vars_dataframe().reset_index(drop=True)
-    df.index = df.index + 1  # Start index at 1
+    df.index = df.index + 1
     return df
 
-# === Run simulation with slider values ===
-simulation_df = run_simulation(num_agents, num_clinicians, misinformation_exposure)
+# --- Run non-stepped simulation based on your existing non-stepped slider values ---
+df_non_stepped = run_simulation(
+    num_agents_non_stepped, num_clinicians_non_stepped, misinformation_exposure_non_stepped, steps=1
+)
 
-# === Streamlit visualization ===
-st.title("Misinformation Impact on Patient Care-Seeking Behavior")
-
-st.markdown("""
-This simulation models how misinformation exposure and trust in clinicians
-affect patients' care-seeking behavior.
-""")
+# --- Plot and display ---
+st.title("Non-Stepped Simulation: Impact of Misinformation and Trust on Care-Seeking")
 
 fig, ax = plt.subplots(figsize=(7, 5))
 sns.scatterplot(
-    data=simulation_df,
+    data=df_non_stepped,
     x="Symptom Severity",
     y="Care Seeking Behavior",
     hue="Trust in Clinician",
@@ -1614,15 +1631,12 @@ sns.scatterplot(
     alpha=0.7,
     ax=ax,
 )
-ax.set_title("Impact of Misinformation & Trust on Care-Seeking")
+ax.set_title("Non-Stepped Simulation: Care-Seeking Behavior")
 ax.set_xlabel("Symptom Severity")
 ax.set_ylabel("Care Seeking Behavior")
 ax.legend(loc="upper right", fontsize="small", bbox_to_anchor=(1.25, 1))
 
 st.pyplot(fig)
-
-st.markdown("---")
-st.markdown("Simulation created using Mesa and Streamlit.")
 
 
 # =======================
@@ -1642,6 +1656,7 @@ st.markdown(
     Reach out on Github to colabborate.
     """
 )
+
 
 
 
