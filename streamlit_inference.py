@@ -1595,21 +1595,34 @@ class MisinformationModel(Model):
 # ----------------------------------
 @st.cache_data
 
-def generate_simulation_data_new(num_agents, num_clinicians, misinformation_exposure):
-    model = MisinformationModel(
-                    num_patients=num_agents,
-                    #num_patients=num_patients,
-                    num_clinicians=num_clinicians,   # or another control if you want
-                    misinformation_exposure=misinformation_exposure,
-                    width=10,
-                    height=10)
+  # Get the data from the simulation
+    df_sim2 = model.get_agent_vars_dataframe()
+    
+    # Reset index and start from 1 (fixing the previous issue)
+    df_sim2 = df_sim.reset_index(drop=True)  # Reset the index without keeping the old index
+    df_sim2.index = df_sim2.index + 1  # Adjust the index to start at 1
+
+    return df_sim2
+
+def display_simulation_results():
+    # Get Simulation data (Non-Stepped)
+    df_sim2 = generate_simulation_data_new(num_agents, num_clinicians, misinfo_exposure)
+
+#def generate_simulation_data_new(num_agents, num_clinicians, misinformation_exposure):
+ #   model = MisinformationModel(
+ #                   num_patients=num_agents,
+ #                   #num_patients=num_patients,
+ #                   num_clinicians=num_clinicians,   # or another control if you want
+ #                   misinformation_exposure=misinformation_exposure,
+ #                   width=10,
+ #                   height=10)
     
     for _ in range(30):
         model.step()
-    df = model.get_agent_vars_dataframe()
-    df = df.reset_index(drop=True)
-    df.index = df.index + 1  # start index at 1
-    return df
+  #  df = model.get_agent_vars_dataframe()
+  #  df = df.reset_index(drop=True)
+    df_sim2.index = df_sim2.index + 1  # start index at 1
+    return df_sim2
 # ----------------------------------
 # 4. Plot the data
 # ----------------------------------
@@ -1666,6 +1679,7 @@ st.markdown(
     Reach out on Github to colabborate.
     """
 )
+
 
 
 
