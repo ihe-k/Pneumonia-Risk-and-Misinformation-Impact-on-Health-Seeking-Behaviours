@@ -1613,12 +1613,12 @@ def generate_simulation_data_new(num_agents, num_clinicians, misinformation_expo
 # ----------------------------------
 # 4. Plot the data
 # ----------------------------------
-#df_reset = generate_simulation_data_new
+df_reset = df.reset_index()
 
 # Plot: Misinformation & Trust vs Care-Seeking
 fig5, ax5 = plt.subplots(figsize=(6, 4))
 sns.scatterplot(
-  #  data=df_reset,
+    data=df_reset,
     x="Symptom Severity",
     y="Care Seeking Behavior",
     hue="Trust in Clinician",
@@ -1665,6 +1665,7 @@ st.markdown(
     Reach out on Github to colabborate.
     """
 )
+
 
 
 
