@@ -1605,12 +1605,12 @@ def generate_simulation_data(num_agents, num_clinicians, misinformation_exposure
     return df
 
 # Generate data based on slider values
-simulation_data2 = generate_simulation_data2(num_agents, num_clinicians, misinformation_exposure)
+simulation_data = generate_simulation_data(num_agents, num_clinicians, misinformation_exposure)
 
 # ----------------------------------
 # 4. Plot the data
 # ----------------------------------
-df_reset = simulation_data2
+df_reset = simulation_data
 
 # Plot: Misinformation & Trust vs Care-Seeking
 fig, ax = plt.subplots(figsize=(6, 4))
@@ -1660,6 +1660,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
