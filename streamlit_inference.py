@@ -1518,23 +1518,23 @@ from mesa.datacollection import DataCollector
 from mesa.agent import Agent
 import random
 
-# === Sidebar Sliders (already defined at top of your main script) ===
-# Make sure this block appears only ONCE in your script (likely already there):
+# === Sidebar Sliders (make sure these are defined at the top of your main script) ===
+# Uncomment and place once at top-level of your Streamlit app:
 
 # st.sidebar.subheader("Non-Stepped Simulation")
-# num_agents_non_stepped = st.sidebar.slider("Non-Stepped Simulation Agents", 5, 200, 50, key="non_stepped_agents")
-# num_clinicians_non_stepped = st.sidebar.slider("Non-Stepped Simulation Clinicians", 1, 20, 3, key="non_stepped_clinicians")
-# misinformation_exposure_non_stepped = st.sidebar.slider("Non-Stepped Simulation Misinformation", 0.0, 1.0, 0.5, 0.05, key="non_stepped_misinfo")
+# num_agents = st.sidebar.slider("Number of Patient Agents", 5, 200, 50, key="non_stepped_agents")
+# num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 3, key="non_stepped_clinicians")
+# misinformation_exposure = st.sidebar.slider("Misinformation Exposure", 0.0, 1.0, 0.5, 0.05, key="non_stepped_misinfo")
 
 # === Simulation Model ===
 class MisinformationModel(Model):
-    def __init__(self, num_agents, num_clinicians, width, height, misinfo_exposure):
+    def __init__(self, num_agents, num_clinicians, width, height, misinformation_exposure):
         super().__init__()
         self.num_agents = num_agents
         self.num_clinicians = num_clinicians
         self.width = width
         self.height = height
-        self.misinfo_exposure = misinfo_exposure
+        self.misinformation_exposure = misinformation_exposure
 
         self.grid = MultiGrid(width, height, True)
         self.schedule = RandomActivation(self)
@@ -1598,13 +1598,13 @@ class ClinicianAgent(Agent):
 
 # === Data generation ===
 @st.cache_data
-def generate_simulation_data(num_agents, num_clinicians, misinfo_exposure):
-    model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinfo_exposure)
+def run_non_stepped_simulation(num_agents, num_clinicians, misinformation_exposure):
+    model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinformation_exposure)
     for _ in range(30):
         model.step()
-    df = model.get_agent_vars_dataframe().reset_index(drop=True)
-    df.index = df.index + 1
-    return df
+    df_non_stepped = model.get_agent_vars_dataframe().reset_index(drop=True)
+    df_non_stepped.index = df_non_stepped.index + 1
+    return df_non_stepped
 
 # === Plotting function ===
 def scatter_plot(df):
@@ -1627,12 +1627,11 @@ def scatter_plot(df):
     return fig
 
 # === Main display logic ===
-def display_simulation_results(num_agents, num_clinicians, misinfo_exposure):
-    # Run simulation with passed-in slider values
-    df_non_stepped = generate_simulation_data(
+def show_non_stepped_outputs(num_agents, num_clinicians, misinformation_exposure):
+    df_non_stepped = run_non_stepped_simulation(
         num_agents,
         num_clinicians,
-        misinfo_exposure,
+        misinformation_exposure,
     )
 
     st.write("### 📊 Non-Stepped Simulation Results")
@@ -1641,22 +1640,7 @@ def display_simulation_results(num_agents, num_clinicians, misinfo_exposure):
     # Scatter plot
     col1, _ = st.columns(2)
     with col1:
-        fig, ax = plt.subplots(figsize=(7, 5))
-        sns.scatterplot(
-            data=df_non_stepped,
-            x="Symptom Severity",
-            y="Care Seeking Behavior",
-            hue="Trust in Clinician",
-            size="Misinformation Exposure",
-            palette="coolwarm",
-            sizes=(20, 200),
-            alpha=0.7,
-            ax=ax,
-        )
-        ax.set_title("Impact of Misinformation & Trust on Care-Seeking")
-        ax.set_xlabel("Symptom Severity")
-        ax.set_ylabel("Care Seeking Behavior")
-        ax.legend(loc="upper right", fontsize="small", bbox_to_anchor=(1.25, 1))
+        fig = scatter_plot(df_non_stepped)
         st.pyplot(fig)
 
     st.markdown("---")
@@ -1670,13 +1654,35 @@ if __name__ == "__main__":
     affect patients' care-seeking behavior. Use the sidebar sliders to modify parameters.
     """)
 
- 
-    # Call display function with values
-    display_simulation_results(
+    # You must define these variables with your sliders before calling the function:
+    num_agents = st.sidebar.slider("Number of Patient Agents", 5, 200, 50, key="non_stepped_agents")
+    num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 3, key="non_stepped_clinicians")
+    misinformation_exposure = st.sidebar.slider("Misinformation Exposure", 0.0, 1.0, 0.5, 0.05, key="non_stepped_misinfo")
+
+    # Call display function with slider values
+    show_non_stepped_outputs(
         num_agents,
         num_clinicians,
         misinformation_exposure
     )
+
+# =======================
+# FOOTER
+# =======================
+st.markdown("---")
+st.markdown(
+    """
+    This app integrates:
+    - Real Chest X-ray pneumonia classification with pretrained Logistic Regression and XGBoost models
+    - Multi-source misinformation detection: Reddit (free API), Tavily web search, Wikipedia, Hacker News, HealthVer and FullFact
+    - RAPHAEL-style claim scoring for health claims using sentiment analysis
+    - Agent-based simulation modelling the impact of misinformation on care-seeking behaviour with clinician interaction
+    - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
+
+    Reach out on Github to collaborate.
+    """
+)
+
 # =======================
 # FOOTER
 # =======================
@@ -1691,9 +1697,10 @@ st.markdown(
     - Agent-based simulation modelling the impact of misinformation on care-seeking behaviour with clinician interaction
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
 
-    Reach out on Github to colabborate.
+    Reach out on Github to collaborate.
     """
 )
+
 
 
 
