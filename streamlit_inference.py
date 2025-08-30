@@ -1621,7 +1621,7 @@ def display_simulation_results():
     for _ in range(30):
         model.step()
     df_sim2 = model.get_agent_vars_dataframe()
-    df_sim2 = df.reset_index(drop=True)
+    df_reset = df_sim2.reset_index(drop=True)
     df_sim2.index = df_sim2.index + 1  # start index at 1
     return df_sim2
 # ----------------------------------
@@ -1680,6 +1680,7 @@ st.markdown(
     Reach out on Github to colabborate.
     """
 )
+
 
 
 
