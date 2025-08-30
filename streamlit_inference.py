@@ -1517,23 +1517,13 @@ from mesa.datacollection import DataCollector
 from mesa.agent import Agent
 import random
 
-# === Sidebar Sliders ===
-st.sidebar.subheader("Non-Stepped Simulation")
+# === Sidebar Sliders (already defined at top of your main script) ===
+# Make sure this block appears only ONCE in your script (likely already there):
 
-num_agents_non_stepped = st.sidebar.slider(
-    "Non-Stepped Simulation Agents", 5, 200, 50, key="non_stepped_agents"
-)
-num_clinicians_non_stepped = st.sidebar.slider(
-    "Non-Stepped Simulation Clinicians", 1, 20, 3, key="non_stepped_clinicians"
-)
-misinformation_exposure_non_stepped = st.sidebar.slider(
-    "Non-Stepped Simulation Misinformation",
-    0.0,
-    1.0,
-    0.5,
-    0.05,
-    key="non_stepped_misinfo",
-)
+# st.sidebar.subheader("Non-Stepped Simulation")
+# num_agents_non_stepped = st.sidebar.slider("Non-Stepped Simulation Agents", 5, 200, 50, key="non_stepped_agents")
+# num_clinicians_non_stepped = st.sidebar.slider("Non-Stepped Simulation Clinicians", 1, 20, 3, key="non_stepped_clinicians")
+# misinformation_exposure_non_stepped = st.sidebar.slider("Non-Stepped Simulation Misinformation", 0.0, 1.0, 0.5, 0.05, key="non_stepped_misinfo")
 
 # === Simulation Model ===
 class MisinformationModel(Model):
@@ -1544,7 +1534,7 @@ class MisinformationModel(Model):
         self.width = width
         self.height = height
         self.misinfo_exposure = misinfo_exposure
-        
+
         self.grid = MultiGrid(width, height, True)
         self.schedule = RandomActivation(self)
 
@@ -1611,33 +1601,33 @@ def generate_simulation_data(num_agents, num_clinicians, misinfo_exposure):
     model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinfo_exposure)
     for _ in range(30):
         model.step()
-    df = model.get_agent_vars_dataframe()
-    df = df.reset_index(drop=True)
+    df = model.get_agent_vars_dataframe().reset_index(drop=True)
     df.index = df.index + 1
     return df
 
-# === Plotting functions ===
-def scatter_plots_2d(df):
-    fig1, ax1 = plt.subplots(figsize=(6, 4))
-    scatter1 = ax1.scatter(df['Symptom Severity'], df['Care Seeking Behavior'],
-                           c=df['Misinformation Exposure'], cmap='viridis', alpha=0.6, s=50)
-    ax1.set_xlabel('Symptom Severity')
-    ax1.set_ylabel('Care Seeking Behavior')
-    ax1.set_title('Symptoms Severity vs Care-Seeking')
-    plt.colorbar(scatter1, ax=ax1, label='Misinformation Exposure', shrink=0.8)
-
-    fig2, ax2 = plt.subplots(figsize=(6, 4))
-    scatter2 = ax2.scatter(df['Trust in Clinician'], df['Care Seeking Behavior'],
-                           c=df['Misinformation Exposure'], cmap='viridis', alpha=0.6, s=50)
-    ax2.set_xlabel('Trust in Clinician')
-    ax2.set_ylabel('Care Seeking Behavior')
-    ax2.set_title('Trust in Clinician vs Care-Seeking')
-    plt.colorbar(scatter2, ax=ax2, label='Misinformation Exposure', shrink=0.8)
-
-    return fig1, fig2
+# === Plotting function ===
+def scatter_plot(df):
+    fig, ax = plt.subplots(figsize=(7, 5))
+    sns.scatterplot(
+        data=df,
+        x="Symptom Severity",
+        y="Care Seeking Behavior",
+        hue="Trust in Clinician",
+        size="Misinformation Exposure",
+        palette="coolwarm",
+        sizes=(20, 200),
+        alpha=0.7,
+        ax=ax,
+    )
+    ax.set_title("Impact of Misinformation & Trust on Care-Seeking")
+    ax.set_xlabel("Symptom Severity")
+    ax.set_ylabel("Care Seeking Behavior")
+    ax.legend(loc="upper right", fontsize="small", bbox_to_anchor=(1.25, 1))
+    return fig
 
 # === Main display logic ===
 def display_simulation_results():
+    # Use values from sliders defined earlier
     df_non_stepped = generate_simulation_data(
         num_agents_non_stepped,
         num_clinicians_non_stepped,
@@ -1645,23 +1635,34 @@ def display_simulation_results():
     )
 
     st.write("#### 📊 Non-Stepped Simulation Results")
-    st.dataframe(df_non_stepped[['Symptom Severity', 'Care Seeking Behavior', 'Trust in Clinician', 'Misinformation Exposure', 'Age', 'Location']].round(3))
+    st.dataframe(
+        df_non_stepped[
+            [
+                "Symptom Severity",
+                "Care Seeking Behavior",
+                "Trust in Clinician",
+                "Misinformation Exposure",
+                "Age",
+                "Location",
+            ]
+        ].round(3)
+    )
 
-    col1, col2 = st.columns(2)
-    with col1:
-        fig1, _ = scatter_plots_2d(df_non_stepped)
-        st.pyplot(fig1)
-    with col2:
-        _, fig2 = scatter_plots_2d(df_non_stepped)
-        st.pyplot(fig2)
+    st.write("#### 📈 Impact of Misinformation & Trust on Care-Seeking")
+    st.pyplot(scatter_plot(df_non_stepped))
 
+    st.markdown("---")
+    st.markdown("Simulation created using Mesa and Streamlit.")
+
+# === Run App ===
 if __name__ == "__main__":
-    st.title("Misinformation Impact on Patient Care-Seeking Behavior")
+    st.title("🧠 Misinformation Impact on Patient Care-Seeking Behavior")
     st.markdown("""
     This simulation models how misinformation exposure and trust in clinicians
-    affect patients' care-seeking behavior based on your slider inputs.
+    affect patients' care-seeking behavior. Use the sidebar sliders to modify parameters.
     """)
     display_simulation_results()
+
 
 # =======================
 # FOOTER
@@ -1680,6 +1681,7 @@ st.markdown(
     Reach out on Github to colabborate.
     """
 )
+
 
 
 
