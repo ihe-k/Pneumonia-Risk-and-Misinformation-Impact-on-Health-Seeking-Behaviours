@@ -1407,7 +1407,6 @@ def generate_stepped_data(num_agents, num_clinicians, misinfo_exposure):
     for _ in range(30):
         model.step()
     df = model.get_agent_vars_dataframe().reset_index()
-    # Keep all steps, no filtering
     df.index = df.index + 1
     return df
 
@@ -1417,50 +1416,47 @@ def generate_non_stepped_data(num_agents, num_clinicians, misinfo_exposure):
     for _ in range(30):
         model.step()
     df_full = model.get_agent_vars_dataframe().reset_index()
-    # Filter to final step only
     df_last = df_full[df_full["Step"] == df_full["Step"].max()].drop(columns=["Step"])
     df_last = df_last.reset_index(drop=True)
     df_last.index = df_last.index + 1
     return df_last
 
 # === Plots ===
-def scatter_symptom_vs_care(df, title):
-    fig, ax = plt.subplots(figsize=(6, 5))
-    sns.scatterplot(
-        data=df,
-        x="Symptom Severity",
-        y="Care Seeking Behavior",
-        hue="Trust in Clinician",
-        size="Misinformation Exposure",
-        palette="coolwarm",
-        sizes=(20, 200),
-        alpha=0.7,
-        ax=ax,
-    )
-    ax.set_title(title)
-    ax.set_xlabel("Symptom Severity")
-    ax.set_ylabel("Care Seeking Behavior")
-    ax.legend(loc="upper right", fontsize="small", bbox_to_anchor=(1.25, 1))
-    return fig
+def plot_2d_relationships(df):
+    if len(df) > 10:
+        st.markdown("### 🎯 2D Relationship Analysis")
+        fig3, (ax3a, ax3b) = plt.subplots(1, 2, figsize=(15, 6))
 
-def scatter_trust_vs_care(df, title):
-    fig, ax = plt.subplots(figsize=(6, 5))
-    sns.scatterplot(
-        data=df,
-        x="Trust in Clinician",
-        y="Care Seeking Behavior",
-        hue="Misinformation Exposure",
-        size="Symptom Severity",
-        palette="coolwarm",
-        sizes=(20, 200),
-        alpha=0.7,
-        ax=ax,
-    )
-    ax.set_title(title)
-    ax.set_xlabel("Trust in Clinician")
-    ax.set_ylabel("Care Seeking Behavior")
-    ax.legend(loc="upper right", fontsize="small", bbox_to_anchor=(1.25, 1))
-    return fig
+        # Symptom Severity vs Care Seeking Behavior
+        scatter1 = ax3a.scatter(
+            df['Symptom Severity'],
+            df['Care Seeking Behavior'],
+            c=df['Misinformation Exposure'],
+            cmap='viridis',
+            alpha=0.6,
+            s=50
+        )
+        ax3a.set_xlabel('Symptom Severity')
+        ax3a.set_ylabel('Care Seeking Behavior')
+        ax3a.set_title('Symptoms vs Care-Seeking\n(Color = Misinformation Level)')
+        plt.colorbar(scatter1, ax=ax3a, label='Misinformation Exposure', shrink=0.8)
+
+        # Trust vs Care Seeking Behavior
+        scatter2 = ax3b.scatter(
+            df['Trust in Clinician'],
+            df['Care Seeking Behavior'],
+            c=df['Misinformation Exposure'],
+            cmap='viridis',
+            alpha=0.6,
+            s=50
+        )
+        ax3b.set_xlabel('Trust in Clinician')
+        ax3b.set_ylabel('Care Seeking Behavior')
+        ax3b.set_title('Trust vs Care-Seeking\n(Color = Misinformation Level)')
+        plt.colorbar(scatter2, ax=ax3b, label='Misinformation Exposure', shrink=0.8)
+
+        plt.tight_layout()
+        st.pyplot(fig3)
 
 # === Display Stepped Simulation ===
 def display_stepped():
@@ -1473,11 +1469,7 @@ def display_stepped():
     st.subheader("📊 Stepped Simulation Results (All Steps)")
     st.dataframe(df.round(3))
 
-    col1, col2 = st.columns(2)
-    with col1:
-        st.pyplot(scatter_symptom_vs_care(df, "Stepped: Symptom Severity vs Care Seeking"))
-    with col2:
-        st.pyplot(scatter_trust_vs_care(df, "Stepped: Trust in Clinician vs Care Seeking"))
+    plot_2d_relationships(df)
 
 # === Display Non-Stepped Simulation ===
 def display_non_stepped():
@@ -1490,7 +1482,7 @@ def display_non_stepped():
     st.subheader("📊 Non-Stepped Simulation Results (Final Step Only)")
     st.dataframe(df.round(3))
 
-    st.pyplot(scatter_symptom_vs_care(df, "Non-Stepped: Impact of Misinformation & Trust on Care-Seeking"))
+    plot_2d_relationships(df)
 
 # === Main App ===
 def main():
@@ -1534,6 +1526,7 @@ st.markdown(
     Reach out on Github to collaborate.
     """
 )
+
 
 
 
