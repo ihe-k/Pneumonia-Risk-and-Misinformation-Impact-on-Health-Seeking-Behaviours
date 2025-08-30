@@ -1604,7 +1604,7 @@ def my_function():
     except AttributeError as e:
         print(f"Error: {e}.  Ensure 'model' is defined and has a 'get_agent_vars_dataframe' method.")
     except Exception as e:
-    print(f"An unexpected error occurred: {e}")    
+        print(f"An unexpected error occurred: {e}")    
    
     # Reset index and start from 1 (fixing the previous issue)
     df_sim2 = df_sim.reset_index(drop=True)  # Reset the index without keeping the old index
@@ -1688,6 +1688,7 @@ with col1:
         Reach out on Github to colabborate.
         """
     )
+
 
 
 
