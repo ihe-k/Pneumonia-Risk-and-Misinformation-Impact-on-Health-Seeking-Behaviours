@@ -1632,28 +1632,28 @@ df_reset = df_sim2.reset_index()
 col1, col2 = st.columns(2)
 # Plot: Misinformation & Trust vs Care-Seeking
 with col1:
-fig4, ax4 = plt.subplots(figsize=(6, 4))
-sns.scatterplot(
-    data=df_reset,
-    x="Symptom Severity",
-    y="Care Seeking Behavior",
-    hue="Trust in Clinician",
-    size="Misinformation Exposure",
-    alpha=0.7,
-    palette="coolwarm",
-    sizes=(20, 200),
-    ax=ax4
-)
-ax4.set_title("Impact of Misinformation & Trust on Care-Seeking")
-ax4.set_xlabel("Symptom Severity")
-ax4.set_ylabel("Care Seeking Behavior")
-ax4.legend(
-    bbox_to_anchor=(1.05, 1),
-    loc='upper left',
-    borderaxespad=0.,
-    fontsize='small'
-)
-st.pyplot(fig5)
+    fig4, ax4 = plt.subplots(figsize=(6, 4))
+    sns.scatterplot(
+        data=df_reset,
+        x="Symptom Severity",
+        y="Care Seeking Behavior",
+        hue="Trust in Clinician",
+        size="Misinformation Exposure",
+        alpha=0.7,
+        palette="coolwarm",
+        sizes=(20, 200),
+        ax=ax4
+    )
+    ax4.set_title("Impact of Misinformation & Trust on Care-Seeking")
+    ax4.set_xlabel("Symptom Severity")
+    ax4.set_ylabel("Care Seeking Behavior")
+    ax4.legend(
+        bbox_to_anchor=(1.05, 1),
+        loc='upper left',
+        borderaxespad=0.,
+        fontsize='small'
+    )
+    st.pyplot(fig5)
 
 # ----------------------------------
 # 5. Optional: Additional plots or analysis
@@ -1661,26 +1661,27 @@ st.pyplot(fig5)
 # (Your existing code for regression, relationships, etc., can follow here)
 
 # Footer or additional info
-st.markdown("---")
-st.markdown("This app demonstrates a simulation of misinformation's impact on health-seeking behaviors.")
+    st.markdown("---")
+    st.markdown("This app demonstrates a simulation of misinformation's impact on health-seeking behaviors.")
 
 # =======================
 # FOOTER
 # =======================
 
-st.markdown("---")
-st.markdown(
-    """
-    This app integrates:
-    - Real Chest X-ray pneumonia classification with pretrained Logistic Regression and XGBoost models
-    - Multi-source misinformation detection: Reddit (free API), Tavily web search, Wikipedia, Hacker News, HealthVer and FullFact
-    - RAPHAEL-style claim scoring for health claims using sentiment analysis
-    - Agent-based simulation modelling the impact of misinformation on care-seeking behaviour with clinician interaction
-    - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
+    st.markdown("---")
+    st.markdown(
+        """
+        This app integrates:
+        - Real Chest X-ray pneumonia classification with pretrained Logistic Regression and XGBoost models
+        - Multi-source misinformation detection: Reddit (free API), Tavily web search, Wikipedia, Hacker News, HealthVer and FullFact
+        - RAPHAEL-style claim scoring for health claims using sentiment analysis
+        - Agent-based simulation modelling the impact of misinformation on care-seeking behaviour with clinician interaction
+        - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
 
-    Reach out on Github to colabborate.
-    """
-)
+        Reach out on Github to colabborate.
+        """
+    )
+
 
 
 
