@@ -1502,21 +1502,34 @@ if __name__ == "__main__":
 
 
 #### new
-# Run the simulation
-model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinformation_exposure)
-for _ in range(30):
-    model.step()
+import streamlit as st
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
 
-# Collect simulation data
-df_sim = model.get_agent_vars_dataframe()
+# Sliders controlling simulation parameters
+num_agents = st.sidebar.slider("Number of Patient Agents", 5, 200, 50)
+num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 3)
+misinformation_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.5,0.05)
+
+# Generate simulation data based on sliders
+@st.cache_data
+def generate_simulation_data(num_agents, num_clinicians, misinformation_exposure):
+    model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinformation_exposure)
+    for _ in range(30):
+        model.step()
+    df_sim = model.get_agent_vars_dataframe()
+    return df_sim
+
+# Generate the data whenever sliders are adjusted
+simulation_data = generate_simulation_data(num_agents, num_clinicians, misinfo_exposure)
 
 # Reset index for plotting
-df_reset = df_sim.reset_index()
+df_reset = simulation_data.reset_index()
 
-# Display the scatter plot
-st.write("### Impact of Misinformation & Trust on Care-Seeking")
-
-fig1, ax1 = plt.subplots(figsize=(8, 6))
+# Plotting the scatter plot
+# st.write("### Impact of Misinformation & Trust on Care-Seeking")
+fig, ax = plt.subplots(figsize=(8, 6))
 sns.scatterplot(
     data=df_reset,
     x="Symptom Severity",
@@ -1524,14 +1537,14 @@ sns.scatterplot(
     hue="Trust in Clinician",
     size="Misinformation Exposure",
     alpha=0.7,
-    ax=ax1,
+    ax=ax,
     palette="coolwarm",
     sizes=(20, 200)
 )
-ax1.set_title("Impact of Misinformation & Trust on Care-Seeking")
-ax1.set_xlabel("Symptom Severity")
-ax1.set_ylabel("Care Seeking Behavior")
-st.pyplot(fig1)
+ax.set_title("Impact of Misinformation & Trust on Care-Seeking")
+ax.set_xlabel("Symptom Severity")
+ax.set_ylabel("Care Seeking Behavior")
+st.pyplot(fig)
 
 # =======================
 # FOOTER
@@ -1548,6 +1561,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
