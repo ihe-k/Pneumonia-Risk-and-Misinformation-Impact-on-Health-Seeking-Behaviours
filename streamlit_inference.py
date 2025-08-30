@@ -1593,7 +1593,7 @@ class MisinformationModel(Model):
 # ----------------------------------
 # 3. Run the simulation with current slider values
 # ----------------------------------
-@st.cache_data
+#@st.cache_data
 
   # Get the data from the simulation
     df_sim2 = model.get_agent_vars_dataframe()
@@ -1679,6 +1679,7 @@ st.markdown(
     Reach out on Github to colabborate.
     """
 )
+
 
 
 
