@@ -1591,10 +1591,10 @@ class MisinformationModel(Model):
 @st.cache_data
 def generate_simulation_data(num_agents, num_clinicians, misinformation_exposure):
     model = MisinformationModel(
-                    num_patients=st.session_state['num_agents'],
+                    num_patients=num_agents,
                     #num_patients=num_patients,
-                    num_clinicians=st.session_state['num_clinicians'],   # or another control if you want
-                    misinformation_exposure=st.session_state['misinformation_exposure'],
+                    num_clinicians=num_clinicians,   # or another control if you want
+                    misinformation_exposure=misinformation_exposure,
                     width=10,
                     height=10)
     for _ in range(30):
@@ -1660,6 +1660,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
