@@ -1609,7 +1609,7 @@ def my_function():
     # Reset index and start from 1 (fixing the previous issue)
     df_sim2 = df_sim.reset_index(drop=True)  # Reset the index without keeping the old index
     df_sim2.index = df_sim2.index + 1  # Adjust the index to start at 1
-        df_reset = df.copy
+    df_reset = df.copy
     return #df_sim2
 
 def display_simulation_results():
@@ -1688,6 +1688,7 @@ with col1:
         Reach out on Github to colabborate.
         """
     )
+
 
 
 
