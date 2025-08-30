@@ -1361,7 +1361,6 @@ class MisinformationModelStepped(Model):
 
         self.grid = MultiGrid(width, height, True)
         self.schedule = RandomActivation(self)
-
         self.create_agents()
 
         self.datacollector = DataCollector(
@@ -1405,7 +1404,6 @@ class MisinformationModelNonStepped(Model):
 
         self.grid = MultiGrid(width, height, True)
         self.schedule = RandomActivation(self)
-
         self.create_agents()
 
         self.datacollector = DataCollector(
@@ -1457,23 +1455,21 @@ def generate_non_stepped_data(num_agents, num_clinicians, misinformation_exposur
     return df
 
 # === Shared plotting ===
-def scatter_plot(df, title):
+def scatter_plot_2d(df, x_var, y_var, title):
     fig, ax = plt.subplots(figsize=(7, 5))
-    sns.scatterplot(
-        data=df,
-        x="Symptom Severity",
-        y="Care Seeking Behavior",
-        hue="Trust in Clinician",
-        size="Misinformation Exposure",
-        palette="coolwarm",
-        sizes=(20, 200),
+    scatter = ax.scatter(
+        df[x_var],
+        df[y_var],
+        c=df["Misinformation Exposure"],
+        cmap="viridis",
+        s=80,
         alpha=0.7,
-        ax=ax,
+        edgecolors='w'
     )
+    ax.set_xlabel(x_var)
+    ax.set_ylabel(y_var)
     ax.set_title(title)
-    ax.set_xlabel("Symptom Severity")
-    ax.set_ylabel("Care Seeking Behavior")
-    ax.legend(loc="upper right", fontsize="small", bbox_to_anchor=(1.25, 1))
+    plt.colorbar(scatter, ax=ax, label="Misinformation Exposure", shrink=0.8)
     return fig
 
 # === Display Functions ===
@@ -1487,9 +1483,16 @@ def display_stepped():
     st.subheader("📊 Stepped Simulation Results")
     st.dataframe(df.round(3))
 
-    col1, _ = st.columns(2)
+    # Two scatter plots
+    col1, col2 = st.columns(2)
+
     with col1:
-        st.pyplot(scatter_plot(df, "Stepped Simulation: Misinformation & Trust Impact"))
+        fig1 = scatter_plot_2d(df, "Symptom Severity", "Care Seeking Behavior", "Symptom Severity vs Care-Seeking")
+        st.pyplot(fig1)
+
+    with col2:
+        fig2 = scatter_plot_2d(df, "Trust in Clinician", "Care Seeking Behavior", "Trust in Clinician vs Care-Seeking")
+        st.pyplot(fig2)
 
 def display_non_stepped():
     num_agents = st.sidebar.slider("Number of Patient Agents", 5, 200, 50, key="NS_agents")
@@ -1503,7 +1506,7 @@ def display_non_stepped():
 
     col1, _ = st.columns(2)
     with col1:
-        st.pyplot(scatter_plot(df, "Non-Stepped Simulation: Misinformation & Trust Impact"))
+        st.pyplot(scatter_plot_2d(df, "Symptom Severity", "Care Seeking Behavior", "Symptom Severity vs Care-Seeking"))
 
 # === Main App ===
 def main():
@@ -1521,8 +1524,8 @@ def main():
     st.markdown("---")
     st.markdown("""
     #### 📚 About this App
-    - Powered by [Mesa](https://mesa.readthedocs.io/en/stable/) for agent-based simulation
-    - Visualized using [Streamlit](https://streamlit.io/)
+    - Powered by [Mesa](https://mesa.readthedocs.io/en/stable/) for agent-based simulation  
+    - Visualized using [Streamlit](https://streamlit.io/)  
     - Incorporates realistic agent behavior influenced by misinformation and trust
     """)
 
@@ -1547,6 +1550,7 @@ st.markdown(
     Reach out on Github to collaborate.
     """
 )
+
 
 
 
