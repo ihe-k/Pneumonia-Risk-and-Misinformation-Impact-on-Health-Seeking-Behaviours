@@ -1513,9 +1513,9 @@ import random
 # 1. Declare sliders once at the top
 # ----------------------------------
 #st.sidebar.subheader("Simulation Parameters")
-#num_agents = st.sidebar.slider("Number of Patient Agents", 5, 200, 50)
-#num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 3)
-#misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, value=0.5, step=0.05)
+num_agents = st.sidebar.slider("Number of Patient Agents", 5, 200, 50)
+num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 3)
+misinformation_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, value=0.5, step=0.05)
 
 # Optional: Add a button to re-run simulation if needed
 # run_sim = st.sidebar.button("Run Simulation")
@@ -1597,6 +1597,7 @@ def generate_simulation_data(n_agents, n_clinicians, misinfo):
                     misinformation_exposure=misinfo,
                     width=10,
                     height=10)
+    
     for _ in range(30):
         model.step()
     df = model.get_agent_vars_dataframe()
@@ -1660,6 +1661,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
