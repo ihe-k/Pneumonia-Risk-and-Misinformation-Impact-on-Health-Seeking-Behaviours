@@ -1669,13 +1669,7 @@ if __name__ == "__main__":
     affect patients' care-seeking behavior. Use the sidebar sliders to modify parameters.
     """)
 
-    # Retrieve values from the sidebar sliders (ensure these are at the top of your script)
-    num_agents_non_stepped = st.sidebar.slider("Non-Stepped Simulation Agents", 5, 200, 50, key="non_stepped_agents")
-    num_clinicians_non_stepped = st.sidebar.slider("Non-Stepped Simulation Clinicians", 1, 20, 3, key="non_stepped_clinicians")
-    misinformation_exposure_non_stepped = st.sidebar.slider(
-        "Non-Stepped Simulation Misinformation", 0.0, 1.0, 0.5, 0.05, key="non_stepped_misinfo"
-    )
-
+ 
     # Call display function with values
     display_simulation_results(
         num_agents_non_stepped,
@@ -1700,6 +1694,7 @@ st.markdown(
     Reach out on Github to colabborate.
     """
 )
+
 
 
 
