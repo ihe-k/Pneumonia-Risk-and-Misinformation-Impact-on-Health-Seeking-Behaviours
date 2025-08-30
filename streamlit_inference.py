@@ -516,6 +516,7 @@ misinformation_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 
 
 
 
+
 if 'num_agents' not in st.session_state:
     st.session_state['num_agents'] = num_agents
     st.session_state['num_clinicians'] = num_clinicians
@@ -1672,11 +1673,10 @@ if __name__ == "__main__":
  
     # Call display function with values
     display_simulation_results(
-        num_agents_non_stepped,
-        num_clinicians_non_stepped,
-        misinformation_exposure_non_stepped
+        num_agents,
+        num_clinicians,
+        misinformation_exposure
     )
-
 # =======================
 # FOOTER
 # =======================
@@ -1694,6 +1694,7 @@ st.markdown(
     Reach out on Github to colabborate.
     """
 )
+
 
 
 
