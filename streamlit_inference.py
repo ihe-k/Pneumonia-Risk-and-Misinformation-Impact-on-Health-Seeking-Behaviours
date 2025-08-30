@@ -1512,10 +1512,10 @@ import random
 # ----------------------------------
 # 1. Declare sliders once at the top
 # ----------------------------------
-st.sidebar.subheader("Simulation Parameters")
-num_agents = st.sidebar.slider("Number of Patient Agentsx", 5, 200, 50)
-num_clinicians = st.sidebar.slider("Number of Clinician Agentsx", 1, 20, 3)
-misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposurex", 0.0, 1.0, value=0.5, step=0.05)
+#st.sidebar.subheader("Simulation Parameters")
+#num_agents = st.sidebar.slider("Number of Patient Agents", 5, 200, 50)
+#num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 3)
+#misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, value=0.5, step=0.05)
 
 # Optional: Add a button to re-run simulation if needed
 # run_sim = st.sidebar.button("Run Simulation")
@@ -1552,7 +1552,7 @@ class Clinician(Agent):
         pass
 
 class MisinformationModel(Model):
-    def __init__(self, num_agents, num_clinicians, width, height, misinfo_exposure):
+    def __init__(self, num_agents, num_clinicians, width, height, misinformation_exposure):
         super().__init__()
         self.grid = MultiGrid(width, height, torus=True)
         self.schedule = RandomActivation(self)
@@ -1567,7 +1567,7 @@ class MisinformationModel(Model):
 
         # Create patients
         for i in range(num_agents):
-            a = Patient(i, self, misinformation_score=misinfo_exposure)
+            a = Patient(i, self, misinformation_score=misinformation_exposure)
             self.schedule.add(a)
             x, y = self.random.randrange(width), self.random.randrange(height)
             self.grid.place_agent(a, (x, y))
@@ -1589,8 +1589,14 @@ class MisinformationModel(Model):
 # 3. Run the simulation with current slider values
 # ----------------------------------
 @st.cache_data
-def generate_simulation_data(n_agents, n_clinicians, misinfo):
-    model = MisinformationModel(n_agents, n_clinicians, 10, 10, misinfo)
+def generate_simulation_data(num_agents, num_clinicians, misinformation_exposure):
+    model = MisinformationModel(
+                    num_patients=st.session_state['num_agents'],
+                    #num_patients=num_patients,
+                    num_clinicians=st.session_state['num_clinicians'],   # or another control if you want
+                    misinformation_exposure=st.session_state['misinformation_exposure'],
+                    width=10,
+                    height=10)
     for _ in range(30):
         model.step()
     df = model.get_agent_vars_dataframe()
@@ -1599,12 +1605,12 @@ def generate_simulation_data(n_agents, n_clinicians, misinfo):
     return df
 
 # Generate data based on slider values
-simulation_data = generate_simulation_data(num_agents, num_clinicians, misinfo_exposure)
+simulation_data2 = generate_simulation_data2(num_agents, num_clinicians, misinformation_exposure)
 
 # ----------------------------------
 # 4. Plot the data
 # ----------------------------------
-df_reset = simulation_data
+df_reset = simulation_data2
 
 # Plot: Misinformation & Trust vs Care-Seeking
 fig, ax = plt.subplots(figsize=(6, 4))
@@ -1654,6 +1660,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
