@@ -1620,24 +1620,25 @@ def display_simulation_results():
     
     for _ in range(30):
         model.step()
-    df_sim2 = model.get_agent_vars_dataframe()
-    df_reset = df_sim2.reset_index(drop=True)
-    df_sim2.index = df_sim2.index + 1  # start index at 1
-    return df_sim2
+  #  df_sim2 = model.get_agent_vars_dataframe()
+   # df_reset = df_sim2.reset_index(drop=True)
+   # df_sim2.index = df_sim2.index + 1  # start index at 1
+  #  return df_sim2
 # ----------------------------------
 # 4. Plot the data
 # ----------------------------------
+    df_reset = df_sim2.reset_index()
 
-
-
+     col1, col2 = st.columns(2)
 # Plot: Misinformation & Trust vs Care-Seeking
-fig, ax4 = plt.subplots(figsize=(6, 4))
+with col1:
+fig4, ax4 = plt.subplots(figsize=(6, 4))
 sns.scatterplot(
     data=df_reset,
-    x='Symptom Severity',
-    y='Care Seeking Behavior',
-    hue='Trust in Clinician',
-    size='Misinformation Exposure',
+    x="Symptom Severity",
+    y="Care Seeking Behavior",
+    hue="Trust in Clinician",
+    size="Misinformation Exposure",
     alpha=0.7,
     palette="coolwarm",
     sizes=(20, 200),
@@ -1680,6 +1681,7 @@ st.markdown(
     Reach out on Github to colabborate.
     """
 )
+
 
 
 
