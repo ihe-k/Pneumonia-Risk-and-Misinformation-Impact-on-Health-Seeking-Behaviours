@@ -1520,7 +1520,7 @@ import random
 #misinformation_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, value=0.5, step=0.05)
 
 # Generate data based on slider values
-simulation_data2 = generate_simulation_data(num_agents, num_clinicians, misinformation_exposure)
+simulation_data2 = generate_simulation_data2(num_agents, num_clinicians, misinformation_exposure)
 
 # Optional: Add a button to re-run simulation if needed
 # run_sim = st.sidebar.button("Run Simulation")
@@ -1594,7 +1594,7 @@ class MisinformationModel(Model):
 # 3. Run the simulation with current slider values
 # ----------------------------------
 @st.cache_data
-def generate_simulation_data(num_agents, num_clinicians, misinformation_exposure):
+def generate_simulation_data2(num_agents, num_clinicians, misinformation_exposure):
     model = MisinformationModel(
                     num_patients=num_agents,
                     #num_patients=num_patients,
@@ -1636,7 +1636,7 @@ ax.legend(
     borderaxespad=0.,
     fontsize='small'
 )
-st.pyplot(fig)
+st.pyplot(fig5)
 
 # ----------------------------------
 # 5. Optional: Additional plots or analysis
@@ -1660,8 +1660,11 @@ st.markdown(
     - RAPHAEL-style claim scoring for health claims using sentiment analysis
     - Agent-based simulation modelling the impact of misinformation on care-seeking behaviour with clinician interaction
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
+
+    Reach out on Github to colabborate.
     """
 )
+
 
 
 
