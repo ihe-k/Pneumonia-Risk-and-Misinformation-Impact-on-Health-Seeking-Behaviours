@@ -338,7 +338,7 @@ def get_data_source_info(source):
 # =======================
 # Always show the subheader at the end of the page
 #st.subheader("3⃣ Agent-Based Misinformation Simulation")
-
+## Non-Stepped Simulation
 class Patient(Agent):
     def __init__(self, unique_id, model, misinformation_score=None):
         super().__init__(unique_id, model)
@@ -1613,7 +1613,6 @@ def generate_simulation_data_new(num_agents, num_clinicians, misinformation_expo
 # ----------------------------------
 # 4. Plot the data
 # ----------------------------------
-df_reset = df.reset_index()
 
 # Plot: Misinformation & Trust vs Care-Seeking
 fig5, ax5 = plt.subplots(figsize=(6, 4))
@@ -1665,6 +1664,7 @@ st.markdown(
     Reach out on Github to colabborate.
     """
 )
+
 
 
 
