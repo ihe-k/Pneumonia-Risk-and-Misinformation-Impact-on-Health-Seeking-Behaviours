@@ -1472,7 +1472,7 @@ def display_simulation_results():
     df_S = generate_simulation_data(num_agents, num_clinicians, misinfo_exposure)
     
     # Display Non-Stepped Simulation Data Table
-    st.write("#### 📊 Non-Stepped Simulation Results")
+    st.write("#### 📊 Stepped Simulation Results")
     st.dataframe(df_S[['Symptom Severity', 'Care Seeking Behavior', 'Trust in Clinician', 'Misinformation Exposure', 'Age', 'Location']].round(3))
 
     # Top row: 2D Relationship Analysis (Symptoms vs Care-Seeking and Trust vs Care-Seeking)
@@ -1607,7 +1607,7 @@ def my_function():
 
 def display_simulation_results():
     # Get Simulation data (Non-Stepped)
-    df_sim2 = generate_simulation_data_new(num_agents, num_clinicians, misinfo_exposure)
+    df_sim2 = generate_simulation_data_new(num_agents, num_clinicians, misinformation_exposure)
 
 #def generate_simulation_data_new(num_agents, num_clinicians, misinformation_exposure):
  #   model = MisinformationModel(
@@ -1621,7 +1621,7 @@ def display_simulation_results():
     for _ in range(30):
         model.step()
     df_sim2 = model.get_agent_vars_dataframe()
-    df_sim2 = df_sim2.reset_index(drop=True)
+    df_sim2 = df.reset_index(drop=True)
     df_sim2.index = df_sim2.index + 1  # start index at 1
     return df_sim2
 # ----------------------------------
@@ -1633,7 +1633,7 @@ def display_simulation_results():
 # Plot: Misinformation & Trust vs Care-Seeking
 fig, ax4 = plt.subplots(figsize=(6, 4))
 sns.scatterplot(
-   data=df_sim2_reset,
+    data=df_sim2_reset,
     x="Symptom Severity",
     y="Care Seeking Behavior",
     hue="Trust in Clinician",
@@ -1680,6 +1680,7 @@ st.markdown(
     Reach out on Github to colabborate.
     """
 )
+
 
 
 
