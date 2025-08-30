@@ -1519,6 +1519,9 @@ import random
 #num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 3)
 #misinformation_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, value=0.5, step=0.05)
 
+# Generate data based on slider values
+simulation_data2 = generate_simulation_data(num_agents, num_clinicians, misinformation_exposure)
+
 # Optional: Add a button to re-run simulation if needed
 # run_sim = st.sidebar.button("Run Simulation")
 
@@ -1591,12 +1594,12 @@ class MisinformationModel(Model):
 # 3. Run the simulation with current slider values
 # ----------------------------------
 @st.cache_data
-def generate_simulation_data(n_agents, n_clinicians, misinfo):
+def generate_simulation_data(num_agents, num_clinicians, misinformation_exposure):
     model = MisinformationModel(
-                    num_patients=n_agents,
-                    #num_patients=n_patients,
-                    num_clinicians=n_clinicians,   # or another control if you want
-                    misinformation_exposure=misinfo,
+                    num_patients=num_agents,
+                    #num_patients=num_patients,
+                    num_clinicians=num_clinicians,   # or another control if you want
+                    misinformation_exposure=misinformation_exposure,
                     width=10,
                     height=10)
     
@@ -1606,14 +1609,10 @@ def generate_simulation_data(n_agents, n_clinicians, misinfo):
     df = df.reset_index(drop=True)
     df.index = df.index + 1  # start index at 1
     return df
-
-# Generate data based on slider values
-simulation_data = generate_simulation_data(num_agents, num_clinicians, misinformation_exposure)
-
 # ----------------------------------
 # 4. Plot the data
 # ----------------------------------
-df_reset = simulation_data
+df_reset = simulation_data2
 
 # Plot: Misinformation & Trust vs Care-Seeking
 fig, ax = plt.subplots(figsize=(6, 4))
@@ -1663,6 +1662,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
