@@ -1502,42 +1502,36 @@ if __name__ == "__main__":
 
 
 #### new
-if simulate_button:
-    # Create and run the model
-    model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinformation_exposure)
-    for _ in range(30):
-        model.step()
+# Run the simulation
+model = MisinformationModel(num_agents, num_clinicians, 10, 10, misinformation_exposure)
+for _ in range(30):
+    model.step()
 
-    # Collect simulation data
-    df_sim = model.get_agent_vars_dataframe()
+# Collect simulation data
+df_sim = model.get_agent_vars_dataframe()
 
-    # Reset index for easier plotting
-    df_reset = df_sim.reset_index()
+# Reset index for plotting
+df_reset = df_sim.reset_index()
 
-    # Display simulation results
-    st.write("### 📈 Simulation Results & Analysis")
+# Display the scatter plot
+st.write("### Impact of Misinformation & Trust on Care-Seeking")
 
-    # Visualization: Impact of Misinformation & Trust on Care-Seeking
-    col1, col2 = st.columns(2)
-
-    with col1:
-        fig1, ax1 = plt.subplots(figsize=(8, 6))
-        sns.scatterplot(
-            data=df_reset,
-            x="Symptom Severity",
-            y="Care Seeking Behavior",
-            hue="Trust in Clinician",
-            size="Misinformation Exposure",
-            alpha=0.7,
-            ax=ax1,
-            palette="coolwarm",
-            sizes=(20, 200)
-        )
-        ax1.set_title("Impact of Misinformation & Trust on Care-Seeking")
-        ax1.set_xlabel("Symptom Severity")
-        ax1.set_ylabel("Care Seeking Behavior")
-        st.pyplot(fig1)
-
+fig1, ax1 = plt.subplots(figsize=(8, 6))
+sns.scatterplot(
+    data=df_reset,
+    x="Symptom Severity",
+    y="Care Seeking Behavior",
+    hue="Trust in Clinician",
+    size="Misinformation Exposure",
+    alpha=0.7,
+    ax=ax1,
+    palette="coolwarm",
+    sizes=(20, 200)
+)
+ax1.set_title("Impact of Misinformation & Trust on Care-Seeking")
+ax1.set_xlabel("Symptom Severity")
+ax1.set_ylabel("Care Seeking Behavior")
+st.pyplot(fig1)
 
 # =======================
 # FOOTER
@@ -1554,6 +1548,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
