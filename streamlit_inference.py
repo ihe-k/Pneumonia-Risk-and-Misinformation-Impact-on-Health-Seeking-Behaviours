@@ -936,7 +936,7 @@ def run_simulation(num_agents):
     df.index = df.index + 1
     
     df = df.rename(columns={
-        'Symptom Severity': 'symptom_severity',
+        'symptom_severity': 'Symptom Severity',
         'Care Seeking Behavior': 'care_seeking_behavior',
         'Trust in Clinician': 'trust_in_clinician',
         'Misinformation Exposure': 'misinformation_exposure',
@@ -1515,6 +1515,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
