@@ -1641,7 +1641,7 @@ col1, col2 = st.columns(2)
 with col1:
     fig4, ax4 = plt.subplots(figsize=(6, 4))
     sns.scatterplot(
-        data=df_reset,
+      #  data=df_reset,
         x="Symptom Severity",
         y="Care Seeking Behavior",
         hue="Trust in Clinician",
@@ -1688,6 +1688,7 @@ with col1:
         Reach out on Github to colabborate.
         """
     )
+
 
 
 
