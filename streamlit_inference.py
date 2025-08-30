@@ -1626,43 +1626,40 @@ def scatter_plot(df):
     return fig
 
 # === Main display logic ===
-def display_simulation_results():
-    # Use values from sliders defined earlier
+def display_simulation_results(num_agents, num_clinicians, misinfo_exposure):
+    # Run simulation with passed-in slider values
     df_non_stepped = generate_simulation_data(
-        num_agents_non_stepped,
-        num_clinicians_non_stepped,
-        misinformation_exposure_non_stepped,
+        num_agents,
+        num_clinicians,
+        misinfo_exposure,
     )
 
-    st.write("#### 📊 Non-Stepped Simulation Results")
-    st.dataframe(
-        df_non_stepped[
-            [
-                "Symptom Severity",
-                "Care Seeking Behavior",
-                "Trust in Clinician",
-                "Misinformation Exposure",
-                "Age",
-                "Location",
-            ]
-        ].round(3)
-    )
+    st.write("### 📊 Non-Stepped Simulation Results")
+    st.dataframe(df_non_stepped.round(3))
 
-    st.write("#### 📈 Impact of Misinformation & Trust on Care-Seeking")
-    st.pyplot(scatter_plot(df_non_stepped))
+    # Scatter plot
+    col1, _ = st.columns(2)
+    with col1:
+        fig, ax = plt.subplots(figsize=(7, 5))
+        sns.scatterplot(
+            data=df_non_stepped,
+            x="Symptom Severity",
+            y="Care Seeking Behavior",
+            hue="Trust in Clinician",
+            size="Misinformation Exposure",
+            palette="coolwarm",
+            sizes=(20, 200),
+            alpha=0.7,
+            ax=ax,
+        )
+        ax.set_title("Impact of Misinformation & Trust on Care-Seeking")
+        ax.set_xlabel("Symptom Severity")
+        ax.set_ylabel("Care Seeking Behavior")
+        ax.legend(loc="upper right", fontsize="small", bbox_to_anchor=(1.25, 1))
+        st.pyplot(fig)
 
     st.markdown("---")
     st.markdown("Simulation created using Mesa and Streamlit.")
-
-# === Run App ===
-if __name__ == "__main__":
-    st.title("🧠 Misinformation Impact on Patient Care-Seeking Behavior")
-    st.markdown("""
-    This simulation models how misinformation exposure and trust in clinicians
-    affect patients' care-seeking behavior. Use the sidebar sliders to modify parameters.
-    """)
-    display_simulation_results()
-
 
 # =======================
 # FOOTER
@@ -1681,6 +1678,7 @@ st.markdown(
     Reach out on Github to colabborate.
     """
 )
+
 
 
 
