@@ -904,6 +904,7 @@ else:
 # =======================
 # Always show the subheader at the end of the page
 st.subheader("3⃣ Agent-Based Misinformation Simulation")
+st.write("#### 📊 Non-Stepped Simulation Results")
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 def run_simulation(num_agents):
@@ -1471,7 +1472,7 @@ def display_simulation_results():
     df_S = generate_simulation_data(num_agents, num_clinicians, misinfo_exposure)
     
     # Display Non-Stepped Simulation Data Table
-    st.write("### 📊 Non-Stepped Simulation Results")
+    st.write("#### 📊 Non-Stepped Simulation Results")
     st.dataframe(df_S[['Symptom Severity', 'Care Seeking Behavior', 'Trust in Clinician', 'Misinformation Exposure', 'Age', 'Location']].round(3))
 
     # Top row: 2D Relationship Analysis (Symptoms vs Care-Seeking and Trust vs Care-Seeking)
@@ -1630,9 +1631,9 @@ def display_simulation_results():
 
 
 # Plot: Misinformation & Trust vs Care-Seeking
-fig, ax = plt.subplots(figsize=(6, 4))
+fig, ax4 = plt.subplots(figsize=(6, 4))
 sns.scatterplot(
-   # data=df_sim2_reset,
+   data=df_sim2_reset,
     x="Symptom Severity",
     y="Care Seeking Behavior",
     hue="Trust in Clinician",
@@ -1640,12 +1641,12 @@ sns.scatterplot(
     alpha=0.7,
     palette="coolwarm",
     sizes=(20, 200),
-    ax=ax
+    ax=ax4
 )
-ax.set_title("Impact of Misinformation & Trust on Care-Seeking")
-ax.set_xlabel("Symptom Severity")
-ax.set_ylabel("Care Seeking Behavior")
-ax.legend(
+ax4.set_title("Impact of Misinformation & Trust on Care-Seeking")
+ax4.set_xlabel("Symptom Severity")
+ax4.set_ylabel("Care Seeking Behavior")
+ax4.legend(
     bbox_to_anchor=(1.05, 1),
     loc='upper left',
     borderaxespad=0.,
@@ -1679,6 +1680,7 @@ st.markdown(
     Reach out on Github to colabborate.
     """
 )
+
 
 
 
