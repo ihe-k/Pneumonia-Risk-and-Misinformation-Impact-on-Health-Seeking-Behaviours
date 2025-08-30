@@ -1517,22 +1517,22 @@ from mesa.datacollection import DataCollector
 
 # --- Your existing sliders (already declared somewhere at the top) ---
 # Using key arguments for uniqueness:
-num_agents = st.sidebar.slider("Number of Patient Agents", 5, 100, 10)
-num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 5)
-misinformation_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.3, 0.05)
+num_agents = st.sidebar.slider("Number of Patient Agents", 5, 200, 50)
+num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 3)
+misinformation_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.5, 0.05)
 
 # Non-stepped simulation sliders (with keys)
 num_agents_non_stepped = st.sidebar.slider(
-    "Non-Stepped Simulation Agents", 5, 100, 10, key="non_stepped_agents"
+    "Non-Stepped Simulation Agents", 5, 200, 50, key="non_stepped_agents"
 )
 num_clinicians_non_stepped = st.sidebar.slider(
-    "Non-Stepped Simulation Clinicians", 1, 20, 5, key="non_stepped_clinicians"
+    "Non-Stepped Simulation Clinicians", 1, 20, 3, key="non_stepped_clinicians"
 )
 misinformation_exposure_non_stepped = st.sidebar.slider(
     "Non-Stepped Simulation Misinformation",
     0.0,
     1.0,
-    0.3,
+    0.5,
     0.05,
     key="non_stepped_misinfo",
 )
@@ -1656,6 +1656,7 @@ st.markdown(
     Reach out on Github to colabborate.
     """
 )
+
 
 
 
