@@ -1654,11 +1654,6 @@ if __name__ == "__main__":
     affect patients' care-seeking behavior. Use the sidebar sliders to modify parameters.
     """)
 
-    # You must define these variables with your sliders before calling the function:
-    num_agents = st.sidebar.slider("Number of Patient Agents", 5, 200, 50, key="non_stepped_agents")
-    num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 3, key="non_stepped_clinicians")
-    misinformation_exposure = st.sidebar.slider("Misinformation Exposure", 0.0, 1.0, 0.5, 0.05, key="non_stepped_misinfo")
-
     # Call display function with slider values
     show_non_stepped_outputs(
         num_agents,
@@ -1700,6 +1695,7 @@ st.markdown(
     Reach out on Github to collaborate.
     """
 )
+
 
 
 
