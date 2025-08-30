@@ -514,7 +514,7 @@ misinformation_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 
 # simulate_button = st.sidebar.button("Run Simulation")
 # Place in sidebar
 
-simulation_data = generate_simulation_data(num_agents, num_clinicians, misinformation_exposure)
+
 
 if 'num_agents' not in st.session_state:
     st.session_state['num_agents'] = num_agents
@@ -1663,6 +1663,7 @@ st.markdown(
     - Advanced visualisations: sentiment distributions, misinformation rates and simulation trends
     """
 )
+
 
 
 
