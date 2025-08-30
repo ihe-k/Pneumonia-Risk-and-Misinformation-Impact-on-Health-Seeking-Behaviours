@@ -1632,11 +1632,11 @@ def display_simulation_results():
 # Plot: Misinformation & Trust vs Care-Seeking
 fig, ax = plt.subplots(figsize=(6, 4))
 sns.scatterplot(
-   # data=df_reset,
-    x="symptom_severity",
-    y="care_seeking_behavior",
-    hue="trust_in_clinician",
-    size="misinformation_exposure",
+   # data=df_sim2_reset,
+    x="Symptom Severity",
+    y="Care Seeking Behavior",
+    hue="Trust in Clinician",
+    size="Misinformation Exposure",
     alpha=0.7,
     palette="coolwarm",
     sizes=(20, 200),
@@ -1679,6 +1679,7 @@ st.markdown(
     Reach out on Github to colabborate.
     """
 )
+
 
 
 
