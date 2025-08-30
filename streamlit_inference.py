@@ -1515,21 +1515,7 @@ from mesa.time import RandomActivation
 from mesa.space import MultiGrid
 from mesa.datacollection import DataCollector
 
-# -------------------------------------------------
-# 1. Assume sliders already declared somewhere above:
-#    num_agents, num_clinicians, misinformation_exposure
-# -------------------------------------------------
-
-# For demonstration purposes only:
-# Uncomment below if testing standalone
-# num_agents = 50
-# num_clinicians = 3
-# misinformation_exposure = 0.5
-
-# -------------------------------------------------
-# 2. Define your Mesa Agents and Model
-# -------------------------------------------------
-
+# === Define Mesa Agents and Model ===
 class Patient(Agent):
     def __init__(self, unique_id, model, misinformation_score=None):
         super().__init__(unique_id, model)
@@ -1574,12 +1560,14 @@ class MisinformationModel(Model):
             }
         )
 
+        # Create Patient Agents
         for i in range(num_agents):
             patient = Patient(i, self, misinformation_score=misinformation_exposure)
             self.schedule.add(patient)
             x, y = self.random.randrange(width), self.random.randrange(height)
             self.grid.place_agent(patient, (x, y))
 
+        # Create Clinician Agents
         for i in range(num_agents, num_agents + num_clinicians):
             clinician = Clinician(i, self)
             self.schedule.add(clinician)
@@ -1593,33 +1581,20 @@ class MisinformationModel(Model):
     def get_agent_vars_dataframe(self):
         return self.datacollector.get_agent_vars_dataframe()
 
-# -------------------------------------------------
-# 3. Function to run simulation using existing slider values
-# -------------------------------------------------
-
+# === Simulation runner function using slider values ===
 @st.cache_data
 def run_simulation(num_agents, num_clinicians, misinformation_exposure):
-    model = MisinformationModel(
-        num_agents=num_agents,
-        num_clinicians=num_clinicians,
-        misinformation_exposure=misinformation_exposure,
-    )
+    model = MisinformationModel(num_agents, num_clinicians, misinformation_exposure)
     for _ in range(30):
         model.step()
     df = model.get_agent_vars_dataframe().reset_index(drop=True)
-    df.index = df.index + 1
+    df.index = df.index + 1  # Start index at 1
     return df
 
-# -------------------------------------------------
-# 4. Run simulation with slider variables already defined at top
-# -------------------------------------------------
-
+# === Run simulation with slider values ===
 simulation_df = run_simulation(num_agents, num_clinicians, misinformation_exposure)
 
-# -------------------------------------------------
-# 5. Display results in Streamlit
-# -------------------------------------------------
-
+# === Streamlit visualization ===
 st.title("Misinformation Impact on Patient Care-Seeking Behavior")
 
 st.markdown("""
@@ -1627,25 +1602,24 @@ This simulation models how misinformation exposure and trust in clinicians
 affect patients' care-seeking behavior.
 """)
 
-col1, _ = st.columns(2)
-with col1:
-    fig, ax = plt.subplots(figsize=(7, 5))
-    sns.scatterplot(
-        data=simulation_df,
-        x="Symptom Severity",
-        y="Care Seeking Behavior",
-        hue="Trust in Clinician",
-        size="Misinformation Exposure",
-        palette="coolwarm",
-        sizes=(20, 200),
-        alpha=0.7,
-        ax=ax,
-    )
-    ax.set_title("Impact of Misinformation & Trust on Care-Seeking")
-    ax.set_xlabel("Symptom Severity")
-    ax.set_ylabel("Care Seeking Behavior")
-    ax.legend(loc="upper right", fontsize="small", bbox_to_anchor=(1.25, 1))
-    st.pyplot(fig)
+fig, ax = plt.subplots(figsize=(7, 5))
+sns.scatterplot(
+    data=simulation_df,
+    x="Symptom Severity",
+    y="Care Seeking Behavior",
+    hue="Trust in Clinician",
+    size="Misinformation Exposure",
+    palette="coolwarm",
+    sizes=(20, 200),
+    alpha=0.7,
+    ax=ax,
+)
+ax.set_title("Impact of Misinformation & Trust on Care-Seeking")
+ax.set_xlabel("Symptom Severity")
+ax.set_ylabel("Care Seeking Behavior")
+ax.legend(loc="upper right", fontsize="small", bbox_to_anchor=(1.25, 1))
+
+st.pyplot(fig)
 
 st.markdown("---")
 st.markdown("Simulation created using Mesa and Streamlit.")
@@ -1668,6 +1642,7 @@ st.markdown(
     Reach out on Github to colabborate.
     """
 )
+
 
 
 
