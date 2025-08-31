@@ -1311,7 +1311,6 @@ class MisinformationModel(Model):
 
 ### Graph
 
-# === Imports ===
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -1409,7 +1408,7 @@ def generate_stepped_data(num_agents, num_clinicians, misinfo_exposure):
     for _ in range(30):
         model.step()
     df = model.get_agent_vars_dataframe()
-    df = df.reset_index()  # Bring 'Step' and 'Agent' into columns
+    df = df.reset_index()  # bring 'Agent' and 'Step' into columns
     df = df.rename(columns={"Agent": "AgentID"})
     return df
 
@@ -1425,7 +1424,7 @@ def generate_non_stepped_data(num_agents, num_clinicians, misinfo_exposure):
     df = df.rename(columns={"Agent": "AgentID"})
     return df
 
-# === Linear Regression Plot ===
+# === Plotting functions ===
 def linear_regression_plot(x, y, data, xlabel, ylabel, title):
     df = data.copy()
     df = df.replace([np.inf, -np.inf], np.nan).dropna(subset=[x, y])
@@ -1440,13 +1439,10 @@ def linear_regression_plot(x, y, data, xlabel, ylabel, title):
     ax.set_ylabel(ylabel)
     return fig
 
-# === Plots ===
 def plot_2d_relationships(df):
     if len(df) > 10:
         st.markdown("### 🎯 2D Relationship Analysis")
         fig, axs = plt.subplots(1, 3, figsize=(20, 5))
-
-        # Symptom Severity vs Care Seeking Behavior
         sns.scatterplot(
             x='Symptom Severity',
             y='Care Seeking Behavior',
@@ -1459,7 +1455,6 @@ def plot_2d_relationships(df):
         )
         axs[0].set_title('Symptom Severity vs Care-Seeking\n(Color = Misinformation Exposure)')
 
-        # Misinformation Exposure vs Care Seeking Behavior
         sns.scatterplot(
             x='Misinformation Exposure',
             y='Care Seeking Behavior',
@@ -1472,7 +1467,6 @@ def plot_2d_relationships(df):
         )
         axs[1].set_title('Misinformation Exposure vs Care-Seeking\n(Color = Trust in Clinician)')
 
-        # Trust in Clinician vs Care Seeking Behavior
         sns.scatterplot(
             x='Trust in Clinician',
             y='Care Seeking Behavior',
@@ -1502,15 +1496,26 @@ def display_stepped():
 
     st.subheader("📊 Stepped Simulation Results (All Steps)")
     st.dataframe(df.round(3))
-
     plot_2d_relationships(df)
 
-   
+# === Display Non-Stepped Simulation ===
+def display_non_stepped():
+    # Sidebar parameters
+    num_agents = st.sidebar.slider("Number of Patient Agents", 5, 100, 10, key="NS_agents")
+    num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 5, key="NS_clinicians")
+    misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.3, 0.05, key="NS_misinfo")
+    
+    # Generate data for the last step
+    df = generate_non_stepped_data(num_agents, num_clinicians, misinfo_exposure)
+    
+    st.subheader("📊 Non-Stepped Simulation Results (Latest State)")
+    st.dataframe(df.round(3))
+    plot_2d_relationships(df)
 
 # === Main App ===
 def main():
-    st.title("🧠 Misinformation Impact on Patient Care-Seeking Behavior")
     st.markdown("""
+    # 🧠 Misinformation Impact on Patient Care-Seeking Behavior
     This simulation models how misinformation exposure and trust in clinicians
     affect patients' care-seeking behavior. Use the sidebar to choose the simulation type and parameters.
     """)
@@ -1528,11 +1533,8 @@ def main():
     - Incorporates realistic agent behavior influenced by misinformation and trust  
     """)
 
-# === Entry Point ===
 if __name__ == "__main__":
     main()
-
-
 # =======================
 # FOOTER
 # =======================
@@ -1550,6 +1552,7 @@ st.markdown(
     Reach out on Github to collaborate.
     """
 )
+
 
 
 
