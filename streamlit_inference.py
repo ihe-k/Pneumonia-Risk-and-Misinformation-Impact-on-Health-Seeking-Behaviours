@@ -1449,7 +1449,7 @@ def plot_2d_relationships(df):
             x='Symptom Severity',
             y='Care Seeking Behavior',
             hue='Misinformation Exposure',
-            palette='viridis',
+            palette='viridis',  # Misinformation Exposure color map
             data=df,
             ax=axs[0],
             alpha=0.6,
@@ -1462,22 +1462,22 @@ def plot_2d_relationships(df):
         scatter2 = sns.scatterplot(
             x='Misinformation Exposure',
             y='Care Seeking Behavior',
-            hue='Trust in Clinician',
-            palette='coolwarm',
+            hue='Misinformation Exposure',  # Use the same gradient for Trust in Clinician
+            palette='viridis',  # Same color map for Trust in Clinician as Misinformation Exposure
             data=df,
             ax=axs[1],
             alpha=0.6,
             s=50,
             legend=False  # Remove legend from plot
         )
-        axs[1].set_title('Misinformation Exposure vs Care-Seeking\n(Color = Trust in Clinician)')
+        axs[1].set_title('Misinformation Exposure vs Care-Seeking\n(Color = Misinformation Exposure)')
 
         # Trust in Clinician vs Care-Seeking with Misinformation Exposure colorbar
         scatter3 = sns.scatterplot(
             x='Trust in Clinician',
             y='Care Seeking Behavior',
-            hue='Misinformation Exposure',
-            palette='viridis',
+            hue='Misinformation Exposure',  # Use the same gradient for Misinformation Exposure
+            palette='viridis',  # Same color map for Trust in Clinician as Misinformation Exposure
             data=df,
             ax=axs[2],
             alpha=0.6,
@@ -1491,9 +1491,9 @@ def plot_2d_relationships(df):
         cbar1 = plt.colorbar(scatter1.collections[0], cax=cbar_ax1, orientation='vertical')
         cbar1.set_label('Misinformation Exposure')
 
-        cbar_ax2 = fig.add_axes([0.92, 0.1, 0.03, 0.8])  # Vertical colorbar for Trust in Clinician under second plot
+        cbar_ax2 = fig.add_axes([0.92, 0.1, 0.03, 0.8])  # Vertical colorbar for Misinformation Exposure under second plot
         cbar2 = plt.colorbar(scatter2.collections[0], cax=cbar_ax2, orientation='vertical')
-        cbar2.set_label('Trust in Clinician')
+        cbar2.set_label('Misinformation Exposure')
 
         cbar_ax3 = fig.add_axes([0.92, 0.1, 0.03, 0.8])  # Vertical colorbar for Misinformation Exposure under third plot
         cbar3 = plt.colorbar(scatter3.collections[0], cax=cbar_ax3, orientation='vertical')
@@ -1510,9 +1510,6 @@ def display_stepped():
     misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.3, 0.05, key="S_misinfo")
 
     df = generate_stepped_data(num_agents, num_clinicians, misinfo_exposure)
-
-    st.subheader("📊 Stepped Simulation Results (All Steps)")
-    st.dataframe(df.round(3))
     plot_2d_relationships(df)
 
 # === Display Non-Stepped Simulation ===
@@ -1522,18 +1519,15 @@ def display_non_stepped():
     misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.3, 0.05, key="NS_misinfo")
     
     df = generate_non_stepped_data(num_agents, num_clinicians, misinfo_exposure)
-    
-    st.subheader("📊 Non-Stepped Simulation Results (Latest State)")
-    st.dataframe(df.round(3))
     plot_2d_relationships(df)
 
-# === Main App ===
+# === Main Execution ===
 def main():
     st.markdown("""
     This simulation models how misinformation exposure and trust in clinicians
     affect patients' care-seeking behavior. Use the sidebar to choose the simulation type and parameters.
     """)
-
+    
     if simulation_type == "Stepped":
         display_stepped()
     else:
@@ -1541,6 +1535,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 # =======================
 # FOOTER
@@ -1559,6 +1554,7 @@ st.markdown(
     Reach out on Github to collaborate.
     """
 )
+
 
 
 
