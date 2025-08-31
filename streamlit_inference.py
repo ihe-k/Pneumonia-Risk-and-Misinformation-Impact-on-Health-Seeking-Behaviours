@@ -1343,7 +1343,7 @@ st.markdown(
             border-radius: 10px;
             padding: 20px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            z-index: 1000;  /* Ensures it's on top of other elements */
+            z-index: 9999;  /* Ensures it's on top of other elements */
         }
         .overlay-box h3 {
             color: #333;
@@ -1594,6 +1594,7 @@ st.markdown(
     Reach out on Github to collaborate.
     """
 )
+
 
 
 
