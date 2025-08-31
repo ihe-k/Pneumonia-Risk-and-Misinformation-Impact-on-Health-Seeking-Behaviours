@@ -1517,9 +1517,30 @@ def display_stepped():
 
 # === Display Non-Stepped Simulation ===
 def display_non_stepped():
-    num_agents = st.sidebar.slider("Number of Patient
+    num_agents = st.sidebar.slider("Number of Patient Agents", 5, 100, 10, key="NS_agents")
+    num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 5, key="NS_clinicians")
+    misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.3, 0.05, key="NS_misinfo")
+    
+    df = generate_non_stepped_data(num_agents, num_clinicians, misinfo_exposure)
+    
+    st.subheader("📊 Non-Stepped Simulation Results (Latest State)")
+    st.dataframe(df.round(3))
+    plot_2d_relationships(df)
 
+# === Main App ===
+def main():
+    st.markdown("""
+    This simulation models how misinformation exposure and trust in clinicians
+    affect patients' care-seeking behavior. Use the sidebar to choose the simulation type and parameters.
+    """)
 
+    if simulation_type == "Stepped":
+        display_stepped()
+    else:
+        display_non_stepped()
+
+if __name__ == "__main__":
+    main()
 
 # =======================
 # FOOTER
@@ -1538,6 +1559,7 @@ st.markdown(
     Reach out on Github to collaborate.
     """
 )
+
 
 
 
