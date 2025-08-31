@@ -1336,9 +1336,9 @@ st.markdown(
         .overlay-box {
             position: absolute;
             top: 180px;  /* Adjust this to cover the first 'Non-Stepped Simulation' slider */
-            left: 0px;
+            left: 250px;
             width: 300px;  /* Adjust size */
-            height: 200px;  /* Adjust size */
+            height: 400px;  /* Adjust size */
             background-color: white;
             border-radius: 10px;
             padding: 20px;
@@ -1595,6 +1595,7 @@ st.markdown(
     Reach out on Github to collaborate.
     """
 )
+
 
 
 
