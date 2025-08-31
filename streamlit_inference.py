@@ -1328,40 +1328,6 @@ import matplotlib as mpl
 # === Sidebar: Simulation Type ===
 simulation_type = st.sidebar.radio("Select Simulation Type", ["Stepped", "Non-Stepped"])
 
-# Custom HTML and CSS for overlaying a white square with instructions
-st.markdown(
-    """
-    <style>
-        /* Styling the overlay box */
-        .overlay-box {
-            position: fixed;
-            top: 350px;  /* Adjust this to cover the first 'Non-Stepped Simulation' slider */
-            left: 0px;
-            width: 220px;  /* Adjust size */
-            height: 400px;  /* Adjust size */
-            background-color: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            z-index: 999999;  /* Ensures it's on top of other elements */
-        }
-        .overlay-box h3 {
-            color: #333;
-            font-size: 16px;
-        }
-        .overlay-box p {
-            color: #555;
-            font-size: 14px;
-        }
-    </style>
-    <div class="overlay-box">
-       # <h3>Welcome to the Simulation App</h3>
-        <p>Use this tool to explore the impact of misinformation exposure on care-seeking behavior.</p>
-        <p>Select "Stepped" or "Non-Stepped" simulation from the options below. Adjust the parameters accordingly.</p>
-    </div>
-    """, unsafe_allow_html=True
-)
-
 # === Shared Agent Definitions ===
 class PatientAgent(Agent):
     def __init__(self, unique_id, model):
@@ -1478,7 +1444,9 @@ def linear_regression_plot(x, y, data, xlabel, ylabel, title):
 def plot_2d_relationships(df):
     if len(df) > 10:
         st.markdown("### 🎯 2D Relationship Analysis")
-        fig, axs = plt.subplots(1, 3, figsize=(20, 5))
+        
+        # Reduced width for each plot to fit the colorbar
+        fig, axs = plt.subplots(1, 3, figsize=(18, 5))  # Smaller width for each plot
 
         # Symptom Severity vs Care-Seeking with Misinformation Exposure colorbar
         scatter1 = sns.scatterplot(
@@ -1523,12 +1491,15 @@ def plot_2d_relationships(df):
         axs[2].set_title('Trust in Clinician vs Care-Seeking\n(Color = Misinformation Exposure)')
 
         # Adding vertical colorbar to the right side of the plot
-        cbar_ax = fig.add_axes([0.93, 0.05, 0.02, 0.9])  # Positioning the color bar vertically
-        cbar = plt.colorbar(scatter1.collections[0], cax=cbar_ax, orientation='vertical')
+        cbar_ax = fig.add_axes([0.92, 0.05, 0.02, 0.9])  # Positioning the color bar vertically
+
+        # Creating color bar with fixed limits (0 to 1)
+        norm = mpl.colors.Normalize(vmin=0, vmax=1)
+        cbar = plt.colorbar(scatter1.collections[0], cax=cbar_ax, orientation='vertical', norm=norm)
         cbar.set_label('Misinformation Exposure')
 
         # Adjust layout to prevent overlap
-        plt.tight_layout()
+        plt.subplots_adjust(right=0.9)  # Adjust the right spacing to allow space for colorbar
 
         # Display the plots
         st.pyplot(fig)
@@ -1594,6 +1565,7 @@ st.markdown(
     Reach out on Github to collaborate.
     """
 )
+
 
 
 
