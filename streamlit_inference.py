@@ -1326,7 +1326,7 @@ import random
 import matplotlib as mpl
 
 # === Sidebar: Simulation Type ===
-st.sidebar.subheader("ABM Simulation Controls
+st.sidebar.subheader("ABM Simulation Controls")
 simulation_type = st.sidebar.radio("Select Simulation Type", ["Stepped", "Non-Stepped"])
 
 # === Shared Agent Definitions ===
@@ -1566,6 +1566,7 @@ st.markdown(
     Reach out on Github to collaborate.
     """
 )
+
 
 
 
