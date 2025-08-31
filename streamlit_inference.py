@@ -1487,11 +1487,11 @@ def plot_2d_relationships(df):
         axs[2].set_title('Trust in Clinician vs Care-Seeking\n(Color = Misinformation Exposure)')
 
         # Adding horizontal colorbars under the plots
-        cbar_ax1 = fig.add_axes([0.1, -0.05, 0.8, 0.03])  # Horizontal colorbar for Misinformation Exposure
+        cbar_ax1 = fig.add_axes([0.1, -0.05, 0.8, 0.03])  # Horizontal colorbar for Misinformation Exposure under first plot
         cbar1 = plt.colorbar(scatter1.collections[0], cax=cbar_ax1, orientation='horizontal')
         cbar1.set_label('Misinformation Exposure')
 
-        cbar_ax2 = fig.add_axes([0.1, -0.12, 0.8, 0.03])  # Horizontal colorbar for Trust in Clinician
+        cbar_ax2 = fig.add_axes([0.1, -0.12, 0.8, 0.03])  # Horizontal colorbar for Trust in Clinician under second plot
         cbar2 = plt.colorbar(scatter2.collections[0], cax=cbar_ax2, orientation='horizontal')
         cbar2.set_label('Trust in Clinician')
 
@@ -1519,7 +1519,7 @@ def display_non_stepped():
     misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.3, 0.05, key="NS_misinfo")
     
     # Generate data for the last step
-    df = generate_non_stepped_data(10, 5, misinfo_exposure)
+    df = generate_non_stepped_data(num_agents, num_clinicians, misinfo_exposure)
     
     st.subheader("📊 Non-Stepped Simulation Results (Latest State)")
     st.dataframe(df.round(3))
@@ -1540,6 +1540,7 @@ def main():
 if __name__ == "__main__":
     main()
 
+
 # =======================
 # FOOTER
 # =======================
@@ -1557,6 +1558,7 @@ st.markdown(
     Reach out on Github to collaborate.
     """
 )
+
 
 
 
