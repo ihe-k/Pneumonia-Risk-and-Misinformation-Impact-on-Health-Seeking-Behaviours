@@ -1339,6 +1339,7 @@ class PatientAgent(Agent):
         self.location = random.choice(['Urban', 'Rural'])
 
     def step(self):
+        # You can add behavior here if needed
         pass
 
 class ClinicianAgent(Agent):
@@ -1347,6 +1348,7 @@ class ClinicianAgent(Agent):
         self.trust_in_clinician = random.uniform(0, 1)
 
     def step(self):
+        # Behavior here if needed
         pass
 
 # === Simulation Model Base Class ===
@@ -1359,21 +1361,21 @@ class MisinformationModelBase(Model):
         self.height = height
         self.misinfo_exposure = misinfo_exposure
 
-        self.grid = MultiGrid(width, height, True)
+        self.grid = MultiGrid(width, height, torus=True)
         self.schedule = RandomActivation(self)
 
         self.create_agents()
 
         self.datacollector = DataCollector(
             agent_reporters={
-                "Step": "step",  # Will be set during data collection
                 "Agent": "unique_id",
                 "Symptom Severity": "symptom_severity",
                 "Care Seeking Behavior": "care_seeking_behavior",
                 "Trust in Clinician": "trust_in_clinician",
                 "Misinformation Exposure": "misinformation_exposure",
                 "Age": "age",
-                "Location": "location"
+                "Location": "location",
+                "Step": "step"
             }
         )
 
@@ -1391,15 +1393,21 @@ class MisinformationModelBase(Model):
                                         self.random.randint(0, self.grid.height - 1)))
 
     def step(self):
-        self.datacollector.collect(self)
         self.schedule.step()
+        # Collect data **after** agents have moved/acted
+        self.datacollector.collect(self)
 
     def get_agent_vars_dataframe(self):
         df = self.datacollector.get_agent_vars_dataframe()
-        # Rename 'Agent' column to 'AgentID'
+        # DEBUG: print shape and sample
+        print("Data collected shape:", df.shape)
+        if df.empty:
+            print("Warning: No data collected this step.")
+        else:
+            print("Sample data:\n", df.head())
+        # Rename 'Agent' column if exists
         if 'Agent' in df.columns:
             df = df.rename(columns={"Agent": "AgentID"})
-        # The 'Step' column is included; will handle in data selection
         return df
 
 # === Specific Models ===
@@ -1409,17 +1417,14 @@ class MisinformationModelStepped(MisinformationModelBase):
 class MisinformationModelNonStepped(MisinformationModelBase):
     pass
 
-# === Caching Simulation Data ===
+# === Data Generation Functions with caching ===
 @st.cache_data
 def generate_stepped_data(num_agents, num_clinicians, misinfo_exposure):
     model = MisinformationModelStepped(num_agents, num_clinicians, 10, 10, misinfo_exposure)
     for _ in range(30):
         model.step()
     df = model.get_agent_vars_dataframe()
-    # Put 'Step' and 'AgentID' as columns
     df = df.reset_index()
-    df = df.rename(columns={"Agent": "AgentID"})
-    # Ensure 'AgentID' starts from 1
     df['AgentID'] = df['AgentID'] + 1
     return df
 
@@ -1523,10 +1528,10 @@ def display_non_stepped():
     st.dataframe(df.round(3))
     plot_2d_relationships(df)
 
-# === Main App ===
+# === Main Application ===
 def main():
+    st.title("🧠 Misinformation Impact on Patient Care-Seeking Behavior")
     st.markdown("""
-   
     This simulation models how misinformation exposure and trust in clinicians
     affect patients' care-seeking behavior. Use the sidebar to choose the simulation type and parameters.
     """)
@@ -1544,6 +1549,7 @@ def main():
     - Incorporates realistic agent behavior influenced by misinformation and trust  
     """)
 
+# Entry point
 if __name__ == "__main__":
     main()
 # =======================
@@ -1563,6 +1569,7 @@ st.markdown(
     Reach out on Github to collaborate.
     """
 )
+
 
 
 
