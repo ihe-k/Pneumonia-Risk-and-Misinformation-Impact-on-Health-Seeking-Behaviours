@@ -1495,6 +1495,10 @@ def plot_2d_relationships(df):
         cbar2 = plt.colorbar(scatter2.collections[0], cax=cbar_ax2, orientation='horizontal')
         cbar2.set_label('Trust in Clinician')
 
+        cbar_ax3 = fig.add_axes([0.1, -0.19, 0.8, 0.03])  # Horizontal colorbar for Misinformation Exposure under third plot
+        cbar3 = plt.colorbar(scatter3.collections[0], cax=cbar_ax3, orientation='horizontal')
+        cbar3.set_label('Misinformation Exposure')
+
         # Adjusting layout to make room for colorbars
         plt.tight_layout()
         st.pyplot(fig)
@@ -1513,12 +1517,10 @@ def display_stepped():
 
 # === Display Non-Stepped Simulation ===
 def display_non_stepped():
-    # Sidebar parameters
     num_agents = st.sidebar.slider("Number of Patient Agents", 5, 100, 10, key="NS_agents")
     num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 5, key="NS_clinicians")
     misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.3, 0.05, key="NS_misinfo")
     
-    # Generate data for the last step
     df = generate_non_stepped_data(num_agents, num_clinicians, misinfo_exposure)
     
     st.subheader("📊 Non-Stepped Simulation Results (Latest State)")
@@ -1541,6 +1543,7 @@ if __name__ == "__main__":
     main()
 
 
+
 # =======================
 # FOOTER
 # =======================
@@ -1558,6 +1561,7 @@ st.markdown(
     Reach out on Github to collaborate.
     """
 )
+
 
 
 
