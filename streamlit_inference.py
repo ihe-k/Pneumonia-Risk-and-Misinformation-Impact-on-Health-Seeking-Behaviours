@@ -1310,7 +1310,6 @@ class MisinformationModel(Model):
 #    st.info("👈 Use the sidebar controls above to configure and run an agent-based simulation and a regression analysis.")
 
 ### Graph
-
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -1324,6 +1323,7 @@ from mesa.space import MultiGrid
 from mesa.datacollection import DataCollector
 from mesa.agent import Agent
 import random
+import matplotlib as mpl
 
 # === Sidebar: Simulation Type ===
 simulation_type = st.sidebar.radio("Select Simulation Type", ["Stepped", "Non-Stepped"])
@@ -1444,7 +1444,8 @@ def plot_2d_relationships(df):
         st.markdown("### 🎯 2D Relationship Analysis")
         fig, axs = plt.subplots(1, 3, figsize=(20, 5))
         
-        sns.scatterplot(
+        # Symptom Severity vs Care-Seeking with Misinformation Exposure colorbar
+        scatter1 = sns.scatterplot(
             x='Symptom Severity',
             y='Care Seeking Behavior',
             hue='Misinformation Exposure',
@@ -1456,7 +1457,8 @@ def plot_2d_relationships(df):
         )
         axs[0].set_title('Symptom Severity vs Care-Seeking\n(Color = Misinformation Exposure)')
 
-        sns.scatterplot(
+        # Misinformation Exposure vs Care-Seeking with Trust in Clinician colorbar
+        scatter2 = sns.scatterplot(
             x='Misinformation Exposure',
             y='Care Seeking Behavior',
             hue='Trust in Clinician',
@@ -1468,7 +1470,8 @@ def plot_2d_relationships(df):
         )
         axs[1].set_title('Misinformation Exposure vs Care-Seeking\n(Color = Trust in Clinician)')
 
-        sns.scatterplot(
+        # Trust in Clinician vs Care-Seeking with Misinformation Exposure colorbar
+        scatter3 = sns.scatterplot(
             x='Trust in Clinician',
             y='Care Seeking Behavior',
             hue='Misinformation Exposure',
@@ -1480,14 +1483,19 @@ def plot_2d_relationships(df):
         )
         axs[2].set_title('Trust in Clinician vs Care-Seeking\n(Color = Misinformation Exposure)')
 
-        # Adjusting the legend to the side
+        # Adjusting the legend to be a colorbar
         for ax in axs:
             ax.set_xlabel(ax.get_xlabel())
             ax.set_ylabel('Care Seeking Behavior')
 
-        # Moving legend outside the chart
-        handles, labels = axs[0].get_legend_handles_labels()
-        fig.legend(handles, labels, loc='center left', bbox_to_anchor=(1, 0.5))
+        # Adding colorbars to the plots
+        cbar_ax1 = fig.add_axes([0.92, 0.1, 0.02, 0.8])
+        cbar1 = plt.colorbar(scatter1.collections[0], cax=cbar_ax1)
+        cbar1.set_label('Misinformation Exposure')
+
+        cbar_ax2 = fig.add_axes([0.92, 0.1, 0.02, 0.8])
+        cbar2 = plt.colorbar(scatter2.collections[0], cax=cbar_ax2)
+        cbar2.set_label('Trust in Clinician')
 
         plt.tight_layout()
         st.pyplot(fig)
@@ -1532,7 +1540,6 @@ def main():
 if __name__ == "__main__":
     main()
 
-
 # =======================
 # FOOTER
 # =======================
@@ -1550,6 +1557,7 @@ st.markdown(
     Reach out on Github to collaborate.
     """
 )
+
 
 
 
