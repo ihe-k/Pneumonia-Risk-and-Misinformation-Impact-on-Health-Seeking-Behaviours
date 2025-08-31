@@ -507,7 +507,7 @@ uploaded_file = st.sidebar.file_uploader("Upload Chest X-Ray Image", type=["jpg"
 
 # Agent-Based Simulation Controls (unchanged)
 # st.subheader("3⃣ Agent-Based Misinformation Simulation")
-st.sidebar.subheader("Non-Stepped Simulation")
+st.sidebar.subheader("Demo Slider: Does not affect the simulation")
 num_agents = st.sidebar.slider("Number of Patient Agents", 5, 200, 50, key="non_stepped_agents")
 num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 3, key="non_stepped_clinicians")
 misinformation_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.5, 0.05, key="non_stepped_misinformation")
@@ -1565,6 +1565,7 @@ st.markdown(
     Reach out on Github to collaborate.
     """
 )
+
 
 
 
