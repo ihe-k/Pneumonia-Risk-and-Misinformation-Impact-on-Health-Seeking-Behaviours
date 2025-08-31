@@ -1316,6 +1316,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
+import statsmodels.api as sm
 import statsmodels.formula.api as smf
 from mesa import Model
 from mesa.time import RandomActivation
@@ -1406,8 +1407,9 @@ def generate_stepped_data(num_agents, num_clinicians, misinfo_exposure):
     model = MisinformationModelStepped(num_agents, num_clinicians, 10, 10, misinfo_exposure)
     for _ in range(30):
         model.step()
-    df = model.get_agent_vars_dataframe().reset_index()
-    df["AgentID"] = df["Agent"]
+    df = model.get_agent_vars_dataframe()
+    df = df.reset_index()  # bring 'Step' and 'Agent' from index to columns
+    df = df.rename(columns={"Agent": "AgentID"})
     return df
 
 @st.cache_data
@@ -1415,14 +1417,15 @@ def generate_non_stepped_data(num_agents, num_clinicians, misinfo_exposure):
     model = MisinformationModelNonStepped(num_agents, num_clinicians, 10, 10, misinfo_exposure)
     for _ in range(30):
         model.step()
-    df = model.get_agent_vars_dataframe().reset_index()
+    df = model.get_agent_vars_dataframe()
+    df = df.reset_index()
     df = df[df["Step"] == df["Step"].max()].drop(columns=["Step"])
-    df["AgentID"] = df["Agent"]
+    df = df.rename(columns={"Agent": "AgentID"})
     return df
 
-# === Linear Regression Plot ===
-def linear_regression_plot(x, y, df, xlabel, ylabel, title):
-    df = df.copy()
+# === Linear Regression Plotting Function ===
+def linear_regression_plot(x, y, data, xlabel, ylabel, title):
+    df = data.copy()
     df = df.replace([np.inf, -np.inf], np.nan).dropna(subset=[x, y])
 
     model = smf.ols(f"`{y}` ~ `{x}`", data=df).fit()
@@ -1430,11 +1433,48 @@ def linear_regression_plot(x, y, df, xlabel, ylabel, title):
     p_value = model.pvalues[1]
 
     fig, ax = plt.subplots(figsize=(6, 4))
-    sns.regplot(x=x, y=y, data=df, ax=ax, scatter_kws={'alpha': 0.5}, line_kws={'color': 'red'})
+    sns.regplot(x=x, y=y, data=df, ax=ax, scatter_kws={'alpha': 0.6}, line_kws={'color': 'red'})
+    ax.set_title(f"{title}\nR² = {r_squared:.3f}, p = {p_value:.3f}")
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
-    ax.set_title(f"{title}\nR² = {r_squared:.3f}, p = {p_value:.3f}")
     return fig
+
+# === Plots ===
+def plot_2d_relationships(df):
+    if len(df) > 10:
+        st.markdown("### 🎯 2D Relationship Analysis")
+        fig3, (ax3a, ax3b) = plt.subplots(1, 2, figsize=(15, 6))
+
+        # Symptom Severity vs Care Seeking Behavior
+        scatter1 = ax3a.scatter(
+            df['Symptom Severity'],
+            df['Care Seeking Behavior'],
+            c=df['Misinformation Exposure'],
+            cmap='viridis',
+            alpha=0.6,
+            s=50
+        )
+        ax3a.set_xlabel('Symptom Severity')
+        ax3a.set_ylabel('Care Seeking Behavior')
+        ax3a.set_title('Symptoms vs Care-Seeking\n(Color = Misinformation Level)')
+        plt.colorbar(scatter1, ax=ax3a, label='Misinformation Exposure', shrink=0.8)
+
+        # Trust vs Care Seeking Behavior
+        scatter2 = ax3b.scatter(
+            df['Trust in Clinician'],
+            df['Care Seeking Behavior'],
+            c=df['Misinformation Exposure'],
+            cmap='viridis',
+            alpha=0.6,
+            s=50
+        )
+        ax3b.set_xlabel('Trust in Clinician')
+        ax3b.set_ylabel('Care Seeking Behavior')
+        ax3b.set_title('Trust vs Care-Seeking\n(Color = Misinformation Level)')
+        plt.colorbar(scatter2, ax=ax3b, label='Misinformation Exposure', shrink=0.8)
+
+        plt.tight_layout()
+        st.pyplot(fig3)
 
 # === Display Stepped Simulation ===
 def display_stepped():
@@ -1447,6 +1487,8 @@ def display_stepped():
     st.subheader("📊 Stepped Simulation Results (All Steps)")
     st.dataframe(df.round(3))
 
+    plot_2d_relationships(df)
+
     st.markdown("### 📈 Linear Regression Analyses")
     with st.expander("Show Linear Regression Plots"):
         fig1 = linear_regression_plot("Symptom Severity", "Care Seeking Behavior", df,
@@ -1454,7 +1496,7 @@ def display_stepped():
         st.pyplot(fig1)
 
         fig2 = linear_regression_plot("Misinformation Exposure", "Care Seeking Behavior", df,
-                                      "Misinformation Exposure", "Care Seeking Behavior", "Misinformation vs Care Seeking")
+                                      "Misinformation Exposure", "Care Seeking Behavior", "Misinformation Exposure vs Care Seeking")
         st.pyplot(fig2)
 
         fig3 = linear_regression_plot("Trust in Clinician", "Care Seeking Behavior", df,
@@ -1472,6 +1514,8 @@ def display_non_stepped():
     st.subheader("📊 Non-Stepped Simulation Results (Final Step Only)")
     st.dataframe(df.round(3))
 
+    plot_2d_relationships(df)
+
     st.markdown("### 📈 Linear Regression Analyses")
     with st.expander("Show Linear Regression Plots"):
         fig1 = linear_regression_plot("Symptom Severity", "Care Seeking Behavior", df,
@@ -1479,7 +1523,7 @@ def display_non_stepped():
         st.pyplot(fig1)
 
         fig2 = linear_regression_plot("Misinformation Exposure", "Care Seeking Behavior", df,
-                                      "Misinformation Exposure", "Care Seeking Behavior", "Misinformation vs Care Seeking")
+                                      "Misinformation Exposure", "Care Seeking Behavior", "Misinformation Exposure vs Care Seeking")
         st.pyplot(fig2)
 
         fig3 = linear_regression_plot("Trust in Clinician", "Care Seeking Behavior", df,
@@ -1504,7 +1548,7 @@ def main():
     #### 📚 About this App
     - Powered by [Mesa](https://mesa.readthedocs.io/en/stable/) for agent-based simulation  
     - Visualized using [Streamlit](https://streamlit.io/)  
-    - Analyzes patient decision-making affected by symptom severity, trust, and misinformation  
+    - Incorporates realistic agent behavior influenced by misinformation and trust  
     """)
 
 # === Entry Point ===
@@ -1528,6 +1572,7 @@ st.markdown(
     Reach out on Github to collaborate.
     """
 )
+
 
 
 
