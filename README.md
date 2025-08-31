@@ -38,7 +38,7 @@ These plots helps identify how misinformation and trust in clinicians might affe
 
 * Trust in Clinician vs Care-Seeking: Patients with low trust in clinicians and high misinformation exposure might be less likely to seek care.  This would be visible as a higher proportion of dark to light green dots in the lower-left region of the graph.
 * Higher symptom severity combined with lower misinformation exposure and higher clinician trust appears to correlate with increased care-seeking behaviour (dark purple dots towards the top-right).
-* In this way, these plots illustrate how patients with more severe symptoms may behave in terms of seeking care. For example, they may be more likely to seek care as symptoms worsen.  Future investigation may include identification of interventions that target variables with strong relationships (e.g., to improve care-seeking behaviour, health care organisations increase corrective efforts to counteract misinformation exposure levels which significantly impacts care-seeking hehaviour).
+* The analyses suggest that misinformation exposure significantly reduces the likelihood of seeking care, even when symptoms are severe. This highlights the importance of public health interventions aimed at combating misinformation to improve care access and health outcomes.  Future investigation may include identification of interventions that target variables with strong relationships (e.g., to improve care-seeking behaviour, health care organisations increase corrective efforts to counteract misinformation exposure levels which significantly impacts care-seeking hehaviour).
 
 In the simulation script, the following components are crucial for the graphs:
 
