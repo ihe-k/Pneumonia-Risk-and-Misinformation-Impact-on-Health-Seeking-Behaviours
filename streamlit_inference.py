@@ -338,7 +338,7 @@ def get_data_source_info(source):
 # =======================
 # Always show the subheader at the end of the page
 #st.subheader("3⃣ Agent-Based Misinformation Simulation")
-## Non-Stepped Simulation
+
 class Patient(Agent):
     def __init__(self, unique_id, model, misinformation_score=None):
         super().__init__(unique_id, model)
@@ -962,9 +962,9 @@ def display_simulation_results(df):
         "misinformation_exposure": "{:.3f}",
         "trust_in_clinician": "{:.3f}"
     }))
-
+######
 simulation_data = run_simulation(num_agents)
-display_simulation_results(simulation_data)
+# display_simulation_results(simulation_data)
 #st.dataframe(df_S[['Symptom Severity', 'Care Seeking Behavior', 'Trust in Clinician', 'Misinformation Exposure', 'Age', 'Location']].round(3))
 
     # st.header("Simulation Results")
@@ -1508,7 +1508,7 @@ def display_stepped():
 
 # === Main App ===
 def main():
-    st.title("🧠 Misinformation Impact on Patient Care-Seeking Behavior")
+  #  st.title("🧠 Misinformation Impact on Patient Care-Seeking Behavior")
     st.markdown("""
     This simulation models how misinformation exposure and trust in clinicians
     affect patients' care-seeking behavior. Use the sidebar to choose the simulation type and parameters.
@@ -1549,6 +1549,7 @@ st.markdown(
     Reach out on Github to collaborate.
     """
 )
+
 
 
 
