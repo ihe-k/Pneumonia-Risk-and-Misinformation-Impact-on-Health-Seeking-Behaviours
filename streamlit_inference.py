@@ -1310,7 +1310,6 @@ class MisinformationModel(Model):
 #    st.info("👈 Use the sidebar controls above to configure and run an agent-based simulation and a regression analysis.")
 
 ### Graph
-# === Imports ===
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -1367,6 +1366,8 @@ class MisinformationModelBase(Model):
 
         self.datacollector = DataCollector(
             agent_reporters={
+                "Step": "step",  # Will be set during data collection
+                "Agent": "unique_id",
                 "Symptom Severity": "symptom_severity",
                 "Care Seeking Behavior": "care_seeking_behavior",
                 "Trust in Clinician": "trust_in_clinician",
@@ -1380,19 +1381,26 @@ class MisinformationModelBase(Model):
         for i in range(self.num_agents):
             a = PatientAgent(i, self)
             self.schedule.add(a)
-            self.grid.place_agent(a, (self.random.randint(0, self.grid.width - 1), self.random.randint(0, self.grid.height - 1)))
+            self.grid.place_agent(a, (self.random.randint(0, self.grid.width - 1),
+                                        self.random.randint(0, self.grid.height - 1)))
 
         for i in range(self.num_clinicians):
             c = ClinicianAgent(i + self.num_agents, self)
             self.schedule.add(c)
-            self.grid.place_agent(c, (self.random.randint(0, self.grid.width - 1), self.random.randint(0, self.grid.height - 1)))
+            self.grid.place_agent(c, (self.random.randint(0, self.grid.width - 1),
+                                        self.random.randint(0, self.grid.height - 1)))
 
     def step(self):
         self.datacollector.collect(self)
         self.schedule.step()
 
     def get_agent_vars_dataframe(self):
-        return self.datacollector.get_agent_vars_dataframe()
+        df = self.datacollector.get_agent_vars_dataframe()
+        # Rename 'Agent' column to 'AgentID'
+        if 'Agent' in df.columns:
+            df = df.rename(columns={"Agent": "AgentID"})
+        # The 'Step' column is included; will handle in data selection
+        return df
 
 # === Specific Models ===
 class MisinformationModelStepped(MisinformationModelBase):
@@ -1408,8 +1416,11 @@ def generate_stepped_data(num_agents, num_clinicians, misinfo_exposure):
     for _ in range(30):
         model.step()
     df = model.get_agent_vars_dataframe()
-    df = df.reset_index()  # bring 'Agent' and 'Step' into columns
+    # Put 'Step' and 'AgentID' as columns
+    df = df.reset_index()
     df = df.rename(columns={"Agent": "AgentID"})
+    # Ensure 'AgentID' starts from 1
+    df['AgentID'] = df['AgentID'] + 1
     return df
 
 @st.cache_data
@@ -1421,7 +1432,7 @@ def generate_non_stepped_data(num_agents, num_clinicians, misinfo_exposure):
     df = df.reset_index()
     last_step = df["Step"].max()
     df = df[df["Step"] == last_step].drop(columns=["Step"])
-    df = df.rename(columns={"Agent": "AgentID"})
+    df['AgentID'] = df['AgentID'] + 1
     return df
 
 # === Plotting functions ===
@@ -1508,14 +1519,14 @@ def display_non_stepped():
     # Generate data for the last step
     df = generate_non_stepped_data(num_agents, num_clinicians, misinfo_exposure)
     
-    st.subheader("📊 Non-Stepped Simulation Results (Latest State)")
+    st.subheader("📊 Non-Stepped Simulation Results (Final Step)")
     st.dataframe(df.round(3))
     plot_2d_relationships(df)
 
 # === Main App ===
 def main():
     st.markdown("""
-    # 🧠 Misinformation Impact on Patient Care-Seeking Behavior
+   
     This simulation models how misinformation exposure and trust in clinicians
     affect patients' care-seeking behavior. Use the sidebar to choose the simulation type and parameters.
     """)
@@ -1552,6 +1563,7 @@ st.markdown(
     Reach out on Github to collaborate.
     """
 )
+
 
 
 
