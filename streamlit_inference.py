@@ -1496,7 +1496,7 @@ def plot_2d_relationships(df):
         cbar.set_label('Misinformation Exposure')
 
         # Adjust layout to prevent overlap
-        plt.tight_layout()
+        plt.subplots_adjust(right=0.9)  # Adjust the right spacing to allow space for colorbar
 
         # Display the plots
         st.pyplot(fig)
@@ -1528,22 +1528,23 @@ def display_non_stepped():
 
     # Generate simulation data and display the table
     df_non_stepped = generate_non_stepped_data(num_agents, num_clinicians, misinfo_exposure)
-    st.subheader("Simulation Data (Non-Stepped - Latest Step)")
+    st.subheader("Simulation Data (Non-Stepped)")
 
     # Round numeric data to 3 decimal places
     df_non_stepped = df_non_stepped.round(3)
-
+    
     # Display the formatted DataFrame
     st.write(df_non_stepped)
     
     # Plotting the 2D relationships
     plot_2d_relationships(df_non_stepped)
 
-# Display simulation based on type selected
+# === Main Section ===
 if simulation_type == "Stepped":
     display_stepped()
 else:
     display_non_stepped()
+
 
 
 # =======================
@@ -1563,6 +1564,7 @@ st.markdown(
     Reach out on Github to collaborate.
     """
 )
+
 
 
 
