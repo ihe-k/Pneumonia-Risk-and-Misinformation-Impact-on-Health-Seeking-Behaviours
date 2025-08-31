@@ -1328,6 +1328,40 @@ import matplotlib as mpl
 # === Sidebar: Simulation Type ===
 simulation_type = st.sidebar.radio("Select Simulation Type", ["Stepped", "Non-Stepped"])
 
+# Custom HTML and CSS for overlaying a white square with instructions
+st.markdown(
+    """
+    <style>
+        /* Styling the overlay box */
+        .overlay-box {
+            position: absolute;
+            top: 60px;  /* Adjust as needed to cover the slider */
+            left: 0px;
+            width: 300px;  /* Adjust size */
+            height: 200px;  /* Adjust size */
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 100;  /* Ensures it's on top of other elements */
+        }
+        .overlay-box h3 {
+            color: #333;
+            font-size: 16px;
+        }
+        .overlay-box p {
+            color: #555;
+            font-size: 14px;
+        }
+    </style>
+    <div class="overlay-box">
+        <h3>Welcome to the Simulation App</h3>
+        <p>Use this tool to explore the impact of misinformation exposure on care-seeking behavior.</p>
+        <p>Select "Stepped" or "Non-Stepped" simulation from the options below. Adjust the parameters accordingly.</p>
+    </div>
+    """, unsafe_allow_html=True
+)
+
 # === Shared Agent Definitions ===
 class PatientAgent(Agent):
     def __init__(self, unique_id, model):
@@ -1444,9 +1478,7 @@ def linear_regression_plot(x, y, data, xlabel, ylabel, title):
 def plot_2d_relationships(df):
     if len(df) > 10:
         st.markdown("### 🎯 2D Relationship Analysis")
-        
-        # Reduced width for each plot to fit the colorbar
-        fig, axs = plt.subplots(1, 3, figsize=(18, 5))  # Smaller width for each plot
+        fig, axs = plt.subplots(1, 3, figsize=(20, 5))
 
         # Symptom Severity vs Care-Seeking with Misinformation Exposure colorbar
         scatter1 = sns.scatterplot(
@@ -1491,62 +1523,40 @@ def plot_2d_relationships(df):
         axs[2].set_title('Trust in Clinician vs Care-Seeking\n(Color = Misinformation Exposure)')
 
         # Adding vertical colorbar to the right side of the plot
-        cbar_ax = fig.add_axes([0.92, 0.05, 0.02, 0.9])  # Positioning the color bar vertically
-
-        # Creating color bar with fixed limits (0 to 1)
-        norm = mpl.colors.Normalize(vmin=0, vmax=1)
-        cbar = plt.colorbar(scatter1.collections[0], cax=cbar_ax, orientation='vertical', norm=norm)
+        cbar_ax = fig.add_axes([0.93, 0.05, 0.02, 0.9])  # Positioning the color bar vertically
+        cbar = plt.colorbar(scatter1.collections[0], cax=cbar_ax, orientation='vertical')
         cbar.set_label('Misinformation Exposure')
 
         # Adjust layout to prevent overlap
-        plt.subplots_adjust(right=0.9)  # Adjust the right spacing to allow space for colorbar
+        plt.tight_layout()
 
         # Display the plots
         st.pyplot(fig)
 
 # === Display Stepped Simulation ===
-def display_stepped():
-    num_agents = st.sidebar.slider("Number of Patient Agents", 5, 100, 10, key="S_agents")
-    num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 5, key="S_clinicians")
-    misinfo_exposure = st.sidebar.slider("Misinformation Exposure Level", 0.0, 1.0, 0.5)
-
-    # Generate simulation data and display the table
-    df_stepped = generate_stepped_data(num_agents, num_clinicians, misinfo_exposure)
-    st.subheader("Simulation Data (Stepped)")
-
-    # Round numeric data to 3 decimal places
-    df_stepped = df_stepped.round(3)
-    
-    # Display the formatted DataFrame
-    st.write(df_stepped)
-    
-    # Plotting the 2D relationships
-    plot_2d_relationships(df_stepped)
+def display_stepped_simulation():
+    # You can place the code for handling the "Stepped" simulation here
+    st.write("This is the Stepped Simulation display")
 
 # === Display Non-Stepped Simulation ===
-def display_non_stepped():
-    num_agents = st.sidebar.slider("Number of Patient Agents", 5, 100, 10, key="N_agents")
-    num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 5, key="N_clinicians")
-    misinfo_exposure = st.sidebar.slider("Misinformation Exposure Level", 0.0, 1.0, 0.5)
+def display_non_stepped_simulation():
+    # You can place the code for handling the "Non-Stepped" simulation here
+    st.write("This is the Non-Stepped Simulation display")
 
-    # Generate simulation data and display the table
-    df_non_stepped = generate_non_stepped_data(num_agents, num_clinicians, misinfo_exposure)
-    st.subheader("Simulation Data (Non-Stepped - Latest Step)")
-
-    # Round numeric data to 3 decimal places
-    df_non_stepped = df_non_stepped.round(3)
-
-    # Display the formatted DataFrame
-    st.write(df_non_stepped)
-    
-    # Plotting the 2D relationships
-    plot_2d_relationships(df_non_stepped)
-
-# Display simulation based on type selected
+# === Main App Logic ===
 if simulation_type == "Stepped":
-    display_stepped()
-else:
-    display_non_stepped()
+    # Handle the Stepped Simulation here
+    display_stepped_simulation()
+    # Create the simulation data and plots for the Stepped type
+    data_stepped = generate_stepped_data(100, 10, 0.5)
+    plot_2d_relationships(data_stepped)
+
+elif simulation_type == "Non-Stepped":
+    # Handle the Non-Stepped Simulation here
+    display_non_stepped_simulation()
+    # Create the simulation data and plots for the Non-Stepped type
+    data_non_stepped = generate_non_stepped_data(100, 10, 0.5)
+    plot_2d_relationships(data_non_stepped)
 
 
 # =======================
@@ -1566,6 +1576,7 @@ st.markdown(
     Reach out on Github to collaborate.
     """
 )
+
 
 
 
