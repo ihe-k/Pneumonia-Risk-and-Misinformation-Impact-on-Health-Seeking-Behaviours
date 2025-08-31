@@ -1408,7 +1408,7 @@ def generate_stepped_data(num_agents, num_clinicians, misinfo_exposure):
     for _ in range(30):
         model.step()
     df = model.get_agent_vars_dataframe()
-    df = df.reset_index()  # bring 'Step' and 'Agent' from index to columns
+    df = df.reset_index()  # Bring 'Step' and 'Agent' into columns
     df = df.rename(columns={"Agent": "AgentID"})
     return df
 
@@ -1419,15 +1419,15 @@ def generate_non_stepped_data(num_agents, num_clinicians, misinfo_exposure):
         model.step()
     df = model.get_agent_vars_dataframe()
     df = df.reset_index()
-    df = df[df["Step"] == df["Step"].max()].drop(columns=["Step"])
+    last_step = df["Step"].max()
+    df = df[df["Step"] == last_step].drop(columns=["Step"])
     df = df.rename(columns={"Agent": "AgentID"})
     return df
 
-# === Linear Regression Plotting Function ===
+# === Linear Regression Plot ===
 def linear_regression_plot(x, y, data, xlabel, ylabel, title):
     df = data.copy()
     df = df.replace([np.inf, -np.inf], np.nan).dropna(subset=[x, y])
-
     model = smf.ols(f"`{y}` ~ `{x}`", data=df).fit()
     r_squared = model.rsquared
     p_value = model.pvalues[1]
@@ -1443,38 +1443,53 @@ def linear_regression_plot(x, y, data, xlabel, ylabel, title):
 def plot_2d_relationships(df):
     if len(df) > 10:
         st.markdown("### 🎯 2D Relationship Analysis")
-        fig3, (ax3a, ax3b) = plt.subplots(1, 2, figsize=(15, 6))
+        fig, axs = plt.subplots(1, 3, figsize=(20, 5))
 
         # Symptom Severity vs Care Seeking Behavior
-        scatter1 = ax3a.scatter(
-            df['Symptom Severity'],
-            df['Care Seeking Behavior'],
-            c=df['Misinformation Exposure'],
-            cmap='viridis',
+        sns.scatterplot(
+            x='Symptom Severity',
+            y='Care Seeking Behavior',
+            hue='Misinformation Exposure',
+            palette='viridis',
+            data=df,
+            ax=axs[0],
             alpha=0.6,
             s=50
         )
-        ax3a.set_xlabel('Symptom Severity')
-        ax3a.set_ylabel('Care Seeking Behavior')
-        ax3a.set_title('Symptoms vs Care-Seeking\n(Color = Misinformation Level)')
-        plt.colorbar(scatter1, ax=ax3a, label='Misinformation Exposure', shrink=0.8)
+        axs[0].set_title('Symptom Severity vs Care-Seeking\n(Color = Misinformation Exposure)')
 
-        # Trust vs Care Seeking Behavior
-        scatter2 = ax3b.scatter(
-            df['Trust in Clinician'],
-            df['Care Seeking Behavior'],
-            c=df['Misinformation Exposure'],
-            cmap='viridis',
+        # Misinformation Exposure vs Care Seeking Behavior
+        sns.scatterplot(
+            x='Misinformation Exposure',
+            y='Care Seeking Behavior',
+            hue='Trust in Clinician',
+            palette='coolwarm',
+            data=df,
+            ax=axs[1],
             alpha=0.6,
             s=50
         )
-        ax3b.set_xlabel('Trust in Clinician')
-        ax3b.set_ylabel('Care Seeking Behavior')
-        ax3b.set_title('Trust vs Care-Seeking\n(Color = Misinformation Level)')
-        plt.colorbar(scatter2, ax=ax3b, label='Misinformation Exposure', shrink=0.8)
+        axs[1].set_title('Misinformation Exposure vs Care-Seeking\n(Color = Trust in Clinician)')
+
+        # Trust in Clinician vs Care Seeking Behavior
+        sns.scatterplot(
+            x='Trust in Clinician',
+            y='Care Seeking Behavior',
+            hue='Misinformation Exposure',
+            palette='viridis',
+            data=df,
+            ax=axs[2],
+            alpha=0.6,
+            s=50
+        )
+        axs[2].set_title('Trust in Clinician vs Care-Seeking\n(Color = Misinformation Exposure)')
+
+        for ax in axs:
+            ax.set_xlabel(ax.get_xlabel())
+            ax.set_ylabel('Care Seeking Behavior')
 
         plt.tight_layout()
-        st.pyplot(fig3)
+        st.pyplot(fig)
 
 # === Display Stepped Simulation ===
 def display_stepped():
@@ -1491,16 +1506,34 @@ def display_stepped():
 
     st.markdown("### 📈 Linear Regression Analyses")
     with st.expander("Show Linear Regression Plots"):
-        fig1 = linear_regression_plot("Symptom Severity", "Care Seeking Behavior", df,
-                                      "Symptom Severity", "Care Seeking Behavior", "Symptom Severity vs Care Seeking")
+        fig1 = linear_regression_plot(
+            "Symptom Severity",
+            "Care Seeking Behavior",
+            df,
+            "Symptom Severity",
+            "Care Seeking Behavior",
+            "Symptom Severity vs Care Seeking"
+        )
         st.pyplot(fig1)
 
-        fig2 = linear_regression_plot("Misinformation Exposure", "Care Seeking Behavior", df,
-                                      "Misinformation Exposure", "Care Seeking Behavior", "Misinformation Exposure vs Care Seeking")
+        fig2 = linear_regression_plot(
+            "Misinformation Exposure",
+            "Care Seeking Behavior",
+            df,
+            "Misinformation Exposure",
+            "Care Seeking Behavior",
+            "Misinformation Exposure vs Care Seeking"
+        )
         st.pyplot(fig2)
 
-        fig3 = linear_regression_plot("Trust in Clinician", "Care Seeking Behavior", df,
-                                      "Trust in Clinician", "Care Seeking Behavior", "Trust in Clinician vs Care Seeking")
+        fig3 = linear_regression_plot(
+            "Trust in Clinician",
+            "Care Seeking Behavior",
+            df,
+            "Trust in Clinician",
+            "Care Seeking Behavior",
+            "Trust in Clinician vs Care Seeking"
+        )
         st.pyplot(fig3)
 
 # === Display Non-Stepped Simulation ===
@@ -1518,16 +1551,34 @@ def display_non_stepped():
 
     st.markdown("### 📈 Linear Regression Analyses")
     with st.expander("Show Linear Regression Plots"):
-        fig1 = linear_regression_plot("Symptom Severity", "Care Seeking Behavior", df,
-                                      "Symptom Severity", "Care Seeking Behavior", "Symptom Severity vs Care Seeking")
+        fig1 = linear_regression_plot(
+            "Symptom Severity",
+            "Care Seeking Behavior",
+            df,
+            "Symptom Severity",
+            "Care Seeking Behavior",
+            "Symptom Severity vs Care Seeking"
+        )
         st.pyplot(fig1)
 
-        fig2 = linear_regression_plot("Misinformation Exposure", "Care Seeking Behavior", df,
-                                      "Misinformation Exposure", "Care Seeking Behavior", "Misinformation Exposure vs Care Seeking")
+        fig2 = linear_regression_plot(
+            "Misinformation Exposure",
+            "Care Seeking Behavior",
+            df,
+            "Misinformation Exposure",
+            "Care Seeking Behavior",
+            "Misinformation Exposure vs Care Seeking"
+        )
         st.pyplot(fig2)
 
-        fig3 = linear_regression_plot("Trust in Clinician", "Care Seeking Behavior", df,
-                                      "Trust in Clinician", "Care Seeking Behavior", "Trust in Clinician vs Care Seeking")
+        fig3 = linear_regression_plot(
+            "Trust in Clinician",
+            "Care Seeking Behavior",
+            df,
+            "Trust in Clinician",
+            "Care Seeking Behavior",
+            "Trust in Clinician vs Care Seeking"
+        )
         st.pyplot(fig3)
 
 # === Main App ===
@@ -1555,6 +1606,7 @@ def main():
 if __name__ == "__main__":
     main()
 
+
 # =======================
 # FOOTER
 # =======================
@@ -1572,6 +1624,7 @@ st.markdown(
     Reach out on Github to collaborate.
     """
 )
+
 
 
 
