@@ -1316,13 +1316,14 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
-import statsmodels.api as sm
 from mesa import Model
 from mesa.time import RandomActivation
 from mesa.space import MultiGrid
 from mesa.datacollection import DataCollector
 from mesa.agent import Agent
 import random
+import statsmodels.api as sm
+import statsmodels.formula.api as smf
 
 # === Sidebar: Simulation Type ===
 simulation_type = st.sidebar.radio("Select Simulation Type", ["Stepped", "Non-Stepped"])
@@ -1349,7 +1350,7 @@ class ClinicianAgent(Agent):
     def step(self):
         pass
 
-# === Simulation Model Base Class ===
+# === Base Model Class ===
 class MisinformationModelBase(Model):
     def __init__(self, num_agents, num_clinicians, width, height, misinfo_exposure):
         super().__init__()
@@ -1361,30 +1362,27 @@ class MisinformationModelBase(Model):
 
         self.grid = MultiGrid(width, height, True)
         self.schedule = RandomActivation(self)
-
         self.create_agents()
 
-        self.datacollector = DataCollector(
-            agent_reporters={
-                "Symptom Severity": "symptom_severity",
-                "Care Seeking Behavior": "care_seeking_behavior",
-                "Trust in Clinician": "trust_in_clinician",
-                "Misinformation Exposure": "misinformation_exposure",
-                "Age": "age",
-                "Location": "location"
-            }
-        )
+        self.datacollector = DataCollector(agent_reporters={
+            "Symptom Severity": "symptom_severity",
+            "Care Seeking Behavior": "care_seeking_behavior",
+            "Trust in Clinician": "trust_in_clinician",
+            "Misinformation Exposure": "misinformation_exposure",
+            "Age": "age",
+            "Location": "location"
+        })
 
     def create_agents(self):
         for i in range(self.num_agents):
             a = PatientAgent(i, self)
             self.schedule.add(a)
-            self.grid.place_agent(a, (self.random.randint(0, self.grid.width - 1), self.random.randint(0, self.grid.height - 1)))
+            self.grid.place_agent(a, (random.randint(0, self.grid.width - 1), random.randint(0, self.grid.height - 1)))
 
         for i in range(self.num_clinicians):
             c = ClinicianAgent(i + self.num_agents, self)
             self.schedule.add(c)
-            self.grid.place_agent(c, (self.random.randint(0, self.grid.width - 1), self.random.randint(0, self.grid.height - 1)))
+            self.grid.place_agent(c, (random.randint(0, self.grid.width - 1), random.randint(0, self.grid.height - 1)))
 
     def step(self):
         self.datacollector.collect(self)
@@ -1393,14 +1391,11 @@ class MisinformationModelBase(Model):
     def get_agent_vars_dataframe(self):
         return self.datacollector.get_agent_vars_dataframe()
 
-# === Specific Models ===
-class MisinformationModelStepped(MisinformationModelBase):
-    pass
+# === Model Variants ===
+class MisinformationModelStepped(MisinformationModelBase): pass
+class MisinformationModelNonStepped(MisinformationModelBase): pass
 
-class MisinformationModelNonStepped(MisinformationModelBase):
-    pass
-
-# === Caching Simulation Data ===
+# === Data Generation ===
 @st.cache_data
 def generate_stepped_data(num_agents, num_clinicians, misinfo_exposure):
     model = MisinformationModelStepped(num_agents, num_clinicians, 10, 10, misinfo_exposure)
@@ -1415,101 +1410,47 @@ def generate_non_stepped_data(num_agents, num_clinicians, misinfo_exposure):
     model = MisinformationModelNonStepped(num_agents, num_clinicians, 10, 10, misinfo_exposure)
     for _ in range(30):
         model.step()
-    df_full = model.get_agent_vars_dataframe().reset_index()
-    df_last = df_full[df_full["Step"] == df_full["Step"].max()].drop(columns=["Step"])
-    df_last = df_last.reset_index(drop=True)
+    df = model.get_agent_vars_dataframe().reset_index()
+    df_last = df[df["Step"] == df["Step"].max()].drop(columns=["Step"])
     df_last.index = df_last.index + 1
     return df_last
 
-# === Mixed Effects Logistic Regression for Stepped Simulation ===
-def mixed_effects_logistic_regression(df):
-    import statsmodels.formula.api as smf
-    
-    # Make sure 'AgentID' column exists for grouping
-    if "Agent" in df.columns:
-        df["AgentID"] = df["Agent"]
-    elif "AgentID" not in df.columns:
-        df = df.reset_index()
-        if "Agent" in df.columns:
-            df["AgentID"] = df["Agent"]
-        else:
-            st.error("Agent ID column not found for mixed-effects regression.")
-            return pd.DataFrame()
+# === Linear Regression Plot Function ===
+def linear_regression_plot(x, y, data, xlabel, ylabel, title):
+    df = data.copy()
+    df = df.replace([np.inf, -np.inf], np.nan).dropna(subset=[x, y])
 
-    # Create binary outcome for logistic regression (e.g., care_seeking_behavior > 0.5)
-    df["CareSeekingBinary"] = (df["Care Seeking Behavior"] > 0.5).astype(int)
-
-    # Define formula
-    formula = "CareSeekingBinary ~ Q('Symptom Severity') + Q('Trust in Clinician') + Q('Misinformation Exposure') + Age"
-
-    try:
-        model = smf.mixedlm(formula, df, groups=df["AgentID"], family=sm.families.Binomial())
-        fit_result = model.fit()
-    except Exception as e:
-        st.error(f"Mixed effects logistic regression failed: {e}")
-        return pd.DataFrame()
-
-    return fit_result.summary().tables[1]
-
-# === Simple Logistic Regression Plot for Non-Stepped ===
-def regression_plot(x, y, data, xlabel, ylabel, title):
-    data_cleaned = data.copy()
-    data_cleaned[x] = data_cleaned[x].replace([np.inf, -np.inf], np.nan).fillna(data_cleaned[x].mean())
-    data_cleaned[y] = data_cleaned[y].replace([np.inf, -np.inf], np.nan).fillna(data_cleaned[y].mean())
-    
-    # Binary outcome for logistic regression
-    data_cleaned[y] = (data_cleaned[y] > 0.5).astype(int)
-    
-    # Add constant for intercept
-    X = sm.add_constant(data_cleaned[x])
-    model = sm.Logit(data_cleaned[y], X).fit(disp=False)
-    
-    r_squared = model.prsquared  # Pseudo R² for logistic
+    model = smf.ols(f"`{y}` ~ `{x}`", data=df).fit()
+    r_squared = model.rsquared
     p_value = model.pvalues[1]
 
     fig, ax = plt.subplots(figsize=(6, 4))
-    sns.regplot(x=x, y=y, data=data_cleaned, logistic=True, ax=ax, scatter_kws={'alpha': 0.6}, line_kws={'color': 'red'})
-    ax.set_title(f"{title}\nPseudo R² = {r_squared:.3f}, p = {p_value:.3f}")
+    sns.regplot(x=x, y=y, data=df, ax=ax, scatter_kws={'alpha': 0.6}, line_kws={'color': 'red'})
+    ax.set_title(f"{title}\nR² = {r_squared:.3f}, p = {p_value:.3f}")
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
-
     return fig
 
-# === Plots ===
+# === Common Plot ===
 def plot_2d_relationships(df):
     if len(df) > 10:
-        st.markdown("### 🎯 2D Relationship Analysis")
-        fig3, (ax3a, ax3b) = plt.subplots(1, 2, figsize=(15, 6))
+        st.markdown("### 🎯 2D Relationship Scatter Plots")
+        fig3, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
 
-        # Symptom Severity vs Care Seeking Behavior
-        scatter1 = ax3a.scatter(
-            df['Symptom Severity'],
-            df['Care Seeking Behavior'],
-            c=df['Misinformation Exposure'],
-            cmap='viridis',
-            alpha=0.6,
-            s=50
-        )
-        ax3a.set_xlabel('Symptom Severity')
-        ax3a.set_ylabel('Care Seeking Behavior')
-        ax3a.set_title('Symptoms vs Care-Seeking\n(Color = Misinformation Level)')
-        plt.colorbar(scatter1, ax=ax3a, label='Misinformation Exposure', shrink=0.8)
+        s1 = ax1.scatter(df['Symptom Severity'], df['Care Seeking Behavior'],
+                         c=df['Misinformation Exposure'], cmap='viridis', alpha=0.6)
+        ax1.set_xlabel('Symptom Severity')
+        ax1.set_ylabel('Care Seeking Behavior')
+        ax1.set_title('Symptom Severity vs Care-Seeking')
+        plt.colorbar(s1, ax=ax1, label='Misinformation Exposure', shrink=0.8)
 
-        # Trust vs Care Seeking Behavior
-        scatter2 = ax3b.scatter(
-            df['Trust in Clinician'],
-            df['Care Seeking Behavior'],
-            c=df['Misinformation Exposure'],
-            cmap='viridis',
-            alpha=0.6,
-            s=50
-        )
-        ax3b.set_xlabel('Trust in Clinician')
-        ax3b.set_ylabel('Care Seeking Behavior')
-        ax3b.set_title('Trust vs Care-Seeking\n(Color = Misinformation Level)')
-        plt.colorbar(scatter2, ax=ax3b, label='Misinformation Exposure', shrink=0.8)
+        s2 = ax2.scatter(df['Trust in Clinician'], df['Care Seeking Behavior'],
+                         c=df['Misinformation Exposure'], cmap='viridis', alpha=0.6)
+        ax2.set_xlabel('Trust in Clinician')
+        ax2.set_ylabel('Care Seeking Behavior')
+        ax2.set_title('Trust vs Care-Seeking')
+        plt.colorbar(s2, ax=ax2, label='Misinformation Exposure', shrink=0.8)
 
-        plt.tight_layout()
         st.pyplot(fig3)
 
 # === Display Stepped Simulation ===
@@ -1519,27 +1460,24 @@ def display_stepped():
     misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.3, 0.05, key="S_misinfo")
 
     df = generate_stepped_data(num_agents, num_clinicians, misinfo_exposure)
-
-    # Fix for AgentID column for grouping in mixed effects model
-    if "Agent" in df.columns:
-        df["AgentID"] = df["Agent"]
-    elif "AgentID" not in df.columns:
-        df = df.reset_index()
-        if "Agent" in df.columns:
-            df["AgentID"] = df["Agent"]
-        else:
-            st.error("Agent ID column missing!")
-
     st.subheader("📊 Stepped Simulation Results (All Steps)")
     st.dataframe(df.round(3))
 
     plot_2d_relationships(df)
 
-    st.markdown("### 📈 Mixed Effects Logistic Regression (Stepped Data)")
-    with st.expander("Show Regression Results"):
-        result_df = mixed_effects_logistic_regression(df)
-        if not result_df.empty:
-            st.dataframe(result_df)
+    st.markdown("### 📈 Linear Regression Analyses")
+    with st.expander("Show Linear Regression Plots"):
+        fig1 = linear_regression_plot("Symptom Severity", "Care Seeking Behavior", df,
+                                      "Symptom Severity", "Care Seeking Behavior", "Symptom Severity vs Care Seeking")
+        st.pyplot(fig1)
+
+        fig2 = linear_regression_plot("Misinformation Exposure", "Care Seeking Behavior", df,
+                                      "Misinformation Exposure", "Care Seeking Behavior", "Misinformation vs Care Seeking")
+        st.pyplot(fig2)
+
+        fig3 = linear_regression_plot("Trust in Clinician", "Care Seeking Behavior", df,
+                                      "Trust in Clinician", "Care Seeking Behavior", "Trust in Clinician vs Care Seeking")
+        st.pyplot(fig3)
 
 # === Display Non-Stepped Simulation ===
 def display_non_stepped():
@@ -1548,23 +1486,24 @@ def display_non_stepped():
     misinfo_exposure = st.sidebar.slider("Misinformation Exposure", 0.0, 1.0, 0.5, 0.05, key="NS_misinfo")
 
     df = generate_non_stepped_data(num_agents, num_clinicians, misinfo_exposure)
-
     st.subheader("📊 Non-Stepped Simulation Results (Final Step Only)")
     st.dataframe(df.round(3))
 
     plot_2d_relationships(df)
 
-    st.markdown("### 📈 Logistic Regression (Non-Stepped Data)")
-    with st.expander("Show Regression Plot"):
-        fig = regression_plot(
-            x="Misinformation Exposure",
-            y="Care Seeking Behavior",
-            data=df,
-            xlabel="Misinformation Exposure",
-            ylabel="Care Seeking Behavior (Binary)",
-            title="Logistic Regression on Care Seeking vs Misinformation Exposure"
-        )
-        st.pyplot(fig)
+    st.markdown("### 📈 Linear Regression Analyses")
+    with st.expander("Show Linear Regression Plots"):
+        fig1 = linear_regression_plot("Symptom Severity", "Care Seeking Behavior", df,
+                                      "Symptom Severity", "Care Seeking Behavior", "Symptom Severity vs Care Seeking")
+        st.pyplot(fig1)
+
+        fig2 = linear_regression_plot("Misinformation Exposure", "Care Seeking Behavior", df,
+                                      "Misinformation Exposure", "Care Seeking Behavior", "Misinformation vs Care Seeking")
+        st.pyplot(fig2)
+
+        fig3 = linear_regression_plot("Trust in Clinician", "Care Seeking Behavior", df,
+                                      "Trust in Clinician", "Care Seeking Behavior", "Trust in Clinician vs Care Seeking")
+        st.pyplot(fig3)
 
 # === Main App ===
 def main():
@@ -1582,9 +1521,9 @@ def main():
     st.markdown("---")
     st.markdown("""
     #### 📚 About this App
-    - Powered by [Mesa](https://mesa.readthedocs.io/en/stable/) for agent-based simulation  
-    - Visualized using [Streamlit](https://streamlit.io/)  
-    - Incorporates realistic agent behavior influenced by misinformation and trust  
+    - Powered by [Mesa](https://mesa.readthedocs.io/en/stable/)
+    - Visualized using [Streamlit](https://streamlit.io/)
+    - Incorporates realistic agent behavior influenced by misinformation and trust
     """)
 
 # === Entry Point ===
@@ -1609,6 +1548,7 @@ st.markdown(
     Reach out on Github to collaborate.
     """
 )
+
 
 
 
