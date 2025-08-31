@@ -1328,39 +1328,243 @@ import matplotlib as mpl
 # === Sidebar: Simulation Type ===
 simulation_type = st.sidebar.radio("Select Simulation Type", ["Stepped", "Non-Stepped"])
 
-# Custom HTML and CSS for overlaying a white square with instructions
-st.markdown(
-    """
-    <style>
-        /* Styling the overlay box */
-        .overlay-box {
-            position: absolute;
-            top: 60px;  /* Adjust as needed to cover the slider */
-            left: 0px;
-            width: 300px;  /* Adjust size */
-            height: 200px;  /* Adjust size */
-            background-color: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            z-index: 100;  /* Ensures it's on top of other elements */
-        }
-        .overlay-box h3 {
-            color: #333;
-            font-size: 16px;
-        }
-        .overlay-box p {
-            color: #555;
-            font-size: 14px;
-        }
-    </style>
-    <div class="overlay-box">
-        <h3>Welcome to the Simulation App</h3>
-        <p>Use this tool to explore the impact of misinformation exposure on care-seeking behavior.</p>
-        <p>Select "Stepped" or "Non-Stepped" simulation from the options below. Adjust the parameters accordingly.</p>
-    </div>
-    """, unsafe_allow_html=True
-)
+# === Shared Agent Definitions ===
+class PatientAgent(Agent):
+    def __init__(self, unique_id, model):
+        super().__init__(unique_id, model)
+        self.symptom_severity = random.uniform(0, 1)
+        self.care_seeking_behavior = random.uniform(0, 1)
+        self.trust_in_clinician = random.uniform(0, 1)
+        self.misinformation_exposure = random.uniform(0, 1)
+        self.age = random.randint(18, 80)
+        self.location = random.choice(['Urban', 'Rural'])
+
+    def step(self):
+        pass
+
+class ClinicianAgent(Agent):
+    def __init__(self, unique_id, model):
+        super().__init__(unique_id, model)
+        self.trust_in_clinician = random.uniform(0, 1)
+
+    def step(self):
+        pass
+
+# === Simulation Model Base Class ===
+class MisinformationModelBase(Model):
+    def __init__(self, num_agents, num_clinicians, width, height, misinfo_exposure):
+        super().__init__()
+        self.num_agents = num_agents
+        self.num_clinicians = num_clinicians
+        self.width = width
+        self.height = height
+        self.misinfo_exposure = misinfo_exposure
+
+        self.grid = MultiGrid(width, height, True)
+        self.schedule = RandomActivation(self)
+
+        self.create_agents()
+
+        self.datacollector = DataCollector(
+            agent_reporters={
+                "Symptom Severity": "symptom_severity",
+                "Care Seeking Behavior": "care_seeking_behavior",
+                "Trust in Clinician": "trust_in_clinician",
+                "Misinformation Exposure": "misinformation_exposure",
+                "Age": "age",
+                "Location": "location"
+            }
+        )
+
+    def create_agents(self):
+        for i in range(self.num_agents):
+            a = PatientAgent(i, self)
+            self.schedule.add(a)
+            self.grid.place_agent(a, (self.random.randint(0, self.grid.width - 1), self.random.randint(0, self.grid.height - 1)))
+
+        for i in range(self.num_clinicians):
+            c = ClinicianAgent(i + self.num_agents, self)
+            self.schedule.add(c)
+            self.grid.place_agent(c, (self.random.randint(0, self.grid.width - 1), self.random.randint(0, self.grid.height - 1)))
+
+    def step(self):
+        self.datacollector.collect(self)
+        self.schedule.step()
+
+    def get_agent_vars_dataframe(self):
+        return self.datacollector.get_agent_vars_dataframe()
+
+# === Specific Models ===
+class MisinformationModelStepped(MisinformationModelBase):
+    pass
+
+class MisinformationModelNonStepped(MisinformationModelBase):
+    pass
+
+# === Caching Simulation Data ===
+@st.cache_data
+def generate_stepped_data(num_agents, num_clinicians, misinfo_exposure):
+    model = MisinformationModelStepped(num_agents, num_clinicians, 10, 10, misinfo_exposure)
+    for _ in range(30):
+        model.step()
+    df = model.get_agent_vars_dataframe()
+    df = df.reset_index()  # bring 'Agent' and 'Step' into columns
+    df = df.rename(columns={"Agent": "AgentID"})
+    return df
+
+@st.cache_data
+def generate_non_stepped_data(num_agents, num_clinicians, misinfo_exposure):
+    model = MisinformationModelNonStepped(num_agents, num_clinicians, 10, 10, misinfo_exposure)
+    for _ in range(30):
+        model.step()
+    df = model.get_agent_vars_dataframe()
+    df = df.reset_index()
+
+    # Filter for the latest step
+    last_step = df["Step"].max()
+    df = df[df["Step"] == last_step].drop(columns=["Step"])
+    df = df.rename(columns={"Agent": "AgentID"})
+    return df
+
+# === Plotting functions ===
+def linear_regression_plot(x, y, data, xlabel, ylabel, title):
+    df = data.copy()
+    df = df.replace([np.inf, -np.inf], np.nan).dropna(subset=[x, y])
+    model = smf.ols(f"`{y}` ~ `{x}`", data=df).fit()
+    r_squared = model.rsquared
+    p_value = model.pvalues[1]
+
+    fig, ax = plt.subplots(figsize=(6, 4))
+    sns.regplot(x=x, y=y, data=df, ax=ax, scatter_kws={'alpha': 0.6}, line_kws={'color': 'red'})
+    ax.set_title(f"{title}\nR² = {r_squared:.3f}, p = {p_value:.3f}")
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    return fig
+
+def plot_2d_relationships(df):
+    if len(df) > 10:
+        st.markdown("### 🎯 2D Relationship Analysis")
+        
+        # Reduced width for each plot to fit the colorbar
+        fig, axs = plt.subplots(1, 3, figsize=(18, 5))  # Smaller width for each plot
+
+        # Symptom Severity vs Care-Seeking with Misinformation Exposure colorbar
+        scatter1 = sns.scatterplot(
+            x='Symptom Severity',
+            y='Care Seeking Behavior',
+            hue='Misinformation Exposure',
+            palette='viridis',  # Misinformation Exposure color map
+            data=df,
+            ax=axs[0],
+            alpha=0.6,
+            s=50,
+            legend=False  # Remove legend from plot
+        )
+        axs[0].set_title('Symptom Severity vs Care-Seeking\n(Color = Misinformation Exposure)')
+
+        # Misinformation Exposure vs Care-Seeking with Misinformation Exposure colorbar
+        scatter2 = sns.scatterplot(
+            x='Misinformation Exposure',
+            y='Care Seeking Behavior',
+            hue='Misinformation Exposure',  # Use the same gradient for Misinformation Exposure
+            palette='viridis',  # Same color map for Misinformation Exposure
+            data=df,
+            ax=axs[1],
+            alpha=0.6,
+            s=50,
+            legend=False  # Remove legend from plot
+        )
+        axs[1].set_title('Misinformation Exposure vs Care-Seeking\n(Color = Misinformation Exposure)')
+
+        # Trust in Clinician vs Care-Seeking with Misinformation Exposure colorbar
+        scatter3 = sns.scatterplot(
+            x='Trust in Clinician',
+            y='Care Seeking Behavior',
+            hue='Misinformation Exposure',  # Use the same gradient for Misinformation Exposure
+            palette='viridis',  # Same color map for Trust in Clinician as Misinformation Exposure
+            data=df,
+            ax=axs[2],
+            alpha=0.6,
+            s=50,
+            legend=False  # Remove legend from plot
+        )
+        axs[2].set_title('Trust in Clinician vs Care-Seeking\n(Color = Misinformation Exposure)')
+
+        # Adding vertical colorbar to the right side of the plot
+        cbar_ax = fig.add_axes([0.92, 0.05, 0.02, 0.9])  # Positioning the color bar vertically
+
+        # Creating color bar with fixed limits (0 to 1)
+        norm = mpl.colors.Normalize(vmin=0, vmax=1)
+        cbar = plt.colorbar(scatter1.collections[0], cax=cbar_ax, orientation='vertical', norm=norm)
+        cbar.set_label('Misinformation Exposure')
+
+        # Adjust layout to prevent overlap
+        plt.subplots_adjust(right=0.9)  # Adjust the right spacing to allow space for colorbar
+
+        # Display the plots
+        st.pyplot(fig)
+
+# === Display Stepped Simulation ===
+def display_stepped():
+    num_agents = st.sidebar.slider("Number of Patient Agents", 5, 100, 10, key="S_agents")
+    num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 5, key="S_clinicians")
+    misinfo_exposure = st.sidebar.slider("Misinformation Exposure Level", 0.0, 1.0, 0.5)
+
+    # Generate simulation data and display the table
+    df_stepped = generate_stepped_data(num_agents, num_clinicians, misinfo_exposure)
+    st.subheader("Simulation Data (Stepped)")
+
+    # Round numeric data to 3 decimal places
+    df_stepped = df_stepped.round(3)
+    
+    # Display the formatted DataFrame
+    st.write(df_stepped)
+    
+    # Plotting the 2D relationships
+    plot_2d_relationships(df_stepped)
+
+# === Display Non-Stepped Simulation ===
+def display_non_stepped():
+    num_agents = st.sidebar.slider("Number of Patient Agents", 5, 100, 10, key="N_agents")
+    num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 5, key="N_clinicians")
+    misinfo_exposure = st.sidebar.slider("Misinformation Exposure Level", 0.0, 1.0, 0.5)
+
+    # Generate simulation data and display the table
+    df_non_stepped = generate_non_stepped_data(num_agents, num_clinicians, misinfo_exposure)
+    st.subheader("Simulation Data (Non-Stepped - Latest Step)")
+
+    # Round numeric data to 3 decimal places
+    df_non_stepped = df_non_stepped.round(3)
+
+    # Display the formatted DataFrame
+    st.write(df_non_stepped)
+    
+    # Plotting the 2D relationships
+    plot_2d_relationships(df_non_stepped)
+
+# Display simulation based on type selected
+if simulation_type == "Stepped":
+    display_stepped()
+else:
+    display_non_stepped()
+
+import streamlit as st
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+import statsmodels.api as sm
+import statsmodels.formula.api as smf
+from mesa import Model
+from mesa.time import RandomActivation
+from mesa.space import MultiGrid
+from mesa.datacollection import DataCollector
+from mesa.agent import Agent
+import random
+import matplotlib as mpl
+
+# === Sidebar: Simulation Type ===
+simulation_type = st.sidebar.radio("Select Simulation Type", ["Stepped", "Non-Stepped"])
 
 # === Shared Agent Definitions ===
 class PatientAgent(Agent):
@@ -1478,7 +1682,9 @@ def linear_regression_plot(x, y, data, xlabel, ylabel, title):
 def plot_2d_relationships(df):
     if len(df) > 10:
         st.markdown("### 🎯 2D Relationship Analysis")
-        fig, axs = plt.subplots(1, 3, figsize=(20, 5))
+        
+        # Reduced width for each plot to fit the colorbar
+        fig, axs = plt.subplots(1, 3, figsize=(18, 5))  # Smaller width for each plot
 
         # Symptom Severity vs Care-Seeking with Misinformation Exposure colorbar
         scatter1 = sns.scatterplot(
@@ -1523,40 +1729,62 @@ def plot_2d_relationships(df):
         axs[2].set_title('Trust in Clinician vs Care-Seeking\n(Color = Misinformation Exposure)')
 
         # Adding vertical colorbar to the right side of the plot
-        cbar_ax = fig.add_axes([0.93, 0.05, 0.02, 0.9])  # Positioning the color bar vertically
-        cbar = plt.colorbar(scatter1.collections[0], cax=cbar_ax, orientation='vertical')
+        cbar_ax = fig.add_axes([0.92, 0.05, 0.02, 0.9])  # Positioning the color bar vertically
+
+        # Creating color bar with fixed limits (0 to 1)
+        norm = mpl.colors.Normalize(vmin=0, vmax=1)
+        cbar = plt.colorbar(scatter1.collections[0], cax=cbar_ax, orientation='vertical', norm=norm)
         cbar.set_label('Misinformation Exposure')
 
         # Adjust layout to prevent overlap
-        plt.tight_layout()
+        plt.subplots_adjust(right=0.9)  # Adjust the right spacing to allow space for colorbar
 
         # Display the plots
         st.pyplot(fig)
 
 # === Display Stepped Simulation ===
-def display_stepped_simulation():
-    # You can place the code for handling the "Stepped" simulation here
-    st.write("This is the Stepped Simulation display")
+def display_stepped():
+    num_agents = st.sidebar.slider("Number of Patient Agents", 5, 100, 10, key="S_agents")
+    num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 5, key="S_clinicians")
+    misinfo_exposure = st.sidebar.slider("Misinformation Exposure Level", 0.0, 1.0, 0.5)
+
+    # Generate simulation data and display the table
+    df_stepped = generate_stepped_data(num_agents, num_clinicians, misinfo_exposure)
+    st.subheader("Simulation Data (Stepped)")
+
+    # Round numeric data to 3 decimal places
+    df_stepped = df_stepped.round(3)
+    
+    # Display the formatted DataFrame
+    st.write(df_stepped)
+    
+    # Plotting the 2D relationships
+    plot_2d_relationships(df_stepped)
 
 # === Display Non-Stepped Simulation ===
-def display_non_stepped_simulation():
-    # You can place the code for handling the "Non-Stepped" simulation here
-    st.write("This is the Non-Stepped Simulation display")
+def display_non_stepped():
+    num_agents = st.sidebar.slider("Number of Patient Agents", 5, 100, 10, key="N_agents")
+    num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 5, key="N_clinicians")
+    misinfo_exposure = st.sidebar.slider("Misinformation Exposure Level", 0.0, 1.0, 0.5)
 
-# === Main App Logic ===
+    # Generate simulation data and display the table
+    df_non_stepped = generate_non_stepped_data(num_agents, num_clinicians, misinfo_exposure)
+    st.subheader("Simulation Data (Non-Stepped - Latest Step)")
+
+    # Round numeric data to 3 decimal places
+    df_non_stepped = df_non_stepped.round(3)
+
+    # Display the formatted DataFrame
+    st.write(df_non_stepped)
+    
+    # Plotting the 2D relationships
+    plot_2d_relationships(df_non_stepped)
+
+# Display simulation based on type selected
 if simulation_type == "Stepped":
-    # Handle the Stepped Simulation here
-    display_stepped_simulation()
-    # Create the simulation data and plots for the Stepped type
-    data_stepped = generate_stepped_data(100, 10, 0.5)
-    plot_2d_relationships(data_stepped)
-
-elif simulation_type == "Non-Stepped":
-    # Handle the Non-Stepped Simulation here
-    display_non_stepped_simulation()
-    # Create the simulation data and plots for the Non-Stepped type
-    data_non_stepped = generate_non_stepped_data(100, 10, 0.5)
-    plot_2d_relationships(data_non_stepped)
+    display_stepped()
+else:
+    display_non_stepped()
 
 
 # =======================
@@ -1576,6 +1804,7 @@ st.markdown(
     Reach out on Github to collaborate.
     """
 )
+
 
 
 
