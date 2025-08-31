@@ -548,7 +548,7 @@ if False:
                 for _ in range(30):
                     model.step()
                 df = model.datacollector.get_agent_vars_dataframe()
-#                st.session_state['simulation_results'] = df
+                st.session_state['simulation_results'] = df
                 st.success("Simulation completed!")
             except Exception as e:
                 st.error(f"An error occurred: {e}")
@@ -556,11 +556,11 @@ if False:
     # Save results in session state
             if 'model' in locals():
                 df = model.datacollector.get_agent_vars_dataframe()
-#                st.session_state['simulation_results'] = df
+                st.session_state['simulation_results'] = df
 
                 st.success("Simulation completed!")
             else:
- #               st.error("Model was not initialised successfully.")
+                st.error("Model was not initialised successfully.")
 
 # ===============================
 # 6. HealthVer Dataset Evaluation (unchanged)
@@ -1560,6 +1560,7 @@ st.markdown(
     Reach out on Github to collaborate.
     """
 )
+
 
 
 
