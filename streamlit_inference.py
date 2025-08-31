@@ -1310,7 +1310,7 @@ class MisinformationModel(Model):
 #    st.info("👈 Use the sidebar controls above to configure and run an agent-based simulation and a regression analysis.")
 
 ### Graph
-### Graph
+
 # === Imports ===
 import streamlit as st
 import pandas as pd
@@ -1550,6 +1550,7 @@ st.markdown(
     Reach out on Github to collaborate.
     """
 )
+
 
 
 
