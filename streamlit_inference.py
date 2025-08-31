@@ -1405,24 +1405,46 @@ class MisinformationModelNonStepped(MisinformationModelBase):
 @st.cache_data
 def generate_stepped_data(num_agents, num_clinicians, misinfo_exposure):
     model = MisinformationModelStepped(num_agents, num_clinicians, 10, 10, misinfo_exposure)
-    for _ in range(30):
+    
+    # Initialize an empty list to store all data
+    all_data = []
+    
+    for step in range(30):
         model.step()
-    df = model.get_agent_vars_dataframe()
-    df = df.reset_index()  # bring 'Agent' and 'Step' into columns
-    df = df.rename(columns={"Agent": "AgentID"})
-    return df
+        df = model.get_agent_vars_dataframe()
+        df = df.reset_index()  # bring 'Agent' and 'Step' into columns
+        df = df.rename(columns={"Agent": "AgentID"})
+        
+        # Append the step data to the all_data list
+        all_data.append(df)
+    
+    # Concatenate all steps data into a single dataframe
+    final_df = pd.concat(all_data, axis=0)
+    
+    # Reset the index so it starts from 0
+    final_df.reset_index(drop=True, inplace=True)
+    
+    # Round the numerical columns to 3 decimal places
+    return final_df.round(3)
 
 @st.cache_data
 def generate_non_stepped_data(num_agents, num_clinicians, misinfo_exposure):
     model = MisinformationModelNonStepped(num_agents, num_clinicians, 10, 10, misinfo_exposure)
     for _ in range(30):
         model.step()
+    
+    # Get the agent variables for the last step
     df = model.get_agent_vars_dataframe()
     df = df.reset_index()
     last_step = df["Step"].max()
     df = df[df["Step"] == last_step].drop(columns=["Step"])
     df = df.rename(columns={"Agent": "AgentID"})
-    return df
+    
+    # Reset the index to start from 0
+    df.reset_index(drop=True, inplace=True)
+    
+    # Round the numerical columns to 3 decimal places
+    return df.round(3)
 
 # === Plotting functions ===
 def linear_regression_plot(x, y, data, xlabel, ylabel, title):
@@ -1495,12 +1517,11 @@ def display_stepped():
     df = generate_stepped_data(num_agents, num_clinicians, misinfo_exposure)
 
     st.subheader("📊 Stepped Simulation Results (All Steps)")
-    st.dataframe(df.round(3))
+    st.dataframe(df)  # Already rounded and index reset
     plot_2d_relationships(df)
 
 # === Display Non-Stepped Simulation ===
 def display_non_stepped():
-    # Sidebar parameters
     num_agents = st.sidebar.slider("Number of Patient Agents", 5, 100, 10, key="NS_agents")
     num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 5, key="NS_clinicians")
     misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.3, 0.05, key="NS_misinfo")
@@ -1509,13 +1530,12 @@ def display_non_stepped():
     df = generate_non_stepped_data(num_agents, num_clinicians, misinfo_exposure)
     
     st.subheader("📊 Non-Stepped Simulation Results (Latest State)")
-    st.dataframe(df.round(3))
+    st.dataframe(df)  # Already rounded and index reset
     plot_2d_relationships(df)
 
 # === Main App ===
 def main():
     st.markdown("""
-
     This simulation models how misinformation exposure and trust in clinicians
     affect patients' care-seeking behavior. Use the sidebar to choose the simulation type and parameters.
     """)
@@ -1525,10 +1545,9 @@ def main():
     else:
         display_non_stepped()
 
-  
-
 if __name__ == "__main__":
     main()
+
 # =======================
 # FOOTER
 # =======================
@@ -1546,6 +1565,7 @@ st.markdown(
     Reach out on Github to collaborate.
     """
 )
+
 
 
 
