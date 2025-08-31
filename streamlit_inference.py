@@ -1419,6 +1419,8 @@ def generate_non_stepped_data(num_agents, num_clinicians, misinfo_exposure):
         model.step()
     df = model.get_agent_vars_dataframe()
     df = df.reset_index()
+
+    # Filter for the latest step
     last_step = df["Step"].max()
     df = df[df["Step"] == last_step].drop(columns=["Step"])
     df = df.rename(columns={"Agent": "AgentID"})
@@ -1458,12 +1460,12 @@ def plot_2d_relationships(df):
         )
         axs[0].set_title('Symptom Severity vs Care-Seeking\n(Color = Misinformation Exposure)')
 
-        # Misinformation Exposure vs Care-Seeking with Trust in Clinician colorbar
+        # Misinformation Exposure vs Care-Seeking with Misinformation Exposure colorbar
         scatter2 = sns.scatterplot(
             x='Misinformation Exposure',
             y='Care Seeking Behavior',
-            hue='Misinformation Exposure',  # Use the same gradient for Trust in Clinician
-            palette='viridis',  # Same color map for Trust in Clinician as Misinformation Exposure
+            hue='Misinformation Exposure',  # Use the same gradient for Misinformation Exposure
+            palette='viridis',  # Same color map for Misinformation Exposure
             data=df,
             ax=axs[1],
             alpha=0.6,
@@ -1486,55 +1488,58 @@ def plot_2d_relationships(df):
         )
         axs[2].set_title('Trust in Clinician vs Care-Seeking\n(Color = Misinformation Exposure)')
 
-        # Adding vertical colorbars to the right of the plots
-        cbar_ax1 = fig.add_axes([0.92, 0.1, 0.03, 0.8])  # Vertical colorbar for Misinformation Exposure under first plot
-        cbar1 = plt.colorbar(scatter1.collections[0], cax=cbar_ax1, orientation='vertical')
+        # Adding horizontal colorbars under each plot
+        cbar_ax1 = fig.add_axes([0.1, -0.05, 0.8, 0.03])  # Horizontal colorbar for Misinformation Exposure under first plot
+        cbar1 = plt.colorbar(scatter1.collections[0], cax=cbar_ax1, orientation='horizontal')
         cbar1.set_label('Misinformation Exposure')
 
-        cbar_ax2 = fig.add_axes([0.92, 0.1, 0.03, 0.8])  # Vertical colorbar for Misinformation Exposure under second plot
-        cbar2 = plt.colorbar(scatter2.collections[0], cax=cbar_ax2, orientation='vertical')
+        cbar_ax2 = fig.add_axes([0.1, -0.13, 0.8, 0.03])  # Horizontal colorbar for Misinformation Exposure under second plot
+        cbar2 = plt.colorbar(scatter2.collections[0], cax=cbar_ax2, orientation='horizontal')
         cbar2.set_label('Misinformation Exposure')
 
-        cbar_ax3 = fig.add_axes([0.92, 0.1, 0.03, 0.8])  # Vertical colorbar for Misinformation Exposure under third plot
-        cbar3 = plt.colorbar(scatter3.collections[0], cax=cbar_ax3, orientation='vertical')
+        cbar_ax3 = fig.add_axes([0.1, -0.21, 0.8, 0.03])  # Horizontal colorbar for Misinformation Exposure under third plot
+        cbar3 = plt.colorbar(scatter3.collections[0], cax=cbar_ax3, orientation='horizontal')
         cbar3.set_label('Misinformation Exposure')
 
-        # Adjusting layout to make room for colorbars
+        # Adjust layout to prevent overlap
         plt.tight_layout()
+
+        # Display the plots
         st.pyplot(fig)
 
 # === Display Stepped Simulation ===
 def display_stepped():
     num_agents = st.sidebar.slider("Number of Patient Agents", 5, 100, 10, key="S_agents")
     num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 5, key="S_clinicians")
-    misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.3, 0.05, key="S_misinfo")
+    misinfo_exposure = st.sidebar.slider("Misinformation Exposure Level", 0.0, 1.0, 0.5)
 
-    df = generate_stepped_data(num_agents, num_clinicians, misinfo_exposure)
-    plot_2d_relationships(df)
+    # Generate simulation data and display the table
+    df_stepped = generate_stepped_data(num_agents, num_clinicians, misinfo_exposure)
+    st.subheader("Simulation Data (Stepped)")
+    st.write(df_stepped)
+    
+    # Plotting the 2D relationships
+    plot_2d_relationships(df_stepped)
 
 # === Display Non-Stepped Simulation ===
 def display_non_stepped():
-    num_agents = st.sidebar.slider("Number of Patient Agents", 5, 100, 10, key="NS_agents")
-    num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 5, key="NS_clinicians")
-    misinfo_exposure = st.sidebar.slider("Baseline Misinformation Exposure", 0.0, 1.0, 0.3, 0.05, key="NS_misinfo")
-    
-    df = generate_non_stepped_data(num_agents, num_clinicians, misinfo_exposure)
-    plot_2d_relationships(df)
+    num_agents = st.sidebar.slider("Number of Patient Agents", 5, 100, 10, key="N_agents")
+    num_clinicians = st.sidebar.slider("Number of Clinician Agents", 1, 20, 5, key="N_clinicians")
+    misinfo_exposure = st.sidebar.slider("Misinformation Exposure Level", 0.0, 1.0, 0.5)
 
-# === Main Execution ===
-def main():
-    st.markdown("""
-    This simulation models how misinformation exposure and trust in clinicians
-    affect patients' care-seeking behavior. Use the sidebar to choose the simulation type and parameters.
-    """)
+    # Generate simulation data and display the table
+    df_non_stepped = generate_non_stepped_data(num_agents, num_clinicians, misinfo_exposure)
+    st.subheader("Simulation Data (Non-Stepped - Latest Step)")
+    st.write(df_non_stepped)
     
-    if simulation_type == "Stepped":
-        display_stepped()
-    else:
-        display_non_stepped()
+    # Plotting the 2D relationships
+    plot_2d_relationships(df_non_stepped)
 
-if __name__ == "__main__":
-    main()
+# Display simulation based on type selected
+if simulation_type == "Stepped":
+    display_stepped()
+else:
+    display_non_stepped()
 
 
 # =======================
@@ -1554,6 +1559,7 @@ st.markdown(
     Reach out on Github to collaborate.
     """
 )
+
 
 
 
