@@ -1488,18 +1488,10 @@ def plot_2d_relationships(df):
         )
         axs[2].set_title('Trust in Clinician vs Care-Seeking\n(Color = Misinformation Exposure)')
 
-        # Adding horizontal colorbars under each plot
-        cbar_ax1 = fig.add_axes([0.1, -0.05, 0.8, 0.03])  # Horizontal colorbar for Misinformation Exposure under first plot
-        cbar1 = plt.colorbar(scatter1.collections[0], cax=cbar_ax1, orientation='horizontal')
-        cbar1.set_label('Misinformation Exposure')
-
-        cbar_ax2 = fig.add_axes([0.1, -0.13, 0.8, 0.03])  # Horizontal colorbar for Misinformation Exposure under second plot
-        cbar2 = plt.colorbar(scatter2.collections[0], cax=cbar_ax2, orientation='horizontal')
-        cbar2.set_label('Misinformation Exposure')
-
-        cbar_ax3 = fig.add_axes([0.1, -0.21, 0.8, 0.03])  # Horizontal colorbar for Misinformation Exposure under third plot
-        cbar3 = plt.colorbar(scatter3.collections[0], cax=cbar_ax3, orientation='horizontal')
-        cbar3.set_label('Misinformation Exposure')
+        # Adding vertical colorbar to the right side of the plot
+        cbar_ax = fig.add_axes([0.93, 0.05, 0.02, 0.9])  # Positioning the color bar vertically
+        cbar = plt.colorbar(scatter1.collections[0], cax=cbar_ax, orientation='vertical')
+        cbar.set_label('Misinformation Exposure')
 
         # Adjust layout to prevent overlap
         plt.tight_layout()
@@ -1516,6 +1508,11 @@ def display_stepped():
     # Generate simulation data and display the table
     df_stepped = generate_stepped_data(num_agents, num_clinicians, misinfo_exposure)
     st.subheader("Simulation Data (Stepped)")
+
+    # Round numeric data to 3 decimal places
+    df_stepped = df_stepped.round(3)
+    
+    # Display the formatted DataFrame
     st.write(df_stepped)
     
     # Plotting the 2D relationships
@@ -1530,6 +1527,11 @@ def display_non_stepped():
     # Generate simulation data and display the table
     df_non_stepped = generate_non_stepped_data(num_agents, num_clinicians, misinfo_exposure)
     st.subheader("Simulation Data (Non-Stepped - Latest Step)")
+
+    # Round numeric data to 3 decimal places
+    df_non_stepped = df_non_stepped.round(3)
+
+    # Display the formatted DataFrame
     st.write(df_non_stepped)
     
     # Plotting the 2D relationships
@@ -1540,7 +1542,6 @@ if simulation_type == "Stepped":
     display_stepped()
 else:
     display_non_stepped()
-
 
 # =======================
 # FOOTER
@@ -1559,6 +1560,7 @@ st.markdown(
     Reach out on Github to collaborate.
     """
 )
+
 
 
 
