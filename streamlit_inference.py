@@ -1492,7 +1492,10 @@ def plot_2d_relationships(df):
 
         # Adding vertical colorbar to the right side of the plot
         cbar_ax = fig.add_axes([0.92, 0.05, 0.02, 0.9])  # Positioning the color bar vertically
-        cbar = plt.colorbar(scatter1.collections[0], cax=cbar_ax, orientation='vertical')
+
+        # Creating color bar with fixed limits (0 to 1)
+        norm = mpl.colors.Normalize(vmin=0, vmax=1)
+        cbar = plt.colorbar(scatter1.collections[0], cax=cbar_ax, orientation='vertical', norm=norm)
         cbar.set_label('Misinformation Exposure')
 
         # Adjust layout to prevent overlap
@@ -1528,23 +1531,22 @@ def display_non_stepped():
 
     # Generate simulation data and display the table
     df_non_stepped = generate_non_stepped_data(num_agents, num_clinicians, misinfo_exposure)
-    st.subheader("Simulation Data (Non-Stepped)")
+    st.subheader("Simulation Data (Non-Stepped - Latest Step)")
 
     # Round numeric data to 3 decimal places
     df_non_stepped = df_non_stepped.round(3)
-    
+
     # Display the formatted DataFrame
     st.write(df_non_stepped)
     
     # Plotting the 2D relationships
     plot_2d_relationships(df_non_stepped)
 
-# === Main Section ===
+# Display simulation based on type selected
 if simulation_type == "Stepped":
     display_stepped()
 else:
     display_non_stepped()
-
 
 
 # =======================
@@ -1564,6 +1566,7 @@ st.markdown(
     Reach out on Github to collaborate.
     """
 )
+
 
 
 
