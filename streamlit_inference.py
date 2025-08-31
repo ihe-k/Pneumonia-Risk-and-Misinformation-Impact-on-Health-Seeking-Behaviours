@@ -1355,7 +1355,7 @@ st.markdown(
         }
     </style>
     <div class="overlay-box">
-        <h3>Welcome to the Simulation App</h3>
+       # <h3>Welcome to the Simulation App</h3>
         <p>Use this tool to explore the impact of misinformation exposure on care-seeking behavior.</p>
         <p>Select "Stepped" or "Non-Stepped" simulation from the options below. Adjust the parameters accordingly.</p>
     </div>
@@ -1577,7 +1577,6 @@ if simulation_type == "Stepped":
 else:
     display_non_stepped()
 
-
 # =======================
 # FOOTER
 # =======================
@@ -1595,6 +1594,7 @@ st.markdown(
     Reach out on Github to collaborate.
     """
 )
+
 
 
 
