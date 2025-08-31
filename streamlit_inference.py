@@ -1444,7 +1444,9 @@ def linear_regression_plot(x, y, data, xlabel, ylabel, title):
 def plot_2d_relationships(df):
     if len(df) > 10:
         st.markdown("### 🎯 2D Relationship Analysis")
-        fig, axs = plt.subplots(1, 3, figsize=(20, 5))
+        
+        # Reduced width for each plot to fit the colorbar
+        fig, axs = plt.subplots(1, 3, figsize=(18, 5))  # Smaller width for each plot
 
         # Symptom Severity vs Care-Seeking with Misinformation Exposure colorbar
         scatter1 = sns.scatterplot(
@@ -1489,7 +1491,7 @@ def plot_2d_relationships(df):
         axs[2].set_title('Trust in Clinician vs Care-Seeking\n(Color = Misinformation Exposure)')
 
         # Adding vertical colorbar to the right side of the plot
-        cbar_ax = fig.add_axes([0.93, 0.05, 0.02, 0.9])  # Positioning the color bar vertically
+        cbar_ax = fig.add_axes([0.92, 0.05, 0.02, 0.9])  # Positioning the color bar vertically
         cbar = plt.colorbar(scatter1.collections[0], cax=cbar_ax, orientation='vertical')
         cbar.set_label('Misinformation Exposure')
 
@@ -1543,6 +1545,7 @@ if simulation_type == "Stepped":
 else:
     display_non_stepped()
 
+
 # =======================
 # FOOTER
 # =======================
@@ -1560,6 +1563,7 @@ st.markdown(
     Reach out on Github to collaborate.
     """
 )
+
 
 
 
