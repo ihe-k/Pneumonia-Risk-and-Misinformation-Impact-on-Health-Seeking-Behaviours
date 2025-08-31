@@ -1515,7 +1515,7 @@ def display_non_stepped():
 # === Main App ===
 def main():
     st.markdown("""
-    # 🧠 Misinformation Impact on Patient Care-Seeking Behavior
+
     This simulation models how misinformation exposure and trust in clinicians
     affect patients' care-seeking behavior. Use the sidebar to choose the simulation type and parameters.
     """)
@@ -1525,13 +1525,7 @@ def main():
     else:
         display_non_stepped()
 
-    st.markdown("---")
-    st.markdown("""
-    #### 📚 About this App
-    - Powered by [Mesa](https://mesa.readthedocs.io/en/stable/) for agent-based simulation  
-    - Visualized using [Streamlit](https://streamlit.io/)  
-    - Incorporates realistic agent behavior influenced by misinformation and trust  
-    """)
+  
 
 if __name__ == "__main__":
     main()
@@ -1552,6 +1546,7 @@ st.markdown(
     Reach out on Github to collaborate.
     """
 )
+
 
 
 
