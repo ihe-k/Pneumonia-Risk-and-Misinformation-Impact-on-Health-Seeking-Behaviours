@@ -107,11 +107,12 @@ Download and extract the chest X-ray dataset into the data/ folder
 ```plaintext
 ├── data/
 ├── chest_xray/
-├── src/
-│   ├── preprocess_images.py
-│   ├── train_models.py
-│   ├── nlp_misinformation.py
-│   ├── agent_based_simulation.py
+├── Graphs/
+├── train_pneumonia.py
+├── train_pneumonia_model.py
+├── Saved_Train_Model/
+│   ├── pneumonia_log_reg.pkl
+│   ├── pneumonia_xgb.pkl
 ├── README.md
 ├── requirements.txt
 ```
