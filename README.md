@@ -3,6 +3,8 @@
 ## Overview
 This project integrates AI (machine learning methods such as logistic regression and XGBoost), NLP and agent-based modelling to explore pneumonia risk and detect misinformation to analyse its behavioural impact on care-seeking. The model simulates healthcare decision-making dynamics by incorporating misinformation exposure, social media behaviour and trust in medical systems.
 
+[Link to App](https://pneumonia-risk-and-misinformation-impact-on-health-seeking-beh.streamlit.app/)
+
 ## Project Components
 
 ### 1. Data Collection
