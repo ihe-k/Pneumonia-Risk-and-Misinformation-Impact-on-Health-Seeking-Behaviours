@@ -45,7 +45,7 @@ These plots helps identify how misinformation and trust in clinicians might affe
 In the simulation script, the following components are crucial for the graphs:
 
 * Agent Creation and Data Collection:
-- In the MisinformationModel, agents are created with attributes like Symptom Severity, Care Seeking Behaviour, Trust in Clinician, and Misinformation Exposure.
+- In the Misinformation Model, agents are created with attributes like Symptom Severity, Care Seeking Behaviour, Trust in Clinician, and Misinformation Exposure.
 - These agent attributes are then collected over time using the DataCollector.  The DataCollector tracks the changes in these variables across simulation steps, which are later used for the visualisations.
 
 In the script, once the simulation is triggered, the model runs for 30 steps.  Each step represents an agent-based model simulation run where each agent's behaviour is updated based on their attributes and interactions. After each step, the model collects data using the datacollector.
