@@ -31,6 +31,7 @@ Logistic regression is a linear classifier that outputs a probability of pneumon
 
 Where: 
 
+**z* = *w*<sub>1</sub> + *w*
 * <img src="https://github.com/ihe-k/Pneumonia-Risk-and-Misinformation-Impact-on-Health-Seeking-Behaviours/blob/feature/clean-env-setup/P2_Eq_2.png?raw=true" width="250" /> -> linear combination of inputs
 * *p* is the probability that the chest X-ray (i.e. input) shows pneumonia
 
