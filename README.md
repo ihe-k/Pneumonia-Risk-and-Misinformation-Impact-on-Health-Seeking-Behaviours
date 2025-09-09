@@ -77,13 +77,13 @@ Adjusting the 'number of patient agents' affects population size and the realism
 * Non-Stepped: Only reports snapshot of the population state at the final step after full simulation
 
 ### 5. Misinformation Impact Analysis
-* Quantifies how misinformation reduces symptom reporting and care-seeking (R² and p-values give statistical validity to observed relationships):
+Quantifies how misinformation reduces symptom reporting and care-seeking (R² and p-values give statistical validity to observed relationships):
 
 - Relationship between Symptom Severity and Care Seeking Behaviour (left plot): The colour gradient of the points represents misinformation exposure. 
 - Relationship between Misinformation Exposure and Care Seeking Behaviour (middle plot):  The colour gradient of the points represents patient trust in a clinician.
 - Relationship between Trust in Clinician and Care Seeking Behaviour (right plot). The colour gradient of the dots also represent Misinformation Exposure.
 
-These plots helps identify how misinformation and trust in clinicians might affect a patient's behaviour. For example:
+These graphs help identify how misinformation and trust in clinicians might affect a patient's behaviour. For example:
 
 * Trust in Clinician vs Care-Seeking: Patients with low trust in clinicians and high misinformation exposure might be less likely to seek care.  This would be visible as a higher proportion of dark to light green dots in the lower-left region of the graph.
 * Higher symptom severity combined with lower misinformation exposure and higher clinician trust appears to correlate with increased care-seeking behaviour (dark purple dots towards the top-right).
