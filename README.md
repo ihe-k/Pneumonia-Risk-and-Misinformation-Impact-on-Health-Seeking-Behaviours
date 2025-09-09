@@ -71,7 +71,9 @@ Clinicians interact with patients to increase trust and reduce misinformation.  
 After N steps (i.e. 30), care-seeking in response to misinformation and trust in clinician may be explored.
 
 #### Sliders
-Adjusting the 'number of patient agents' affects population size and the realism of interactions; adjusting the number of clinicians determines the number of patients that are 'treated' with increased trust or corrected misinformation and adjusting the misinformation exposure level allows an investigation into the impact of different misinformation levels on care-seeking behaviours.
+* Adjusting the 'number of patient agents' affects population size and the realism of interactions
+* Adjusting the number of clinicians determines the number of patients that are 'treated' with increased trust or corrected misinformation
+* Adjusting the misinformation exposure level allows an investigation into the impact of different misinformation levels on care-seeking behaviours.
 
 #### Simulation Modes
 * Stepped: Collects data at each step (e.g., daily or weekly) to analyse how behaviour evolves over time
@@ -100,12 +102,12 @@ In the script, once the simulation is triggered, the model runs for 30 steps.  E
 
 ### Use Cases for the Simulation
 
-* Public Health Policy Testing: Exploration of the way clinician capacity or misinormation campaigns affect care-seeking outcomes
-* Educating Policymakers: Illustrative examples that highlight the reasons fighting misinformation or buillding clinician trust is essential
-* Modelling Human Psychology: Traditional compartmental disease models do not capture beliefs, trust and behavours change in the way this ABM is able to explore psychosial and behavioural aspects that are critical in modern healthc rises.
+* Public Health Policy Testing: Exploration of the ways clinician capacity or misinformation campaigns affect care-seeking outcomes
+* Educating Policymakers: Illustrative examples that highlight the reasons fighting misinformation or building clinician trust is essential
+* Modelling Human Psychology: This ABM is able to capture beliefs, trust as well as behaviour change and analyse psychosocial or behavioural aspects that are critical in modern health crises in ways that traditional compartmental diseases models cannot.
 
 ## Future Interventions
-### Gift-Giving as Social Incentive and Engine of Social Contagion
+### Gift-Giving as a Social Incentive and Engine of Social Contagion
 To counter health misinformation and encourage timely care-seeking, an intervention that uses gift-giving as a catalyst for positive social contagion may be a promising avenue. Users who engage with or share verified health information, particularly content promoting pneumonia prevention, vaccination and symptom awareness may receive social and material rewards that include:
 
 * Digital gift cards, recognition badges and exclusive content
