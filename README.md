@@ -74,7 +74,7 @@ After N steps (i.e. 30), care-seeking in response to misinformation and trust in
 Adjusting the 'number of patient agents' affects population size and the realism of interactions; adjusting the number of clinicians determines the number of patients that are 'treated' with increased trust or corrected misinformation and adjusting the misinformation exposure level allows an investigation into the impact of different misinformation levels on care-seeking behaviours.
 
 #### Simulation Modes
-* Stepped: Collects data at each step (e.g., daily or weekly) to analyse how behaviour evolves over times
+* Stepped: Collects data at each step (e.g., daily or weekly) to analyse how behaviour evolves over time
 * Non-Stepped: Only reports snapshot of the population state at the final step after full simulation
 
 ### 5. Misinformation Impact Analysis
