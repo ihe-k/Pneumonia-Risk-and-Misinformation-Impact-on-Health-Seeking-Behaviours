@@ -56,7 +56,7 @@ TextBlob is a Python NLP library that provides sentiment analysis, subjectivity 
 The NLP model outputs flags for misinformation as well as misinformation scores between 0 and 1, which are passed into the Agent-Based Model (ABM) as the patient's initial misinformation exposure.  
 
 ### 4. Misinformation Model: ABM
-ABM simulates individual agents (patients and clinicians) who interact over time in a spatial environment, where misinformation might spread and impact behaviour. Patients are the main decision-makers in this model, seek care based on multiple attributes:
+ABM simulates individual agents (patients and clinicians) who interact over time in a spatial environment, where misinformation might spread and impact behaviour. Patients are the main decision-makers in this model and seek care based on multiple attributes:
 
 * Symptom Severity: Illustrates how sick the patient feels and is randomised as well as modified over time.
 * Trust in Clinicican: Highlights the trust a patient invests in medical advice (it is dynamic and may increase with clinician interaction).
