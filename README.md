@@ -13,15 +13,35 @@ This project integrates AI (machine learning methods such as logistic regression
 * Wikipedia
 * HealthVer dataset
 
-### 2. Misinformation Detection Using NLP
-* Uses TextBlob for sentiment and subjectivity scoring
-* Flags potentially misleading or emotionally charged posts
-* Prepares input for agent-based simulation (misinformation exposure score)
+### 2. Pneumonia Detection from X-ray Images: Deep Learning and Machine Learning Classification
+Detecting pneumonia from medical images consists of the following process:
 
-### 3. Pneumonia Detection from X-ray Images
 * Image preprocessing with ImageDataGenerator (resize, normalise and augment)
 * Flattened image data used with Logistic Regression and XGBoost
 * Evaluation via accuracy and classification report
+
+#### Image Preprocessing
+Images are resized to a consistent size and pixel intensities are normalised as neural networks require input data that are a consistent shape and scale.
+
+#### Machine Learning Classifiers (Logistic Regression and XGBoost)
+
+Logistic regression is a linear classifier that outputs a probability of pneumonia using the sigmoid function:
+
+[equation]
+
+Where: 
+
+* [formula 2] -> linear comnination of inputs
+
+.  XGBoost is a gradient boosting model that uses decision trees and captures non-linear patterns.
+After deep features are extracted, they are used in traditional machine learning classifiers.
+
+
+
+### 3. Misinformation Detection Using NLP
+* Uses TextBlob for sentiment and subjectivity scoring
+* Flags potentially misleading or emotionally charged posts
+* Prepares input for agent-based simulation (misinformation exposure score)
 
 ### 4. Agent-Based Simulation (ABM)
 * Simulates patients and clinicians as agents
