@@ -53,7 +53,7 @@ Sentiment analysis and NLP tools are implemented to analyse social media posts (
 
 TextBlob is a Python NLP library that provides sentiment analysis, subjectivity and tokenisation. Sentiment analysis highlights negative sentiment (posts illustrating distrusts in clinicians, conspiracy theories or panic posts); highly subjective text (e.g., opinion-based content) and misleading posts that are overly negative.
 
-The NLP model outputs flags for misinformation misinformation as well as misinformation scores between 0 and 1, which are passed into the Agent-Based Model (ABM) as the patient's initial misinformation exposure.  
+The NLP model outputs flags for misinformation as well as misinformation scores between 0 and 1, which are passed into the Agent-Based Model (ABM) as the patient's initial misinformation exposure.  
 
 ### 4. Misinformation Model: ABM
 ABM simulates individual agents (patients and clinicians) who interact over time in a spatial environment, where misinformation might spread and impact behaviour. Patients are the main decision-makers in this model, seek care based on multiple attributes:
