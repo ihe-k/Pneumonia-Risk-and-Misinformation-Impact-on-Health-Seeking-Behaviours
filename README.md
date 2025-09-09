@@ -47,9 +47,9 @@ Models are evaluated using an accuracy and classification report that includes:
 ### 3. Misinformation Detection Using NLP
 Sentiment analysis and NLP tools are implemented to analyse social media posts (e.g., Reddit comments) for misinformation regarding pneumonia:
 
-* Uses TextBlob for sentiment and subjectivity scoring
-* Flags potentially misleading or emotionally charged posts
-* Prepares input for agent-based simulation (misinformation exposure score)
+* TextBlob is utilised for sentiment and subjectivity scoring
+* Potentially misleading or emotionally charged posts are flagged
+* Input for agent-based simulation (misinformation exposure score) is prepared
 
 TextBlob is a Python NLP library that provides sentiment analysis, subjectivity and tokenisation. Sentiment analysis highlights negative sentiment (posts illustrating distrusts in clinicians, conspiracy theories or panic posts); highly subjective text (e.g., opinion-based content) and misleading posts that are overly negative.
 
