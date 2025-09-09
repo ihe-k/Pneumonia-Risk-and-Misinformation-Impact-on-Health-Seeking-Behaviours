@@ -27,11 +27,11 @@ Images are resized to a consistent size and pixel intensities are normalised as 
 
 Logistic regression is a linear classifier that outputs a probability of pneumonia using the sigmoid function:
 
-<img src="https://github.com/ihe-k/Pneumonia-Risk-and-Misinformation-Impact-on-Health-Seeking-Behaviours/blob/feature/clean-env-setup/P2_Eq_1.png?raw=true" width="80" />
+<img src="https://github.com/ihe-k/Pneumonia-Risk-and-Misinformation-Impact-on-Health-Seeking-Behaviours/blob/feature/clean-env-setup/P2_Eq_1.png?raw=true" width="150" />
 
 Where: 
 
-**z* = *w*<sub>1</sub>*x*<sub>1></sub> + *w*<sub>2</sub>*x*<sub>2></sub> + ... + *w*<sub>n</sub>*x*<sub>n></sub> + *b* -> linear combination of inputs
+* *z* = *w*<sub>1</sub>*x*<sub>1></sub> + *w*<sub>2</sub>*x*<sub>2></sub> + ... + *w*<sub>n</sub>*x*<sub>n></sub> + *b* -> linear combination of inputs
 * *p* is the probability that the chest X-ray (i.e. input) shows pneumonia
 
 The model consequently returns a value between 0 and 1 which after applying a threshold of 0.5, allows a prediction of either pneumonia or no pneumonia.
