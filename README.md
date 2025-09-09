@@ -63,7 +63,7 @@ ABM simulates individual agents (patients and clinicians) who interact over time
 * Misinformation Exposure: The extent of a patient's exposure to false health information (e.g., 'you do not need to see a doctor for a cough')
 * Care-Seeking Behaviour: The likelihood a patient will seek care (updated dynamically).
 
-Clinicians interact with patients to increase trust and reduce misinformation.  Patient behaviour evolves based on rules as well as randomness.  The goal of this model is to understand the ways that misinformation affects care-seeking behaviour especially under various conditions like symptom severity, exposure to health misinformation, location (urband and rural) as well as trust in clinicians.  Each time step, a patient updates their internal state:
+Clinicians interact with patients to increase trust and reduce misinformation.  Patient behaviour evolves based on rules as well as randomness.  The goal of this model is to understand the ways that misinformation affects care-seeking behaviour especially under various conditions like symptom severity, exposure to health misinformation, location (urban and rural) as well as trust in clinicians.  Each time step, a patient updates their internal state:
 
 * Misinformation decreases care-seeking
 * Trust and high symptom severity increases care-seeking
