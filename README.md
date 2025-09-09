@@ -68,7 +68,7 @@ Clinicians interact with patients to increase trust and reduce misinformation.  
 * Misinformation decreases care-seeking
 * Trust and high symptom severity increases care-seeking
 
-After N steps (i.e. 30), care-seeking in response to misinfomation and trust in clinician is explored).  Clinicians diagnose using the trained ML model.
+After N steps (i.e. 30), care-seeking in response to misinfomation and trust in clinician may be explored.
 
 Adjusting the 'number of patient agents' affects population size and the realism of interactions; adjusting the number of clinicians determines the number of patients that are treated with increased trust or corrected misinformation and adjusting the misinformation exposure level allows an investigation into the impact of fifferent misinformation levels on care-seeking behaviours.
 
