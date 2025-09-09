@@ -27,30 +27,58 @@ Images are resized to a consistent size and pixel intensities are normalised as 
 
 Logistic regression is a linear classifier that outputs a probability of pneumonia using the sigmoid function:
 
-[equation]
+<img src="https://github.com/ihe-k/Pneumonia-Risk-and-Misinformation-Impact-on-Health-Seeking-Behaviours/blob/main/P2_Eq_1.png?raw=true" width="250" />
 
 Where: 
 
-* [formula 2] -> linear comnination of inputs
+* <img src="https://github.com/ihe-k/Pneumonia-Risk-and-Misinformation-Impact-on-Health-Seeking-Behaviours/blob/main/P2_Eq_2.png?raw=true" width="250" /> -> linear combination of inputs
+* *p* is the probability that the chest X-ray (i.e. input) shows pneumonia
 
-.  XGBoost is a gradient boosting model that uses decision trees and captures non-linear patterns.
-After deep features are extracted, they are used in traditional machine learning classifiers.
+The model consequently returns a value between 0 and 1 which after applying a threshold of 0.5, allows a prediction of either pneumonia or no pneumonia.
 
+Extreme Gradient Boosting, XGBoost, is an ensemble of decision trees that works by minimising a loss function.  Each tree corrects the errors of the previous one and are optimised for speed and accuracy.  XGBoost sums the raw scores of all trees before passing a prediction through the sigmoid function which is converted to a probability.  After applying a threshold of 0.5, the output produced (a value between 0 and 1), allows a prediction of either pneumonia or no pneumonia.
 
+#### Model Evaluation
+Models are evaluated using an accuracy and classification report that includes:
+
+* Precision: The number of correct predicted positives
+* Recall: The number of actual positives that were caught
+* F1 Score: A balance of precision and recall
 
 ### 3. Misinformation Detection Using NLP
+Sentiment analysis and NLP tools are implemented to analyse social media posts (e.g., Reddit comments) for misinformation regarding pneumonia:
+
 * Uses TextBlob for sentiment and subjectivity scoring
 * Flags potentially misleading or emotionally charged posts
 * Prepares input for agent-based simulation (misinformation exposure score)
 
-### 4. Agent-Based Simulation (ABM)
-* Simulates patients and clinicians as agents
-* Patient behaviour influenced by symptom severity, misinformation exposure, and trust in clinicians
-* Clinicians diagnose using the trained ML model
-* Measures changes in care-seeking behaviour over time
+TextBlob is a Python NLP library that provides sentiment analysis, subjectivity and tokenisation. Sentiment analysis highlights negative sentiment (posts illustrating distrusts in clinicians, conspiracy theories or panic posts); highly subjective text (e.g., opinion-based content) and misleading posts that are overly negative.
+
+The NLP model outputs flags for misinformation misinformation as well as misinformation scores between 0 and 1, which are passed into the Agent-Based Model (ABM) as the patient's initial misinformation exposure.  
+
+### 4. Misinformation Model: ABM
+ABM simulates individual agents (patients and clinicians) who interact over time in a spatial environment, where misinformation might spread and impact behaviour. Patients are the main decision-makers in this model, seek care based on multiple attributes:
+
+* Symptom Severity: Illustrates how sick the patient feels and is randomised as well as modified over time.
+* Trust in Clinicican: Highlights the trust a patient invests in medical advice (it is dynamic and may increase with clinician interaction).
+* Misinformation Exposure: The extent of a patient's exposure to false health information (e.g., 'you do not need to see a doctor for a cough')
+* Care-Seeking Behaviour: The likelihood a patient will seek care (updated dynamically).
+
+Clinicians interact with patients to increase trust and reduce misinformation.  Patient behaviour evolves based on rules as well as randomness.  The goal of this model is to understand the ways that misinformation affects care-seeking behaviour especially under various conditions like symptom severity, exposure to health misinformation, location (urband and rural) as well as trust in clinicians.  Each time step, a patient updates their internal state:
+
+* Misinformation decreases care-seeking
+* Trust and high symptom severity increases care-seeking
+
+After N steps (i.e. 30), care-seeking in response to misinfomation and trust in clinician is explored).  Clinicians diagnose using the trained ML model.
+
+Adjusting the 'number of patient agents' affects population size and the realism of interactions; adjusting the number of clinicians determines the number of patients that are treated with increased trust or corrected misinformation and adjusting the misinformation exposure level allows an investigation into the impact of fifferent misinformation levels on care-seeking behaviours.
+
+#### Simulation Modes
+* Stepped: Collects data at each step (e.g., daily or weekly) to analyse how behaviour evolves over times
+* Non-Stepped: Only reports snapshot of the population state at the final step after full simulation
 
 ### 5. Misinformation Impact Analysis
-* Quantifies how misinformation reduces symptom reporting and care-seeking:
+* Quantifies how misinformation reduces symptom reporting and care-seeking (R² and p-values give statistical validity to observed relationships):
 
 - Relationship between Symptom Severity and Care Seeking Behaviour (left plot): The colour gradient of the points represents misinformation exposure. 
 - Relationship between Misinformation Exposure and Care Seeking Behaviour (middle plot):  The colour gradient of the points represents patient trust in a clinician.
@@ -70,6 +98,11 @@ In the simulation script, the following components are crucial for the graphs:
 
 In the script, once the simulation is triggered, the model runs for 30 steps.  Each step represents an agent-based model simulation run where each agent's behaviour is updated based on their attributes and interactions. After each step, the model collects data using the datacollector.
 
+### Use Cases for the Simulation
+
+* Public Health Policy Testing: Exploration of the way clinician capacity or misinormation campaigns affect care-seeking outcomes
+* Educating Policymakers: Illustrative examples that highlight the reasons fighting misinformation or buillding clinician trust is essential
+* Modelling Human Psychology: Traditional compartmental disease models do not capture beliefs, trust and behavours change in the way this ABM is able to explore psychosial and behavioural aspects that are critical in modern healthc rises.
 
 ## Future Interventions
 ### Gift-Giving as Social Incentive and Engine of Social Contagion
