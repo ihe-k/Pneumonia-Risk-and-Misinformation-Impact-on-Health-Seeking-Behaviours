@@ -162,6 +162,9 @@ pip install -r requirements.txt
 Set up API keys for Twitter and NewsAPI (if applicable)
 Download and extract the chest X-ray dataset into the data/ folder
 
+## Testing
+I have included images of healthy and unhealthy patients diagnosed with pneumonia that may be used to test the app in the folder, 'Practice_Pack'.
+
 ## Project Structure
 ```plaintext
 ├── data/
