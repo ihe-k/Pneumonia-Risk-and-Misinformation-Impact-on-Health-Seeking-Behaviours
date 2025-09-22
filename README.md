@@ -152,8 +152,10 @@ This work may provide actionable insights for public health agencies and policym
 
 ## Setup Instructions
 ```plaintext
-git clone https://github.com/yourusername/pneumonia-misinformation-model.git
-cd pneumonia-misinformation-model
+git clone https://github.com/yourusername/
+Pneumonia-Risk-and-Misinformation-Impact-on-Health-Seeking-Behaviours.git
+cd 
+Pneumonia-Risk-and-Misinformation-Impact-on-Health-Seeking-Behaviours
 pip install -r requirements.txt
 ```
 ## Make sure to:
